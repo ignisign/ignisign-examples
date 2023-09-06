@@ -1,0 +1,9 @@
+**/node_modules
+**/dist
+**/tsconfig.tsbuildinfo
+**/.npmrc
+**/.DS_Store
+**/yarn-error.log
+**/node_modules
+
+ 
