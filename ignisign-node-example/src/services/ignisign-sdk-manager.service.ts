@@ -44,13 +44,12 @@ async function init() {
     await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.SIGNATURE,         "CREATED", IGNISIGN_WEBHOOK_MESSAGE_NATURE.SUCCESS);
     await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.SIGNER,            "CREATED", IGNISIGN_WEBHOOK_MESSAGE_NATURE.SUCCESS);
     await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.DOCUMENT_REQUEST,  "CREATED", IGNISIGN_WEBHOOK_MESSAGE_NATURE.SUCCESS);
-    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.SIGNER_KEY,        "CREATED", IGNISIGN_WEBHOOK_MESSAGE_NATURE.SUCCESS);
 
-    await ignisignSdkInstance.registerWebhookCallback(
-      SignatureRequestService.handleSignatureRequestWebhookSigners,  
-      IGNISIGN_WEBHOOK_TOPICS.SIGNER, 
-      IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST.LAUNCHED, 
-      IGNISIGN_WEBHOOK_MESSAGE_NATURE.SUCCESS);
+    await ignisignSdkInstance.registerWebhookCallback_SignatureRequest(
+    SignatureRequestService.handleSignatureRequestWebhookSigners,  
+    IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST.LAUNCHED, 
+    IGNISIGN_WEBHOOK_MESSAGE_NATURE.SUCCESS
+    );
       
 
   } catch (e){

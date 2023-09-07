@@ -35,7 +35,7 @@ const SignatureRequestsPage = () => {
           /> :
           <div className='flex flex-col gap-3 w-full'>
             {signatureRequests
-              .sort(() => -1)
+              .sort((a: any, b:any) => b?._id - a?._id)
               .map(sr => 
                 <SignatureRequestItem key={`signature-request-${sr?._id}`} signatureRequest={sr}/> )
             }

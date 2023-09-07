@@ -87,7 +87,8 @@ const initExampleApp = async () =>{
       } catch(e) { next(e) }
     })
 
-    router.post('/v1/signature-profiles/:signatureProfileId/signature-requests', upload.array('file'), async (req: any, res, next) => {      
+    router.post('/v1/signature-profiles/:signatureProfileId/signature-requests', 
+      upload.array('file'), async (req: any, res, next) => {      
       let pathsToDelete = []
       try {
         const {title, usersIds, fullPrivacy} = req.body
@@ -100,6 +101,7 @@ const initExampleApp = async () =>{
         await SignatureRequestService.createNewSignatureRequest(signatureProfileId, title, files, usersIds.split(','))
         jsonSuccess(res, {status: 'ok'} )
       } catch (error) {
+        console.error(error);
         jsonError(res, error)
       }
       finally {

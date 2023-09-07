@@ -30,6 +30,7 @@ const SignatureRequestsDetailPage = () => {
 
   const getSignatureRequestUsers = async (signatureRequestId) => {
     const sr = await ApiService.getSignatureRequestSigners(signatureRequestId);
+    console.log('getSignatureRequestUsers : ', sr);
     setSignatureRequestId(sr?.signatureRequestId)
     const signers = sr?.signers?.map(({myUserId, signerId, token}) => {
       const user = users.find(u => u._id.toString() === myUserId);
@@ -140,7 +141,7 @@ const EmbeddedSignature = ({signatureRequestId, signerId, token, authSecret}) =>
       
       const ignisign = new IgnisignJs(appId, appEnv as IGNISIGN_APPLICATION_ENV, IGNISIGN_CLIENT_SIGN_URL);
 
-      console.debug('initSignatureRequest : ', {
+      console.log('initSignatureRequest : ', {
         appId,
         appEnv,
         signatureRequestId,

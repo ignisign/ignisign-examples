@@ -20,8 +20,9 @@ export type MySignatureRequest = {
 }
 
 export type MySignatureRequestSigners = {
-  _id                 ?: string;
-  signatureRequestId  ?: string;
+  _id                  ?: string;
+  signatureRequestId   ?: string;
+  mySignatureRequestId ?: string;
   signers ?: {
     signerId   ?: string;
     myUserId   ?: string;

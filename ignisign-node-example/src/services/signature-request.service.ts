@@ -1,4 +1,4 @@
-import { IgnisignSignatureRequest_IdContainer, IgnisignSignatureRequest_UpdateDto } from '@ignisign/public';
+import { IgnisignWebhookDto_SignatureRequestLaunched, IgnisignSignatureRequest_UpdateDto } from '@ignisign/public';
 import * as FormData from "form-data";
 import * as fs from 'fs';
 
@@ -17,7 +17,7 @@ const addSignatureRequest = async (signatureProfileId, signatureRequest: MySigna
         console.error("addSignatureRequest ERROR : ", error);
         reject(error);
       } else {
-        resolve(found);
+        resolve(found[0]);
       }
     });
   });
@@ -38,7 +38,7 @@ const getSignatureRequests = async (signatureProfileId) => {
 
 const getSignatureRequestsSigners = async (signatureRequestId) => {
   return new Promise((resolve, reject) => {
-    MySignatureRequestSignersModel.findOne({_id: signatureRequestId}, (error, found) => {
+    MySignatureRequestSignersModel.findOne({mySignatureRequestId : signatureRequestId}, (error, found) => {
       if (error) {
         console.error("getSignatureRequestsSigners ERROR : ", error);
         reject(error);
@@ -108,8 +108,8 @@ const createNewSignatureRequest = async (signatureProfileId, title, files: {file
   await IgnisignSdkManagerService.publishSignatureRequest(signatureRequestId);
 }
 
-const handleSignatureRequestWebhookSigners = async (webhookContext: any): Promise<any> => {
-  const {signers, signatureRequestId} = webhookContext;
+const handleSignatureRequestWebhookSigners = async (webhookContext: IgnisignWebhookDto_SignatureRequestLaunched): Promise<any> => {
+  const {signers, externalId, signatureRequestId} = webhookContext;
 
   const formatedSigners = signers.map(({signerId, externalId, token})=>({
     signerId,
@@ -117,8 +117,14 @@ const handleSignatureRequestWebhookSigners = async (webhookContext: any): Promis
     myUserId: externalId,
   }))
 
-  MySignatureRequestSignersModel.insert({signatureRequestId, signers: formatedSigners}, async (error, found)=>{
+
+  MySignatureRequestSignersModel.insert({
+    signers               : formatedSigners,
+    mySignatureRequestId  : externalId,
+    signatureRequestId    : signatureRequestId
+  }, async (error, found)=>{
     console.info('Done');
+    // console.log('handleSignatureRequestWebhookSigners : ', found?.[0]?.signers?.[0]);
   });
 }
 
