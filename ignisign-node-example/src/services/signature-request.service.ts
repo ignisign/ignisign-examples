@@ -124,11 +124,11 @@ const createNewSignatureRequest = async (signatureProfileId, title, files: {file
 }
 
 const handleSignatureRequestWebhookSigners = async (
-    webhookContext : IgnisignWebhookDto_SignatureRequest,
-    // topic          : IGNISIGN_WEBHOOK_TOPICS,
-    // action         : IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST,
-    // msgNature      : IGNISIGN_WEBHOOK_MESSAGE_NATURE,
-    // error          : IgnisignError = null
+    content     : IgnisignWebhookDto_SignatureRequest,
+    error       : IgnisignError = null,
+    msgNature  ?: IGNISIGN_WEBHOOK_MESSAGE_NATURE,
+    action     ?: IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST,
+    topic      ?: IGNISIGN_WEBHOOK_TOPICS
   ): Promise<any> => {
 
   // if(msgNature === IGNISIGN_WEBHOOK_MESSAGE_NATURE.ERROR) {
@@ -136,7 +136,9 @@ const handleSignatureRequestWebhookSigners = async (
   //   return;
   // }
 
-  const {signers, externalId, signatureRequestId} = webhookContext;
+  console.log('handleSignatureRequestWebhookSigners : msgNature', msgNature);
+
+  const {signers, externalId, signatureRequestId} = content;
 
   const formatedSigners = signers.map(({signerId, externalId, token})=>({
     signerId,
