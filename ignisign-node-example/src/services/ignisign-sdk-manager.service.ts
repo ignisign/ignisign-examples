@@ -2,7 +2,7 @@ import { IGNISIGN_WEBHOOK_ACTION_SIGNATURE } from '@ignisign/public';
 
 import {
   IGNISIGN_APPLICATION_ENV, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_SIGNER_CREATION_INPUT_REF, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IGNISIGN_WEBHOOK_TOPICS, IgnisignDocument_InitializationDto, IgnisignSignatureProfile, IgnisignSignatureRequest_Context, IgnisignSignatureRequest_UpdateDto, IgnisignSigner_CreationRequestDto, IgnisignSigner_CreationResponseDto, IgnisignWebhook_ActionDto,
-  IgnisignWebhookDto, IgnisignError, IGNISIGN_WEBHOOK_ACTION_APPLICATION, IGNISIGN_WEBHOOK_ACTION_SIGNER, IGNISIGN_WEBHOOK_ACTION_DOCUMENT
+  IgnisignWebhookDto, IgnisignError, IGNISIGN_WEBHOOK_ACTION_ALL, IGNISIGN_WEBHOOK_ACTION_SIGNER, IGNISIGN_WEBHOOK_ACTION_DOCUMENT
 } from '@ignisign/public';
 import { IgnisignSdk, IgnisignSdkFileContentUploadDto } from '@ignisign/sdk';
 import { SignatureRequestService } from './signature-request.service';
@@ -50,7 +50,7 @@ async function init() {
       displayWarning  : true,
     })
 
-    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.APP,               IGNISIGN_WEBHOOK_ACTION_APPLICATION.ALL);
+    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.APP,               IGNISIGN_WEBHOOK_ACTION_ALL);
     await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.SIGNATURE,         IGNISIGN_WEBHOOK_ACTION_SIGNATURE.CREATED);
     await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.SIGNER,            IGNISIGN_WEBHOOK_ACTION_SIGNER.CREATED);
     await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.DOCUMENT_REQUEST,  IGNISIGN_WEBHOOK_ACTION_DOCUMENT.PROVIDED);
