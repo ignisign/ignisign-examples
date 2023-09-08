@@ -14,7 +14,7 @@ const addSigner = (signatureProfileId, signer: IgnisignSigner_CreationRequestDto
             const user = await IgnisignSdkManagerService.createNewSigner(
               signatureProfileId, {
               ...signer,
-              birthDate : signer.birthDate.toString(), 
+              ...(signer?.birthDate && { birthDate : signer.birthDate.toString()}), 
             }, userId)
   
             const {signerId, authSecret} = user;

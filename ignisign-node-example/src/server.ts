@@ -70,6 +70,14 @@ const initExampleApp = async () =>{
       } catch(e) { next(e) }
     })
 
+    router.get('/v1/signature-profiles/:signatureProfileId/signer-inputs', async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const {signatureProfileId} = req.params;
+        const inputs = await IgnisignSdkManagerService.getSignatureProfileSignerInputsConstraints(signatureProfileId);
+        return jsonSuccess(res, inputs);
+      } catch(e) { next(e) }
+    })
+
     router.get('/v1/signature-requests/:signatureRequestId', async (req: Request, res: Response, next: NextFunction) => {
       try {
         const { signatureRequestId } = req.params

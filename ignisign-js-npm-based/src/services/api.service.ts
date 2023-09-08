@@ -1,3 +1,4 @@
+import { IGNISIGN_SIGNER_CREATION_INPUT_REF } from '@ignisign/public';
 
 import axios, { AxiosRequestConfig } from "axios";
 import { MySignatureRequestSigners } from "../models/signature-request.front.model";
@@ -21,6 +22,7 @@ export const ApiService = {
   getSignatureRequestSigners,
   getSignatureProfiles,
   getPrivateFileUrl,
+  getSignatureProfileSignerInputsConstraints
 }
 
 async function getPrivateFileUrl(documentHash){
@@ -68,4 +70,8 @@ async function createSignatureRequest(signatureProfileId, body: {title, usersIds
   return http.post(`/v1/signature-profiles/${signatureProfileId}/signature-requests`,
     formData, 
     { headers: {'Content-Type': 'multipart/form-data'} })
+}
+
+async function getSignatureProfileSignerInputsConstraints(signatureProfileId: string) : Promise<IGNISIGN_SIGNER_CREATION_INPUT_REF[]> {
+  return http.get(`/v1/signature-profiles/${signatureProfileId}/signer-inputs`);
 }

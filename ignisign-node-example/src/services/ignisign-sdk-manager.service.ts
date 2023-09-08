@@ -18,6 +18,7 @@ export const IgnisignSdkManagerService = {
   initSignatureRequest,
   uploadHashDocument,
   uploadDocument,
+  getSignatureProfileSignerInputsConstraints,
 }
 
 const IGNISIGN_APP_ID     = process.env.IGNISIGN_APP_ID
@@ -131,7 +132,8 @@ async function consumeWebhook(actionDto: IgnisignWebhook_ActionDto) {
   return await ignisignSdkInstance.consumeWebhook(actionDto);
 }
 
-
-
-
+async function getSignatureProfileSignerInputsConstraints(signatureProfileId: string): Promise<IGNISIGN_SIGNER_CREATION_INPUT_REF[]> {
+  const { additionalInputsNeeded : inputsNeeded } = await ignisignSdkInstance.getSignatureProfileSignerInputsConstraints(signatureProfileId);
+  return inputsNeeded;
+}
 

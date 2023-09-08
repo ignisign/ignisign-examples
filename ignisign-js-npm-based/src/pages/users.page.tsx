@@ -1,12 +1,12 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../components/button';
 import { useForm } from "react-hook-form";
 import { Input } from '../components/input';
 import { useUsers } from '../contexts/user.context';
 import { faker } from '@faker-js/faker';
 import { useSignatureProfiles } from '../contexts/signature-profile.context';
-import { COUNTRY_LIST } from '@ignisign/public';
+import { COUNTRY_LIST, IGNISIGN_SIGNER_CREATION_INPUT_REF } from '@ignisign/public';
 import { MyUser } from '../models/user.front.model';
 import { BiUserCircle } from "react-icons/bi";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -14,22 +14,12 @@ import { LoadingSpinner } from '../components/loadingSpinner';
 import { HeaderPage } from '../components/headerPage';
 import { NoContent } from '../components/noContent';
 import { useIgniSnackbar } from '../contexts/snackbar.context';
+import { ApiService } from '../services/api.service';
 
 const countriesDataset = COUNTRY_LIST.map(c => ({ label : c.name, value: c.code }));
 
-const DEFAULT_PHONE = process.env.REACT_APP_PHONE ?? '';
+const getDefaultPhoneNumber = () => process.env.REACT_APP_PHONE ?? '';
 const DEFAULT_EMAIL = process.env.REACT_APP_EMAIL ?? '';
-
-const inputs = [
-  {label: 'First name',     name: 'firstName'},
-  {label: 'Last name',      name: 'lastName'},
-  {label: 'Phone number',   name: 'phoneNumber',  type: 'tel'},
-  {label: 'Email',          name: 'email'},
-  {label: 'Nationality',    name: 'nationality',  type: 'select', dataset: countriesDataset},
-  {label: 'BirthDate',      name: 'birthDate',    type: 'date'},
-  {label: 'BirthPlace',     name: 'birthPlace' },
-  {label: 'BirthCountry',   name: 'birthCountry', type: 'select', dataset: countriesDataset},
-]
 
 //Take a standard email adresse and create a random one by adding a random number before the @
 const createRandomEmail = (email) => {
@@ -46,27 +36,77 @@ const createFakeBirthDate = () => {
   return `${birthDate.getFullYear()}-${birthDate.getMonth() < 10 ? '0' : ''}${birthDate.getMonth() + 1}-${birthDate.getDate() < 10 ? '0' : ''}${birthDate.getDate()}`
 }
 
+const inputs = [
+  {label: 'First name',     name: 'firstName',     faker: faker.person.firstName },
+  {label: 'Last name',      name: 'lastName',      faker: faker.person.lastName },
+  {label: 'Email',          name: 'email',         faker: () => {} },
+  {label: 'BirthPlace',     name: 'birthPlace',    faker: faker.location.countryCode  },
+  {label: 'Nationality',    name: 'nationality',   faker: createFakeBirthDate,        type: 'select', dataset: countriesDataset},
+  {label: 'BirthDate',      name: 'birthDate',     faker: faker.location.city,        type: 'date'},
+  {label: 'Phone number',   name: 'phoneNumber',   faker: getDefaultPhoneNumber,      type: 'tel'},
+  {label: 'BirthCountry',   name: 'birthCountry',  faker: faker.location.countryCode, type: 'select', dataset: countriesDataset},
+]
+
+
 const UsersPage = () => {
-  const { notifyError }              = useIgniSnackbar();
-  const {selectedSignatureProfileId} = useSignatureProfiles();
-  const {addUser, users}             = useUsers();
-  const form                         = useForm();
-  const [isOpen, setIsOpen]          = useState<boolean>(false);
-  const [isLoading, setIsLoading]    = useState<boolean>(false);
+  const { notifyError }                   = useIgniSnackbar();
+  const {selectedSignatureProfileId}      = useSignatureProfiles();
+  const {addUser, users}                  = useUsers();
+  const form                              = useForm();
+  const [isOpen, setIsOpen]               = useState<boolean>(false);
+  const [inputsLoading, setInputsLoading] = useState<boolean>(false);
+  const [inputsNeed, setInputsNeed]       = useState<IGNISIGN_SIGNER_CREATION_INPUT_REF[]>([]);
+  const [isLoading, setIsLoading]         = useState<boolean>(false);
+
+  useEffect(() => {
+    if(!!selectedSignatureProfileId)
+      getInputsNeed();
+  }, [selectedSignatureProfileId])
+  
+  const getInputsNeed = async () => {
+    setIsLoading(true);
+    try {
+      const tmpInputs = await ApiService.getSignatureProfileSignerInputsConstraints(selectedSignatureProfileId);
+      console.log('getInputsNeed : ', tmpInputs);
+      setInputsNeed(tmpInputs);
+
+      if(isOpen)
+        fillForm();
+    } catch (e) {
+      console.error(e);
+      notifyError('Failed to get inputs need for create signer');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const fillForm = () => {
+    inputs
+      .filter((e : any) => inputsNeed.includes(e.name))
+      .forEach((e : any) => {
+        form.setValue(e.name, e.faker());
+        console.log('RESULT INPUT : ', form.watch('firstName'));
+        console.log('RESULT FORM 1 : ', form.getValues());
+      });
+
+    console.log('RESULT FORM 2 : ', form.getValues());
+    // form.setValue('firstName',    faker.person.firstName())
+    // form.setValue('lastName',     faker.person.lastName())
+    // form.setValue('phoneNumber',  DEFAULT_PHONE)
+    // form.setValue('email',        createRandomEmail(DEFAULT_EMAIL))
+    // form.setValue('birthDate',    createFakeBirthDate())
+    // form.setValue('birthPlace',   faker.location.city())
+    // form.setValue('nationality',  faker.location.countryCode())
+    // form.setValue('birthCountry', faker.location.countryCode())
+  }
 
   const openModal = () => {
-    form.setValue('firstName',    faker.person.firstName())
-    form.setValue('lastName',     faker.person.lastName())
-    form.setValue('phoneNumber',  DEFAULT_PHONE)
-    form.setValue('email',        createRandomEmail(DEFAULT_EMAIL))
-    
-    form.setValue('birthDate',    createFakeBirthDate())
-    form.setValue('birthPlace',   faker.location.city())
-    form.setValue('nationality',  faker.location.countryCode())
-    form.setValue('birthCountry', faker.location.countryCode())
+    if(inputsNeed?.length) 
+      fillForm();
 
     setIsOpen(true)
   }
+
   const closeModal = () => {
     if(isLoading) 
       return;
@@ -98,14 +138,23 @@ const UsersPage = () => {
         <form onSubmit={form.handleSubmit(addUserFromForm)}>
       <DialogTitle>Add user</DialogTitle>
       <DialogContent>
-        <div className='flex flex-col gap-4 justify-center mt-2'>
-          {inputs.map(e=><Input key={e.name} label={e.label} form={form} name={e.name} type={e.type} dataset={e?.dataset || []}/> )}
+        <div className='w-full'>
+          {inputsLoading ?
+            <div className='flex justify-center w-full'>
+              <LoadingSpinner/> 
+            </div> :
+            <div className='flex flex-col gap-4 justify-center mt-2'>
+              {inputs
+                .filter((e : any) => inputsNeed.includes(e.name))
+                .map(e => <Input key={e.name} label={e.label} form={form} name={e.name} type={e.type} dataset={e?.dataset || []}/> )}
+            </div>
+          }
         </div>
       </DialogContent>
       <DialogActions>
         <div className='flex gap-5 items-center justify-between w-full'>
           <Button disabled={isLoading} onClick={closeModal}>Close</Button>
-          <Button loading={isLoading} type='submit'>Add</Button>
+          <Button disabled={inputsLoading} loading={isLoading} type='submit'>Add</Button>
         </div>
       </DialogActions>
         </form>
