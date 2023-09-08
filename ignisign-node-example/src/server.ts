@@ -81,9 +81,17 @@ const initExampleApp = async () =>{
     router.get('/v1/signature-requests/:signatureRequestId', async (req: Request, res: Response, next: NextFunction) => {
       try {
         const { signatureRequestId } = req.params
-        console.log('getSignatureRequest : ', signatureRequestId);
         const found = await SignatureRequestService.getSignatureRequestsSigners(signatureRequestId)
         return jsonSuccess(res, found)
+      } catch(e) { next(e) }
+    })
+
+    router.get('/v1/signature-requests/:signatureRequestId/context', async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const { signatureRequestId } = req.params;
+        const mySignatureRequest = await SignatureRequestService.getSignatureRequest(signatureRequestId);
+        const found = await IgnisignSdkManagerService.getSignatureRequestContext(mySignatureRequest.signatureRequestId);
+        return jsonSuccess(res, found);
       } catch(e) { next(e) }
     })
 

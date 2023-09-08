@@ -36,6 +36,20 @@ const getSignatureRequests = async (signatureProfileId) => {
   });
 }
 
+const getSignatureRequest = async (signatureRequestId: string) : Promise<MySignatureRequest> => {
+  return new Promise((resolve, reject) => {
+    MySignatureRequestModel.findOne({ _id : signatureRequestId }, (error, found) => {
+      if (error) {
+        console.error("getSignatureRequests ERROR : ", error);
+        reject(error);
+      } else {
+        resolve(found);
+      }
+    });
+  });
+
+}
+
 const getSignatureRequestsSigners = async (signatureRequestId) => {
   return new Promise((resolve, reject) => {
     MySignatureRequestSignersModel.findOne({mySignatureRequestId : signatureRequestId}, (error, found) => {
@@ -132,5 +146,6 @@ export const SignatureRequestService = {
   createNewSignatureRequest,
   handleSignatureRequestWebhookSigners,
   getSignatureRequests,
-  getSignatureRequestsSigners
+  getSignatureRequestsSigners,
+  getSignatureRequest
 }

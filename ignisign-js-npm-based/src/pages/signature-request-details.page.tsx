@@ -7,54 +7,78 @@ import { useSignatureRequests } from '../contexts/signature-request.context';
 import { useSignatureProfiles } from '../contexts/signature-profile.context';
 import { Snackbar } from '@mui/material';
 import { useStateWithRef } from '../utils/useStateWithRef';
-import { IGNISIGN_APPLICATION_ENV, IgnisignDocument_PrivateFileDto } from '@ignisign/public';
+import { IGNISIGN_APPLICATION_ENV, IgnisignDocument_PrivateFileDto, IgnisignSignatureRequest_Context } from '@ignisign/public';
 import { IgnisignJs } from '@ignisign/js';
 import { MySignatureRequest, Signer } from '../models/signature-request.front.model';
 import { BiUserCircle } from "react-icons/bi";
 import { HiArrowNarrowRight } from "react-icons/hi";
+import { useIgniSnackbar } from '../contexts/snackbar.context';
+import { LoadingSpinner } from '../components/loadingSpinner';
 
 const IGNISIGN_CLIENT_SIGN_URL = process.env.REACT_APP_IGNISIGN_CLIENT_SIGN_URL || 'https://sign.ignisign.io';
 
 const SignatureRequestsDetailPage = () => {
-  const history                                            = useHistory();
-  const location                                           = useLocation();
-  const { users }                                          = useUsers();
-  const { signatureRequests }                              = useSignatureRequests();
-  const { selectedSignatureProfileId }                     = useSignatureProfiles();
-  const { signatureRequestId: internalSignatureRequestId } = useParams<{ signatureRequestId: string }>();
-  const [userSelectToSign, setUserSelectToSign]            = useState<Signer>(null);
-  const [, setIsDemmoSnackbarOpen, isDemmoSnackbarOpenRef] = useStateWithRef(false);
-  const [signatureRequest, setSignatureRequest]            = useState<MySignatureRequest>();
-  const [signers, setSigners]                              = useState<Signer[]>([]);
-  const [signatureRequestId, setSignatureRequestId]        = useState<string>()
+  const history                                               = useHistory();
+  const location                                              = useLocation();
+  const { notifyError }                                       = useIgniSnackbar();
+  const { users }                                             = useUsers();
+  const { signatureRequests }                                 = useSignatureRequests();
+  const { selectedSignatureProfileId }                        = useSignatureProfiles();
+  const { signatureRequestId: internalSignatureRequestId }    = useParams<{ signatureRequestId: string }>();
+  const [userSelectToSign, setUserSelectToSign]               = useState<Signer>(null);
+  const [, setIsDemmoSnackbarOpen, isDemmoSnackbarOpenRef]    = useStateWithRef(false);
+  const [signatureRequest, setSignatureRequest]               = useState<MySignatureRequest>();
+  const [signatureRequestContext, setSignatureRequestContext] = useState<IgnisignSignatureRequest_Context>();
+  const [signers, setSigners]                                 = useState<Signer[]>([]);
+  const [signatureRequestId, setSignatureRequestId]           = useState<string>()
+  const [isLoading, setIsLoading]                             = useState<boolean>(true);
 
-  const getSignatureRequestUsers = async (signatureRequestId) => {
-    const sr = await ApiService.getSignatureRequestSigners(signatureRequestId);
-    console.log('getSignatureRequestUsers : ', sr);
-    setSignatureRequestId(sr?.signatureRequestId)
-    const signers = sr?.signers?.map(({myUserId, signerId, token}) => {
-      const user = users.find(u => u._id.toString() === myUserId);
+  const getSignatureRequestContext = async (internalSignatureRequestId: string) => {
+    try {
+        const srContext = await ApiService.getSignatureRequestContext(internalSignatureRequestId);
+        console.log('getSignatureRequestContext : ', srContext);
+        setSignatureRequestContext(srContext);
+    } catch (e) {
+      console.error(e);
+      notifyError('Error while getting signature request context');
+    }
+  }
 
-      if(!user) 
-        return null;
-
-      const { firstName, lastName, authSecret, _id } = user;
-      
-      return {
-        _id,
-        firstName,
-        lastName,
-        authSecret,
-        token,
-        signerId
-      }
-    }).filter(e=>e !== null)
-
-    setSigners(signers);
+  const getSignatureRequestUsers = async (internalSignatureRequestId: string) => {
+    setIsLoading(true);
+    try {
+      const sr = await ApiService.getSignatureRequestSigners(internalSignatureRequestId);
+      setSignatureRequestId(sr?.signatureRequestId)
+      const signers = sr?.signers?.map(({myUserId, signerId, token}) => {
+        const user = users.find(u => u._id.toString() === myUserId);
+  
+        if(!user) 
+          return null;
+  
+        const { firstName, lastName, authSecret, _id } = user;
+        
+        return {
+          _id,
+          firstName,
+          lastName,
+          authSecret,
+          token,
+          signerId
+        }
+      }).filter(e=>e !== null)
+  
+      setSigners(signers);
+    } catch (e) {
+      console.error(e);
+      notifyError('Error while getting signature request users'); 
+    } finally {
+      setIsLoading(false);
+    }
   }
   
   useEffect(() => {
     setSignatureRequest(signatureRequests.find(e => e._id?.toString() === internalSignatureRequestId));
+    getSignatureRequestContext(internalSignatureRequestId);
     getSignatureRequestUsers(internalSignatureRequestId);
   }, [users])
 
@@ -81,6 +105,9 @@ const SignatureRequestsDetailPage = () => {
     </div>
   )
 
+  const openSignatureProofs = () => window.open(signatureRequestContext?.signatureProofsUrl, '_blank');
+  
+
   return (
     <div>
       <Snackbar
@@ -89,8 +116,21 @@ const SignatureRequestsDetailPage = () => {
         onClose={()=>setIsDemmoSnackbarOpen(false)}
         message="Need start auth"
       />
-      {
+      {isLoading ? 
+        <div className='w-full flex justify-center'>
+          <LoadingSpinner/> 
+        </div>
+      :
         userSelectToSign ? <>
+
+          { signatureRequestContext?.signatureProofsUrl && 
+            <div className="flex justify-end mb-3">
+              <Button onClick={openSignatureProofs}>
+                See signature proofs
+              </Button>
+            </div>
+          }
+
           <div>
             <Button onClick={()=>setUserSelectToSign(null)}>Back</Button>
             {/* { signatureRequest &&  */}

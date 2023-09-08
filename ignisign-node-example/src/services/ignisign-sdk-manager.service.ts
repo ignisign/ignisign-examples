@@ -19,6 +19,7 @@ export const IgnisignSdkManagerService = {
   uploadHashDocument,
   uploadDocument,
   getSignatureProfileSignerInputsConstraints,
+  getSignatureRequestContext
 }
 
 const IGNISIGN_APP_ID     = process.env.IGNISIGN_APP_ID
@@ -137,3 +138,6 @@ async function getSignatureProfileSignerInputsConstraints(signatureProfileId: st
   return inputsNeeded;
 }
 
+  async function getSignatureRequestContext(signatureRequestId: string): Promise<IgnisignSignatureRequest_Context> {
+    return await ignisignSdkInstance.getSignatureRequestContext(signatureRequestId);
+  }
