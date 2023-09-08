@@ -131,12 +131,12 @@ const handleSignatureRequestWebhookSigners = async (
     topic      ?: IGNISIGN_WEBHOOK_TOPICS
   ): Promise<any> => {
 
-  // if(msgNature === IGNISIGN_WEBHOOK_MESSAGE_NATURE.ERROR) {
-  //   // TODO
-  //   return;
-  // }
+  if(msgNature === IGNISIGN_WEBHOOK_MESSAGE_NATURE.ERROR) {
+    console.error("handleSignatureRequestWebhookSigners ERROR : ", error);
+    // TODO
+    return;
+  }
 
-  console.log('handleSignatureRequestWebhookSigners : msgNature', msgNature);
 
   const {signers, externalId, signatureRequestId} = content;
 
