@@ -42,15 +42,14 @@ async function init() {
       displayWarning  : true,
     })
 
-    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.APP,               "CREATED", IGNISIGN_WEBHOOK_MESSAGE_NATURE.SUCCESS);
-    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.SIGNATURE,         "CREATED", IGNISIGN_WEBHOOK_MESSAGE_NATURE.SUCCESS);
-    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.SIGNER,            "CREATED", IGNISIGN_WEBHOOK_MESSAGE_NATURE.SUCCESS);
-    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.DOCUMENT_REQUEST,  "CREATED", IGNISIGN_WEBHOOK_MESSAGE_NATURE.SUCCESS);
+    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.APP,               "CREATED");
+    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.SIGNATURE,         "CREATED");
+    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.SIGNER,            "CREATED");
+    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.DOCUMENT_REQUEST,  "CREATED");
 
     await ignisignSdkInstance.registerWebhookCallback_SignatureRequest(
     SignatureRequestService.handleSignatureRequestWebhookSigners,  
     IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST.LAUNCHED, 
-    IGNISIGN_WEBHOOK_MESSAGE_NATURE.SUCCESS
     );
       
 

@@ -16,21 +16,21 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@ignisign/public@1.0.27":
-  version "1.0.27"
-  resolved "https://registry.yarnpkg.com/@ignisign/public/-/public-1.0.27.tgz#fb5d8e32923821e1f756e88a7058996cb27b8be3"
-  integrity sha512-VPD9GQdAoKrTKe6O5b0OEEt/97rXMx8o8ONG4mPdw3fPJI0HfO21hK9DfYNKw6BMJirXWmY5uN8ihJRz/H3Qkw==
+"@ignisign/public@1.0.30":
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/@ignisign/public/-/public-1.0.30.tgz#b62cbacf24d210d082d7debcfe71dae9af8626d9"
+  integrity sha512-W8i6z/E5GdZg5ynBTb65OxwKT9s/lpv/d882dlCZ70jvdjLampIX2X2jESCy/wtgz8aSTkmruIHGhpMBq7q34Q==
   dependencies:
     class-transformer "^0.3.1"
     class-validator "^0.13.1"
     reflect-metadata "^0.1.13"
 
-"@ignisign/sdk@1.0.17":
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/@ignisign/sdk/-/sdk-1.0.17.tgz#f3ae4a525cdce24b4a484591e2f7ff98b38d60ee"
-  integrity sha512-MChKwANGN8FIoIyLQng9dxk4HCbtTWbK5r73t8Lm6NfSYx7NE/buhsVpqpR6qmIcc4gSslYBiRToWIf5iEs0og==
+"@ignisign/sdk@1.0.18":
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/@ignisign/sdk/-/sdk-1.0.18.tgz#e7cdfdb8e48b0af51c56094d9ba9850dc697ee90"
+  integrity sha512-mLZqeFawLRpcsrNxZtwzw3ZjMPonqMGmmK7zeUUtSRqWqvMBSkW13rmvBEOH9LdnufkJEd4m9YCuBc03MCMSNQ==
   dependencies:
-    "@ignisign/public" "1.0.27"
+    "@ignisign/public" "1.0.30"
     axios "^0.21.1"
     form-data "^4.0.0"
     typescript "^4.1.3"

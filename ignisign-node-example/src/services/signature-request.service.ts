@@ -1,4 +1,5 @@
-import { IgnisignWebhookDto_SignatureRequestLaunched, IgnisignSignatureRequest_UpdateDto } from '@ignisign/public';
+import { IgnisignWebhookDto_SignatureRequest, IgnisignError, IgnisignSignatureRequest_UpdateDto,
+  IGNISIGN_WEBHOOK_TOPICS,  IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST,  IGNISIGN_WEBHOOK_MESSAGE_NATURE } from '@ignisign/public';
 import * as FormData from "form-data";
 import * as fs from 'fs';
 
@@ -122,7 +123,19 @@ const createNewSignatureRequest = async (signatureProfileId, title, files: {file
   await IgnisignSdkManagerService.publishSignatureRequest(signatureRequestId);
 }
 
-const handleSignatureRequestWebhookSigners = async (webhookContext: IgnisignWebhookDto_SignatureRequestLaunched): Promise<any> => {
+const handleSignatureRequestWebhookSigners = async (
+    webhookContext : IgnisignWebhookDto_SignatureRequest,
+    // topic          : IGNISIGN_WEBHOOK_TOPICS,
+    // action         : IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST,
+    // msgNature      : IGNISIGN_WEBHOOK_MESSAGE_NATURE,
+    // error          : IgnisignError = null
+  ): Promise<any> => {
+
+  // if(msgNature === IGNISIGN_WEBHOOK_MESSAGE_NATURE.ERROR) {
+  //   // TODO
+  //   return;
+  // }
+
   const {signers, externalId, signatureRequestId} = webhookContext;
 
   const formatedSigners = signers.map(({signerId, externalId, token})=>({
@@ -138,7 +151,6 @@ const handleSignatureRequestWebhookSigners = async (webhookContext: IgnisignWebh
     signatureRequestId    : signatureRequestId
   }, async (error, found)=>{
     console.info('Done');
-    // console.log('handleSignatureRequestWebhookSigners : ', found?.[0]?.signers?.[0]);
   });
 }
 
