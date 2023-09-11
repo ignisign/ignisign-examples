@@ -141,7 +141,7 @@ async function consumeWebhook(actionDto: IgnisignWebhook_ActionDto) {
 }
 
 async function getSignatureProfileSignerInputsConstraints(signatureProfileId: string): Promise<IGNISIGN_SIGNER_CREATION_INPUT_REF[]> {
-  const { additionalInputsNeeded : inputsNeeded } = await ignisignSdkInstance.getSignatureProfileSignerInputsConstraints(signatureProfileId);
+  const { inputsNeeded } = await ignisignSdkInstance.getSignatureProfileSignerInputsConstraints(signatureProfileId);
   return inputsNeeded;
 }
 
