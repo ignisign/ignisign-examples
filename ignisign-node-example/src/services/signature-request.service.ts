@@ -133,7 +133,6 @@ const handleSignatureRequestWebhookSigners = async (
 
   if(msgNature === IGNISIGN_WEBHOOK_MESSAGE_NATURE.ERROR) {
     console.error("handleSignatureRequestWebhookSigners ERROR : ", error);
-    // TODO
     return;
   }
 
