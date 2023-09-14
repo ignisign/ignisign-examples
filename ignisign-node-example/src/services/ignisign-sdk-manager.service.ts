@@ -1,8 +1,25 @@
-import { IGNISIGN_WEBHOOK_ACTION_SIGNATURE } from '@ignisign/public';
 
 import {
-  IGNISIGN_APPLICATION_ENV, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_SIGNER_CREATION_INPUT_REF, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IGNISIGN_WEBHOOK_TOPICS, IgnisignDocument_InitializationDto, IgnisignSignatureProfile, IgnisignSignatureRequest_Context, IgnisignSignatureRequest_UpdateDto, IgnisignSigner_CreationRequestDto, IgnisignSigner_CreationResponseDto, IgnisignWebhook_ActionDto,
-  IgnisignWebhookDto, IgnisignError, IGNISIGN_WEBHOOK_ACTION_ALL, IGNISIGN_WEBHOOK_ACTION_SIGNER, IGNISIGN_WEBHOOK_ACTION_DOCUMENT
+  IGNISIGN_APPLICATION_ENV, 
+  IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, 
+  IGNISIGN_SIGNER_CREATION_INPUT_REF, 
+  IGNISIGN_WEBHOOK_MESSAGE_NATURE, 
+  IGNISIGN_WEBHOOK_TOPICS, 
+  IGNISIGN_WEBHOOK_ACTION_ALL,
+  IGNISIGN_WEBHOOK_ACTION_SIGNATURE,
+  IGNISIGN_WEBHOOK_ACTION_SIGNER,
+  IGNISIGN_WEBHOOK_ACTION_DOCUMENT,
+  IgnisignError,
+  IgnisignDocument_InitializationDto, 
+  IgnisignSignatureProfile, 
+  IgnisignSignatureRequest_Context, 
+  IgnisignSignatureRequest_UpdateDto, 
+  IgnisignSigner_CreationRequestDto, 
+  IgnisignSigner_CreationResponseDto, 
+  IgnisignWebhook_ActionDto, 
+  IgnisignWebhook_Action,
+  IgnisignWebhookDto,
+
 } from '@ignisign/public';
 import { IgnisignSdk, IgnisignSdkFileContentUploadDto } from '@ignisign/sdk';
 import { SignatureRequestService } from './signature-request.service';
@@ -28,16 +45,6 @@ const IGNISIGN_APP_ID     = process.env.IGNISIGN_APP_ID
 const IGNISIGN_APP_ENV: IGNISIGN_APPLICATION_ENV = IGNISIGN_APPLICATION_ENV[process.env.IGNISIGN_APP_ENV]
 const IGNISIGN_APP_SECRET = process.env.IGNISIGN_APP_SECRET
 
-const exampleConsumeWebhook = async (
-  content     : IgnisignWebhookDto,
-  error       : IgnisignError = null,
-  msgNature  ?: IGNISIGN_WEBHOOK_MESSAGE_NATURE,
-  action     ?: IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST,
-  topic      ?: IGNISIGN_WEBHOOK_TOPICS
-): Promise<boolean> => {
-  return true;
-}
-
 async function init() {
   if(!IGNISIGN_APP_ID || !IGNISIGN_APP_ENV || !IGNISIGN_APP_SECRET)
     throw new Error(`IGNISIGN_APP_ID, IGNISIGN_APP_ENV and IGNISIGN_APP_SECRET are mandatory to init IgnisignSdkManagerService`);
@@ -49,15 +56,27 @@ async function init() {
       appSecret       : IGNISIGN_APP_SECRET,
       displayWarning  : true,
     })
+    
+    const exampleWebhookCallback = async ( 
+      webhookContext  : IgnisignWebhookDto, 
+      error           : IgnisignError = null,
+      msgNature      ?: IGNISIGN_WEBHOOK_MESSAGE_NATURE,
+      action         ?: IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST,
+      topic          ?: IGNISIGN_WEBHOOK_TOPICS  
+    ): Promise<boolean> => {
+    
+      console.log("Received webhook", webhookContext, topic, action, msgNature)
+      return true;
+    }
 
-    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.APP,               IGNISIGN_WEBHOOK_ACTION_ALL);
-    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.SIGNATURE,         IGNISIGN_WEBHOOK_ACTION_SIGNATURE.CREATED);
-    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.SIGNER,            IGNISIGN_WEBHOOK_ACTION_SIGNER.CREATED);
-    await ignisignSdkInstance.registerWebhookCallback(exampleConsumeWebhook, IGNISIGN_WEBHOOK_TOPICS.DOCUMENT_REQUEST,  IGNISIGN_WEBHOOK_ACTION_DOCUMENT.PROVIDED);
+    await ignisignSdkInstance.registerWebhookCallback(exampleWebhookCallback, IGNISIGN_WEBHOOK_TOPICS.APP,               IGNISIGN_WEBHOOK_ACTION_ALL);
+    await ignisignSdkInstance.registerWebhookCallback(exampleWebhookCallback, IGNISIGN_WEBHOOK_TOPICS.SIGNATURE,         IGNISIGN_WEBHOOK_ACTION_SIGNATURE.CREATED);
+    await ignisignSdkInstance.registerWebhookCallback(exampleWebhookCallback, IGNISIGN_WEBHOOK_TOPICS.SIGNER,            IGNISIGN_WEBHOOK_ACTION_SIGNER.CREATED);
+    await ignisignSdkInstance.registerWebhookCallback(exampleWebhookCallback, IGNISIGN_WEBHOOK_TOPICS.DOCUMENT_REQUEST,  IGNISIGN_WEBHOOK_ACTION_DOCUMENT.PROVIDED);
 
     await ignisignSdkInstance.registerWebhookCallback_SignatureRequest(
-    SignatureRequestService.handleSignatureRequestWebhookSigners,  
-    IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST.LAUNCHED, 
+      SignatureRequestService.handleSignatureRequestWebhookSigners,  
+      IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST.LAUNCHED
     );
       
 
