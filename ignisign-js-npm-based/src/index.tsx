@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CssBaseline, MuiThemeProvider } from "@material-ui/core";
 import { createTheme } from "@material-ui/core/styles";
@@ -21,9 +21,6 @@ import muiTheme from './utils/mui-theme';
 import { FrontUrlProvider } from './utils/front-url-provider';
 
 import './index.css';
-
-
-
 
 const NotFoundPage = () => {
   return (
@@ -65,7 +62,6 @@ function App() {
                   </Menu>
                 </UsersContextProvider>
               </SignatureRequestsContextProvider>
-              
             </SignatureProfilesContextProvider>
           </IgnisignSnackbarProvider>
         </Router>
@@ -73,7 +69,9 @@ function App() {
   )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const container = document.getElementById('root');
+const root = createRoot(container!); // createRoot(container!) if you use TypeScript
+root.render(<App  />);
 
 
 

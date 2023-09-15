@@ -12,8 +12,13 @@ export interface ISignatureRequestsContext {
 const SignatureRequestsContext = createContext<ISignatureRequestsContext>( {} as ISignatureRequestsContext);
 
 const SignatureRequestsContextProvider = ({ children }) => {
-  const [signatureRequests, setSignatureRequests] = useState<MySignatureRequest[]>([])
-  const {selectedSignatureProfileId} = useSignatureProfiles()
+
+  const [ signatureRequests, setSignatureRequests ] = useState<MySignatureRequest[]>([])
+  const { selectedSignatureProfileId }              = useSignatureProfiles()
+
+  useEffect(() => {
+    getSignatureRequests()
+  }, [selectedSignatureProfileId])
 
   const getSignatureRequests = async () => {
     if(selectedSignatureProfileId){
@@ -29,10 +34,6 @@ const SignatureRequestsContextProvider = ({ children }) => {
     await ApiService.createSignatureRequest(selectedSignatureProfileId, data)
     await getSignatureRequests()
   }
-
-  useEffect(() => {
-    getSignatureRequests()
-  }, [selectedSignatureProfileId])
 
   const context = { 
     signatureRequests,

@@ -60,8 +60,7 @@ const initExampleApp = async () =>{
         return jsonSuccess(res, found)
       } catch(e) { next(e) }
     })
-
-
+    
     router.get('/v1/signature-profiles/:signatureProfileId/signature-requests', async (req: Request, res: Response, next: NextFunction) => {
       try {
         const {signatureProfileId} = req.params

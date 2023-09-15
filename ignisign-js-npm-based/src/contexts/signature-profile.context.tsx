@@ -17,22 +17,32 @@ const SignatureProfilesContextProvider = ({ children }) => {
   const [selectedSignatureProfile, setSelectedSignatureProfile]        = useState(null);
   const [selectedSignatureProfileId, setSelectedSignatureProfileId]    = useState(null);
 
-  const getSignatureProfiles = async () => {
-    const sr = await ApiService.getSignatureProfiles();
-    setSignatureProfiles(sr);
+  useEffect(() => {
+    getSignatureProfiles()
+  }, [])
 
-    if(!selectedSignatureProfile && !selectedSignatureProfileId && sr.length > 0)
-      doSelectSignatureProfile(sr[0]._id);
+  const getSignatureProfiles = async () => {
+    const sps = await ApiService.getSignatureProfiles();
+
+    if(!sps || sps.length === 0)
+      window.alert("No signature profile found. Please create one first.");
+    else {
+      setSignatureProfiles(sps);
+
+      if(!selectedSignatureProfile && !selectedSignatureProfileId)
+        doSelectSignatureProfile(sps[0]._id);
+    } 
   }
 
   const doSelectSignatureProfile = (signatureProfileId) => {
+    if(!signatureProfileId)
+      return;
+
     setSelectedSignatureProfile(signatureProfiles.find((e=>e._id === signatureProfileId)));
     setSelectedSignatureProfileId(signatureProfileId);
   }
 
-  useEffect(() => {
-    getSignatureProfiles()
-  }, [])
+  
 
   const context = { 
     signatureProfiles,
