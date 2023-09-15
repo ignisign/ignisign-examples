@@ -36,7 +36,6 @@ const SignatureRequestsDetailPage = () => {
   const getSignatureRequestContext = async (internalSignatureRequestId: string) => {
     try {
         const srContext = await ApiService.getSignatureRequestContext(internalSignatureRequestId);
-        console.log('getSignatureRequestContext : ', srContext);
         setSignatureRequestContext(srContext);
     } catch (e) {
       console.error(e);
@@ -180,15 +179,6 @@ const EmbeddedSignature = ({signatureRequestId, signerId, token, authSecret}) =>
       const appEnv = process.env.REACT_APP_IGNISIGN_APP_ENV;
       
       const ignisign = new IgnisignJs(appId, appEnv as IGNISIGN_APPLICATION_ENV, IGNISIGN_CLIENT_SIGN_URL);
-
-      console.log('initSignatureRequest : ', {
-        appId,
-        appEnv,
-        signatureRequestId,
-        signerId, 
-        token,
-        authSecret,
-      });
 
       ignisign.initSignatureRequest({
           signerId,

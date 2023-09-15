@@ -65,7 +65,6 @@ async function init() {
       topic          ?: IGNISIGN_WEBHOOK_TOPICS  
     ): Promise<boolean> => {
     
-      console.log("Received webhook", webhookContext, topic, action, msgNature)
       return true;
     }
 

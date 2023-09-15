@@ -67,7 +67,6 @@ const UsersPage = () => {
     setIsLoading(true);
     try {
       const tmpInputs = await ApiService.getSignatureProfileSignerInputsConstraints(selectedSignatureProfileId);
-      console.log('getInputsNeed : ', tmpInputs);
       setInputsNeed(tmpInputs);
 
       if(isOpen)
@@ -85,11 +84,8 @@ const UsersPage = () => {
       .filter((e : any) => inputsNeed.includes(e.name))
       .forEach((e : any) => {
         form.setValue(e.name, e.faker());
-        console.log('RESULT INPUT : ', form.watch('firstName'));
-        console.log('RESULT FORM 1 : ', form.getValues());
       });
 
-    console.log('RESULT FORM 2 : ', form.getValues());
     // form.setValue('firstName',    faker.person.firstName())
     // form.setValue('lastName',     faker.person.lastName())
     // form.setValue('phoneNumber',  DEFAULT_PHONE)
