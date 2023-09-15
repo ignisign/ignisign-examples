@@ -39,6 +39,11 @@ const UsersContextProvider = ({ children }) => {
 
   const addUser = async (user: MyUser) => {
     try {
+      if(!selectedSignatureProfileId)
+        throw new Error('addUser: No signature profile selected');
+      if(!user)
+        throw new Error('addUser: No user provided');
+
       await ApiService.addUser(selectedSignatureProfileId, user)
       await getUsers()
     } catch (e) {

@@ -16,10 +16,11 @@ import {
   IgnisignSignatureRequest_UpdateDto, 
   IgnisignSigner_CreationRequestDto, 
   IgnisignSigner_CreationResponseDto, 
+  IgnisignSignatureRequest_IdContainer,
   IgnisignWebhook_ActionDto, 
   IgnisignWebhook_Action,
   IgnisignWebhookDto,
-
+  IgnisignWebhook,
 } from '@ignisign/public';
 import { IgnisignSdk, IgnisignSdkFileContentUploadDto } from '@ignisign/sdk';
 import { SignatureRequestService } from './signature-request.service';
@@ -46,6 +47,7 @@ const IGNISIGN_APP_ENV: IGNISIGN_APPLICATION_ENV = IGNISIGN_APPLICATION_ENV[proc
 const IGNISIGN_APP_SECRET = process.env.IGNISIGN_APP_SECRET
 
 async function init() {
+  
   if(!IGNISIGN_APP_ID || !IGNISIGN_APP_ENV || !IGNISIGN_APP_SECRET)
     throw new Error(`IGNISIGN_APP_ID, IGNISIGN_APP_ENV and IGNISIGN_APP_SECRET are mandatory to init IgnisignSdkManagerService`);
     
@@ -56,6 +58,8 @@ async function init() {
       appSecret       : IGNISIGN_APP_SECRET,
       displayWarning  : true,
     })
+
+    await ignisignSdkInstance.init();
     
     const exampleWebhookCallback = async ( 
       webhookContext  : IgnisignWebhookDto, 
@@ -78,11 +82,19 @@ async function init() {
       SignatureRequestService.handleSignatureRequestWebhookSigners,  
       IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST.LAUNCHED
     );
-      
 
+    await checkWebhookEndpoint();
+      
   } catch (e){
     console.error("Error while initializing Ignisign Nameger Service", e)
   }
+}
+
+
+async function checkWebhookEndpoint() {
+  const webhookEndpoints : IgnisignWebhook[] = await ignisignSdkInstance.getWebhookEndpoints();
+  if(webhookEndpoints.length === 0)
+    console.warn("WARN: No webhook endpoints found, please create one in the Ignisign Console - In dev mode, you can use ngrok to expose your localhost to the internet")
 }
 
 async function createNewSigner(signatureProfileId, inputs: { [key in IGNISIGN_SIGNER_CREATION_INPUT_REF] ?: string } = {}, externalId: string = null): Promise<IgnisignSigner_CreationResponseDto> {  
@@ -145,7 +157,7 @@ async function updateSignatureRequest(signatureRequestId : string, dto: Ignisign
   }
 }
 
-async function publishSignatureRequest(signatureRequestId : string){
+async function publishSignatureRequest(signatureRequestId : string) : Promise<IgnisignSignatureRequest_IdContainer>{
   try {
     const data = await ignisignSdkInstance.publishSignatureRequest(signatureRequestId);
     return data
@@ -160,8 +172,9 @@ async function consumeWebhook(actionDto: IgnisignWebhook_ActionDto) {
 }
 
 async function getSignatureProfileSignerInputsConstraints(signatureProfileId: string): Promise<IGNISIGN_SIGNER_CREATION_INPUT_REF[]> {
-  const { inputsNeeded } = await ignisignSdkInstance.getSignatureProfileSignerInputsConstraints(signatureProfileId);
-  return inputsNeeded;
+  const result = await ignisignSdkInstance.getSignatureProfileSignerInputsConstraints(signatureProfileId);
+  console.log(result)
+  return result.inputsNeeded;
 }
 
   async function getSignatureRequestContext(signatureRequestId: string): Promise<IgnisignSignatureRequest_Context> {

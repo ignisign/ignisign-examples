@@ -44,28 +44,28 @@ const SignatureRequestCreationPage = () => {
     const values = form.getValues();
 
     if(selectedFiles && selectedFiles.length){
+      
       const data = {
-        title: values.title,
-        usersIds: values.users,
-        files: selectedFiles,
-
+        title     : values.title,
+        usersIds  : values.users,
+        files     : selectedFiles,
       };
       setIsLoading(true);
 
       try {
         await createSignatureRequest(data);
         history.replace(FrontUrlProvider.signatureRequestsPage());
+
       } catch (error) {
         notifyError(error?.response?.data?.message ?? 'Failed to create signature request');
+
       } finally {
         setIsLoading(false);
       }
     }
-    
   }
 
   const handleFileChange = (files : File[], fullPrivacy : boolean = false) => {
-    // const files = Array.from(event.target.files);
     const keepFiles = selectedFiles.filter(e=>e.fullPrivacy !== fullPrivacy)
     const newFiles = files.map(e=>({
       fullPrivacy,

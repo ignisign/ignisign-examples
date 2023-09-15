@@ -1,4 +1,4 @@
-import { IGNISIGN_SIGNER_CREATION_INPUT_REF, IgnisignSignatureRequest_Context } from '@ignisign/public';
+import { IGNISIGN_SIGNER_CREATION_INPUT_REF, IgnisignSignatureProfile, IgnisignSignatureRequest_Context } from '@ignisign/public';
 
 import axios, { AxiosRequestConfig } from "axios";
 import { MySignatureRequestSigners } from "../models/signature-request.front.model";
@@ -31,23 +31,31 @@ async function getPrivateFileUrl(documentHash){
   return http.get(`/v1/files/${documentHash}`)
 }
 
-async function getSignatureProfiles(){
+async function getSignatureProfiles() : Promise<IgnisignSignatureProfile[]>{
   return http.get("/v1/signature-profiles")
 }
 
 async function getSignatureRequests(signatureProfileId) {
+  if(!signatureProfileId) 
+    throw new Error("signatureProfileId is required")
+
   return http.get(`/v1/signature-profiles/${signatureProfileId}/signature-requests`)
 }
 
 async function getSignatureRequestSigners(signatureRequestId): Promise<MySignatureRequestSigners>{
+  if(!signatureRequestId)
+    throw new Error("signatureRequestId is required")
   return http.get(`/v1/signature-requests/${signatureRequestId}`)
 }
 
 async function addUser(signatureProfileId, body) {
+  if(!signatureProfileId || !body)
+    throw new Error("signatureProfileId is required")
   return http.post(`/v1/signature-profiles/${signatureProfileId}/users`, body)
 }
 
 async function getUsers() {
+  
   return http.get(`/v1/users`)
 }
 
@@ -56,6 +64,8 @@ async function deleteUser(userId) {
 }
 
 async function createSignatureRequest(signatureProfileId, body: {title, usersIds, files}){
+  if(!signatureProfileId || !body)
+    throw new Error("signatureProfileId and body are required")
   // Create a FormData object
   const formData = new FormData();
 
@@ -75,6 +85,7 @@ async function createSignatureRequest(signatureProfileId, body: {title, usersIds
 }
 
 async function getSignatureProfileSignerInputsConstraints(signatureProfileId: string) : Promise<IGNISIGN_SIGNER_CREATION_INPUT_REF[]> {
+  
   return http.get(`/v1/signature-profiles/${signatureProfileId}/signer-inputs`);
 }
 
