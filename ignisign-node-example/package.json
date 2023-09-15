@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@ignisign/sdk": "1.0.53",
-    "@ignisign/public": "1.0.53",
+    "@ignisign/public": "1.0.55",
     "axios": "^0.21.1",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.13.1",

@@ -8,7 +8,7 @@ import {
   IGNISIGN_WEBHOOK_ACTION_ALL,
   IGNISIGN_WEBHOOK_ACTION_SIGNATURE,
   IGNISIGN_WEBHOOK_ACTION_SIGNER,
-  IGNISIGN_WEBHOOK_ACTION_DOCUMENT,
+  IGNISIGN_WEBHOOK_ACTION_DOCUMENT_REQUEST,
   IgnisignError,
   IgnisignDocument_InitializationDto, 
   IgnisignSignatureProfile, 
@@ -73,9 +73,9 @@ async function init() {
     }
 
     await ignisignSdkInstance.registerWebhookCallback(exampleWebhookCallback, IGNISIGN_WEBHOOK_TOPICS.APP,               IGNISIGN_WEBHOOK_ACTION_ALL);
-    await ignisignSdkInstance.registerWebhookCallback(exampleWebhookCallback, IGNISIGN_WEBHOOK_TOPICS.SIGNATURE,         IGNISIGN_WEBHOOK_ACTION_SIGNATURE.CREATED);
+    await ignisignSdkInstance.registerWebhookCallback(exampleWebhookCallback, IGNISIGN_WEBHOOK_TOPICS.SIGNATURE,         IGNISIGN_WEBHOOK_ACTION_SIGNATURE.FINALIZED);
     await ignisignSdkInstance.registerWebhookCallback(exampleWebhookCallback, IGNISIGN_WEBHOOK_TOPICS.SIGNER,            IGNISIGN_WEBHOOK_ACTION_SIGNER.CREATED);
-    await ignisignSdkInstance.registerWebhookCallback(exampleWebhookCallback, IGNISIGN_WEBHOOK_TOPICS.DOCUMENT_REQUEST,  IGNISIGN_WEBHOOK_ACTION_DOCUMENT.PROVIDED);
+    await ignisignSdkInstance.registerWebhookCallback(exampleWebhookCallback, IGNISIGN_WEBHOOK_TOPICS.DOCUMENT_REQUEST,  IGNISIGN_WEBHOOK_ACTION_DOCUMENT_REQUEST.PROVIDED);
 
     await ignisignSdkInstance.registerWebhookCallback_SignatureRequest(
       SignatureRequestService.handleSignatureRequestWebhookSigners,  
