@@ -17,6 +17,58 @@ import { LoadingSpinner } from '../components/loadingSpinner';
 
 const IGNISIGN_CLIENT_SIGN_URL = process.env.REACT_APP_IGNISIGN_CLIENT_SIGN_URL || 'https://sign.ignisign.io';
 
+const EmbeddedSignature = ({signatureRequestId, signerId, token, authSecret}) => {
+
+  useEffect(() => {
+    start();
+  }, [])
+  
+  const handlePrivateFileInfoProvisioning = async (documentId) : Promise<IgnisignDocument_PrivateFileDto> => {
+    const url = await ApiService.getPrivateFileUrl(documentId);
+    return url;
+  }
+
+  const start = async () => {
+    try {
+      const appId  = process.env.REACT_APP_IGNISIGN_APP_ID;
+      const appEnv = process.env.REACT_APP_IGNISIGN_APP_ENV;
+      
+      const ignisign = new IgnisignJs(appId, appEnv as IGNISIGN_APPLICATION_ENV, IGNISIGN_CLIENT_SIGN_URL);
+
+      ignisign.initSignatureRequest({
+          signerId,
+          signatureRequestId,
+          closeOnFinish: true,
+          token,
+          signerAuthSecret: authSecret,
+          iFrameMessagesCallbacks:{
+            handlePrivateFileInfoProvisioning
+          },
+          htmlElementId: 'test-ignisign-sdk',
+          iFrameOptions: {
+            width:"100%",
+            height:"710"
+          }
+        }
+      );
+      
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+
+  return(
+    <div>
+      <div className='mt-3'>
+        <div id='test-ignisign-sdk'/>
+      </div>
+    </div>
+  )
+
+}
+
+
 const SignatureRequestsDetailPage = () => {
   const history                                               = useHistory();
   const location                                              = useLocation();
@@ -162,55 +214,6 @@ const SignatureRequestsDetailPage = () => {
   )
 }
 
-const EmbeddedSignature = ({signatureRequestId, signerId, token, authSecret}) => {
 
-    useEffect(() => {
-      start();
-    }, [])
-    
-  const handlePrivateFileInfoProvisioning = async (documentId) : Promise<IgnisignDocument_PrivateFileDto> => {
-    const url = await ApiService.getPrivateFileUrl(documentId);
-    return url;
-  }
-
-  const start = async () => {
-    try {
-      const appId  = process.env.REACT_APP_IGNISIGN_APP_ID;
-      const appEnv = process.env.REACT_APP_IGNISIGN_APP_ENV;
-      
-      const ignisign = new IgnisignJs(appId, appEnv as IGNISIGN_APPLICATION_ENV, IGNISIGN_CLIENT_SIGN_URL);
-
-      ignisign.initSignatureRequest({
-          signerId,
-          signatureRequestId,
-          closeOnFinish: true,
-          token,
-          signerAuthSecret: authSecret,
-          iFrameMessagesCallbacks:{
-            handlePrivateFileInfoProvisioning
-          },
-          htmlElementId: 'test-ignisign-sdk',
-          iFrameOptions: {
-            width:"100%",
-            height:"710"
-          }
-        }
-      );
-      
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-
-  return(
-    <div>
-      <div className='mt-3'>
-        <div id='test-ignisign-sdk'/>
-      </div>
-    </div>
-  )
-
-}
 
 export default SignatureRequestsDetailPage  
