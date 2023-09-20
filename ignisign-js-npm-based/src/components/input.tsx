@@ -9,9 +9,10 @@ type IInputProps = {
   className ?: string
   type      ?: string
   dataset   ?: {label: string, value: string}[]
+  required?: boolean
 }
 
-export const Input = ({label, form, name, className = '', type = 'text', dataset = [] }: IInputProps) => {
+export const Input = ({label, form, name, className = '', type = 'text', dataset = [], required = false }: IInputProps) => {
 
   const onChange = (e) => form.setValue(name, e.target.value);
 
@@ -36,7 +37,7 @@ export const Input = ({label, form, name, className = '', type = 'text', dataset
             type={type}
             label={type === 'date' ? null : label}
             error={!!form.formState.errors[name]}
-            {...form.register(name, {required: true})}
+            {...form.register(name, {required})}
             onChange={onChange}
           />
       }

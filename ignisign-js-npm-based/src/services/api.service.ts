@@ -1,9 +1,8 @@
-import { IGNISIGN_SIGNER_CREATION_INPUT_REF, IgnisignSignatureProfile, IgnisignSignatureRequest_Context } from '@ignisign/public';
+import { IgnisignSignatureProfile, IgnisignWebhook } from '@ignisign/public';
 
 import axios, { AxiosRequestConfig } from "axios";
-import { MySignatureRequestSigners } from "../models/signature-request.front.model";
 
-const APP_BACKEND_ENDPOINT = process.env.REACT_APP_BACKEND_ENDPOINT || "http://localhost:4242"
+const APP_BACKEND_ENDPOINT = process?.env?.REACT_APP_BACKEND_ENDPOINT || "http://localhost:4242"
 
 const getUrl = (url) => `${APP_BACKEND_ENDPOINT}${url}`
 
@@ -14,81 +13,63 @@ const http = {
 }
 
 export const ApiService = {
-  addUser,
-  getUsers,
-  deleteUser,
-  createSignatureRequest,
-  getSignatureRequests,
-  getSignatureRequestSigners,
-  getSignatureProfiles,
+  getAppContext,
+
   getPrivateFileUrl,
-  getSignatureProfileSignerInputsConstraints,
-  getSignatureRequestContext
+
+  createContract,
+  getContracts,
+  getContractContext,
+
+  getSellers,
+  addSeller,
+
+  addCustomer,
+  getCustomers,
 }
 
+/** DEMO APP CONTEXT */
+async function getAppContext(): Promise<{requiredInputs, signatureProfile: IgnisignSignatureProfile, webhooks: IgnisignWebhook[]}> {
+  return http.get(`/v1/app-context`)
+}
 
+/** PRIVATE FILE */
 async function getPrivateFileUrl(documentHash){
   return http.get(`/v1/files/${documentHash}`)
 }
 
-async function getSignatureProfiles() : Promise<IgnisignSignatureProfile[]>{
-  return http.get("/v1/signature-profiles")
+/** CONTRACTS */
+
+async function getContractContext(contractId, userId) {
+  return http.get(`/v1/contracts/${contractId}/user/${userId}`)
 }
 
-async function getSignatureRequests(signatureProfileId) {
-  if(!signatureProfileId) 
-    throw new Error("signatureProfileId is required")
-
-  return http.get(`/v1/signature-profiles/${signatureProfileId}/signature-requests`)
+async function getContracts(userId: string) {
+  return http.get(`/v1/contracts/user/${userId}`)
 }
 
-async function getSignatureRequestSigners(signatureRequestId): Promise<MySignatureRequestSigners>{
-  if(!signatureRequestId)
-    throw new Error("signatureRequestId is required")
-  return http.get(`/v1/signature-requests/${signatureRequestId}`)
-}
-
-async function addUser(signatureProfileId, body) {
-  if(!signatureProfileId || !body)
-    throw new Error("signatureProfileId is required")
-  return http.post(`/v1/signature-profiles/${signatureProfileId}/users`, body)
-}
-
-async function getUsers() {
-  
-  return http.get(`/v1/users`)
-}
-
-async function deleteUser(userId) {
-  return http.delete(`/v1/users/${userId}`)
-}
-
-async function createSignatureRequest(signatureProfileId, body: {title, usersIds, files}){
-  if(!signatureProfileId || !body)
-    throw new Error("signatureProfileId and body are required")
-  // Create a FormData object
+async function createContract(selectedCustomerId, selectedSellerId, selectedFile) {
   const formData = new FormData();
-
-  // Add body parameters
-  formData.append('title', body.title);
-  formData.append('usersIds', body.usersIds);
-
-  // Add file(s) to the FormData
-  body.files.forEach(({fullPrivacy, file}, i) => {
-    formData.append(`file`, file);
-    formData.append(`fullPrivacy[${i}]`, fullPrivacy.toString())
-  });
-
-  return http.post(`/v1/signature-profiles/${signatureProfileId}/signature-requests`,
-    formData, 
-    { headers: {'Content-Type': 'multipart/form-data'} })
+  formData.append('customerId', selectedCustomerId);
+  formData.append('sellerId', selectedSellerId);
+  formData.append(`contractFile`, selectedFile.file);
+  return http.post(`/v1/contracts`, formData, { headers: {'Content-Type': 'multipart/form-data'} })
 }
 
-async function getSignatureProfileSignerInputsConstraints(signatureProfileId: string) : Promise<IGNISIGN_SIGNER_CREATION_INPUT_REF[]> {
-  
-  return http.get(`/v1/signature-profiles/${signatureProfileId}/signer-inputs`);
+/** CUSTOMERS */
+async function getCustomers() {
+  return http.get(`/v1/customers`)
 }
 
-async function getSignatureRequestContext(signatureRequestId: string) : Promise<IgnisignSignatureRequest_Context> {
-  return http.get(`/v1/signature-requests/${signatureRequestId}/context`);
+async function addCustomer(body) {
+  return http.post(`/v1/customers`, body)
+}
+
+/** SELLERS */
+async function getSellers() {
+  return http.get(`/v1/sellers`)
+}
+
+async function addSeller(body) {
+  return http.post(`/v1/sellers`, body)
 }
