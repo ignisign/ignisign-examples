@@ -3,24 +3,19 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CssBaseline, MuiThemeProvider } from "@material-ui/core";
 import { createTheme } from "@material-ui/core/styles";
-
-import { SignatureRequestsContextProvider } from './contexts/signature-request.context';
-import { SignatureProfilesContextProvider } from './contexts/signature-profile.context';
 import { IgnisignSnackbarProvider } from './contexts/snackbar.context';
-import { UsersContextProvider } from './contexts/user.context';
-
-import SignatureRequestsPage from './pages/signature-requests.page';
-import SignatureRequestCreationPage from './pages/signature-request-creation.page';
-import SignatureRequestsDetailPage from './pages/signature-request-details.page';
-import UsersPage from './pages/users.page';
 import { HomePage } from './pages/home.page';
-
 import Menu from './components/menu';
-
 import muiTheme from './utils/mui-theme';
 import { FrontUrlProvider } from './utils/front-url-provider';
-
 import './index.css';
+import MakeContract from './pages/contract/make-contract.page';
+import { CustomerContextProvider } from './contexts/customer.context';
+import { GlobalContextProvider } from './contexts/global.context';
+import { SellerContextProvider } from './contexts/seller.context';
+import Contracts from './pages/contracts.page';
+import { ContractContextProvider } from './contexts/contract.context';
+import SignAContract from './pages/contract/sign-a-contract.page';
 
 const NotFoundPage = () => {
   return (
@@ -35,12 +30,27 @@ function AppRouter() {
   return (
     <div className='mt-12'>
       <Switch>
-        <Route exact path={FrontUrlProvider.homePage()}>                     <HomePage/>                      </Route>
-        <Route exact path={FrontUrlProvider.usersPage()}>                    <UsersPage/>                     </Route>
-        <Route exact path={FrontUrlProvider.signatureRequestsPage()}>        <SignatureRequestsPage/>         </Route>
-        <Route exact path={FrontUrlProvider.signatureRequestCreationPage()}> <SignatureRequestCreationPage/>  </Route>
-        <Route exact path={FrontUrlProvider.signatureRequestsDetailPage()}>  <SignatureRequestsDetailPage/>   </Route>
-        <Route> <NotFoundPage /></Route>
+
+        <Route exact path={FrontUrlProvider.homePage()}>
+          <HomePage/>
+        </Route>
+
+        <Route exact path={FrontUrlProvider.signContract()}>
+          <SignAContract/>
+        </Route>
+
+        <Route exact path={FrontUrlProvider.makeContract()}>
+          <MakeContract/>
+        </Route>
+
+        <Route exact path={FrontUrlProvider.contractsPage()}>
+          <Contracts/>
+        </Route>
+
+        <Route>
+          <NotFoundPage/>
+        </Route>
+
       </Switch>
     </div>
   )
@@ -50,22 +60,24 @@ function App() {
   const themeConfig = createTheme(muiTheme);
 
   return (
-     <MuiThemeProvider theme={themeConfig}>
-       <CssBaseline/>
-        <Router>
-          <IgnisignSnackbarProvider>
-            <SignatureProfilesContextProvider>
-              <SignatureRequestsContextProvider>
-                <UsersContextProvider>
-                  <Menu>
+    <MuiThemeProvider theme={themeConfig}>
+      <CssBaseline/>
+      <Router>
+        <IgnisignSnackbarProvider>
+          <Menu>
+            <GlobalContextProvider>
+              <ContractContextProvider>
+                <CustomerContextProvider>
+                  <SellerContextProvider>
                     <AppRouter/>
-                  </Menu>
-                </UsersContextProvider>
-              </SignatureRequestsContextProvider>
-            </SignatureProfilesContextProvider>
-          </IgnisignSnackbarProvider>
-        </Router>
-      </MuiThemeProvider>
+                  </SellerContextProvider>
+                </CustomerContextProvider>
+              </ContractContextProvider>
+            </GlobalContextProvider>
+          </Menu>
+        </IgnisignSnackbarProvider>
+      </Router>
+    </MuiThemeProvider>
   )
 }
 

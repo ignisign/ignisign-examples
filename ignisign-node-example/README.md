@@ -37,5 +37,3 @@ This is an example of how to use the Ignisign NodeJS library in your application
 - Ignisign JS library: https://github.com/ignisign/ignisign-js
 - More information about Integration Mode : https://doc.ignisign.io/#tag/Embeded-or-By-Side-Integration
 - More information about Webhook Events: https://doc.ignisign.io/#tag/Webhook-Events
-
-

@@ -4,8 +4,6 @@ import { saveFileToFolder } from "../utils/files.util";
 import { MyFile, MyFileModel } from "../models/file.db.model";
 import { MyUser } from "../models/user.db.model";
 
-
-
 const buildFileAccessPath = (documentId: string) => {
   return `${process.env.MY_SERVER_URL}/uploads/${documentId}`
 }

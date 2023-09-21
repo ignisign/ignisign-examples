@@ -7,13 +7,13 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useHistory, useLocation } from "react-router";
-import Dropdown from './dropdown';
-import { useSignatureProfiles } from '../contexts/signature-profile.context';
 import { FrontUrlProvider } from '../utils/front-url-provider';
+import { Button } from './button';
+import { useGlobal } from '../contexts/global.context';
 
 const drawerWidth = 240;
 
-const MenuItem = ({link, text}) => {
+const MenuItem = ({link, text, disabled = false}) => {
   const history                   = useHistory();
   const location                  = useLocation();
   const [isSelected, setSelected] = useState(false);
@@ -22,28 +22,36 @@ const MenuItem = ({link, text}) => {
     setSelected(location.pathname === link);
   }, [location.pathname, link]);
 
+  const goTo = () => {
+    if(!disabled){
+      history.push(link)
+    }
+  }
+
   return <>
-    <div onClick={()=>history.push(link)} className={`justify-center py-3 px-5 border-t border-b ${isSelected ? 'bg-primary-900' : ''} cursor-pointer`}>
+    <div onClick={goTo} className={`justify-center py-3 px-5 border-t border-b  ${disabled ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : `${isSelected ? 'bg-primary-900' : ''} cursor-pointer`}`}>
       {text}
     </div>
   </>
 }
 
 const MenuContent = () => {
+  const {signatureProfile} = useGlobal()
 
   return <div className='mt-2'>
     <MenuItem link={FrontUrlProvider.homePage()} text='Home'/>
-    <MenuItem link={FrontUrlProvider.usersPage()} text='Users'/>
-    <MenuItem link={FrontUrlProvider.signatureRequestsPage()} text='Signature request'/>
+    <MenuItem disabled={!signatureProfile} link={FrontUrlProvider.contractsPage()} text='Contracts'/>
+    {/* <MenuItem link={FrontUrlProvider.usersPage()} text='Users'/>
+    <MenuItem link={FrontUrlProvider.signatureRequestsPage()} text='Signature request'/> */}
   </div>
 }
 
 const Menu = ({children}) => {
-  const {selectedSignatureProfile, selectedSignatureProfileId, signatureProfiles, doSelectSignatureProfile} = useSignatureProfiles()
-
-  const selectSignatureProfile = (e) => {
-    doSelectSignatureProfile(e) 
-  }
+  const history = useHistory();
+  const {signatureProfile} = useGlobal()
+  // const selectSignatureProfile = (e) => {
+  //   doSelectSignatureProfile(e) 
+  // }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -51,15 +59,17 @@ const Menu = ({children}) => {
       <AppBar className='bg-primary-500' position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar className='flex justify-between'>
           <Typography variant="h6" noWrap component="div">
-            Ignisign demo
+            Ignisign example - Contract signing app
           </Typography>
-          <Dropdown 
+          {/* <Dropdown 
           callback={e=>selectSignatureProfile(e)} 
           value={selectedSignatureProfileId}
           items={signatureProfiles?.map(e=>({label: e.name, value: e._id}))}
           label='Choose signature profile'
-          name='signatureProfile'/>
+          name='signatureProfile'/> */}
+          <Button disabled={!signatureProfile} onClick={() => history.push(FrontUrlProvider.makeContract())}>Start by creating a contract</Button>
         </Toolbar>
+        
         {/* {selectedSignatureProfile?._id} */}
       </AppBar>
       <Drawer
