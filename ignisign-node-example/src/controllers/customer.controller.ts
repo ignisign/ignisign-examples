@@ -5,6 +5,7 @@ import { UserService } from "../services/user.service";
 import { MY_USER_TYPES } from "../models/user.db.model";
   
 export const customerController = (router: Router) => {
+
   router.get('/v1/customers', async (req: Request, res: Response, next: NextFunction) => {
     try {
       const found = await UserService.getUsers(MY_USER_TYPES.CUSTOMER);
@@ -14,12 +15,9 @@ export const customerController = (router: Router) => {
 
   router.post('/v1/customers', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // console.log(req.body);
       const found: any = await UserService.addUser(MY_USER_TYPES.CUSTOMER, req.body);
-      // console.log({found});
-      
-      // let res = found && found.length ? found[0] : null
       return jsonSuccess(res, found)
     } catch(e) { next(e) }
   })
+  
 } 

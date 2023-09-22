@@ -73,7 +73,6 @@ const IgnisignSnackbarProviderContent = ({ children}) => {
       <IgnisignSnackbarContext.Provider value={context}>
         {children}
       </IgnisignSnackbarContext.Provider>
-
   )
 }
 

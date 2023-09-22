@@ -55,14 +55,15 @@ const initExampleApp = async () =>{
 
     router.get('/v1/app-context', async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const signatureProfileId = process.env.IGNISIGN_SIGNATURE_PROFILE_ID
-        const inputs = await IgnisignSdkManagerService.getSignatureProfileSignerInputsConstraints(signatureProfileId);
-        const signatureProfile = await IgnisignSdkManagerService.getSignatureProfile(signatureProfileId);
-        return jsonSuccess(res, {
-          requiredInputs: inputs,
-          signatureProfile,
-          webhooks: await IgnisignSdkManagerService.getWebhookEndpoints()
-        });
+        const signatureProfileId  = process.env.IGNISIGN_SIGNATURE_PROFILE_ID
+        const inputs              = await IgnisignSdkManagerService.getSignatureProfileSignerInputsConstraints(signatureProfileId);
+        const signatureProfile    = await IgnisignSdkManagerService.getSignatureProfile(signatureProfileId);
+        return jsonSuccess(res, 
+          {
+            requiredInputs: inputs,
+            signatureProfile,
+            webhooks: await IgnisignSdkManagerService.getWebhookEndpoints()
+          });
       } catch(e) { next(e) }
     })
 

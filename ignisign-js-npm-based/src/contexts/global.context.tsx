@@ -13,17 +13,18 @@ export interface IGlobalContext {
 }
 
 export const GlobalContextProvider = ({ children }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [requiredInputs, setRequiredInputs] = useState<any>([])
-  const [isEmbedded, setIsEmbedded] = useState(null)
-  const [signatureProfile, setSignatureProfile] = useState<IgnisignSignatureProfile>(null)
-  const [isFilesPrivates, setIsFilesPrivates] = useState(null)
-  const [webhooks, setWebhooks] = useState(null)
+  const [isLoading,         setIsLoading]        = useState<boolean>(false)
+  const [requiredInputs,    setRequiredInputs]   = useState<any>([])
+  const [isEmbedded,        setIsEmbedded]       = useState(null)
+  const [signatureProfile,  setSignatureProfile] = useState<IgnisignSignatureProfile>(null)
+  const [isFilesPrivates,   setIsFilesPrivates]  = useState(null)
+  const [webhooks,          setWebhooks]         = useState(null)
 
   const getAppContext = async () => {
     setIsLoading(true)
     try {
       const appContext = await ApiService.getAppContext()
+      
       setRequiredInputs(appContext.requiredInputs)
       setSignatureProfile(appContext.signatureProfile)
       setIsEmbedded(appContext.signatureProfile.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED)

@@ -38,7 +38,7 @@ export default function MultiSelect({form, name, label, datas}: IMultiSelectProp
   const handleChange = (event: SelectChangeEvent<typeof selectedItems>) => {
     const v = event.target.value;
     
-    const value: any = typeof v === 'string' ? v.split(',') : v
+    const value: any = (typeof v === 'string')? v.split(',') : v
     form.setValue(name, value)
     setSelectedItems(value);
   };

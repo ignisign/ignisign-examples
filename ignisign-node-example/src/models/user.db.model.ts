@@ -9,18 +9,18 @@ export enum MY_USER_TYPES {
 }
 
 export type MyUser = {
-  type: MY_USER_TYPES;
-  firstName     : string;
-  lastName      : string;
-  email         : string;
-  nationality  ? : COUNTRIES;
-  birthDate    ? : Date;
-  birthPlace   ? : string;
-  birthCountry ?  : COUNTRIES;
-  signerId     ?: string;
-  ignisignAuthSecret   ?: string;
-  phoneNumber  ?: string;
-  _id          ?: string;
+  type                 : MY_USER_TYPES;
+  firstName            : string;
+  lastName             : string;
+  email                : string;
+  nationality         ?: COUNTRIES;
+  birthDate           ?: Date;
+  birthPlace          ?: string;
+  birthCountry        ?: COUNTRIES;
+  signerId            ?: string;
+  ignisignAuthSecret  ?: string;
+  phoneNumber         ?: string;
+  _id                 ?: string;
 }
 
 

@@ -10,10 +10,11 @@ import { useGlobal } from "../../contexts/global.context";
 import { INPUTS } from "../../utils/inputs";
 
 const NewCustomerDialog = ({isOpen, onClose}) => {
-  const {addCustomer, isLoading} = useCustomer()
-  const {requiredInputs} = useGlobal()
-  const inputs = INPUTS.filter(e => requiredInputs.includes(e.name))
-  const form = useForm();
+  const form                      = useForm();
+  const {addCustomer, isLoading}  = useCustomer();
+  const {requiredInputs}          = useGlobal();
+  const inputs                    = INPUTS.filter(e => requiredInputs.includes(e.name));
+  
 
   useEffect(() => {
     inputs.forEach((e : any) => {

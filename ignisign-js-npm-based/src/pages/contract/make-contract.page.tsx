@@ -19,12 +19,12 @@ import { Sellers } from './seller'
 import { useHistory } from "react-router";
 
 const MakeContract = () => {
-  const history = useHistory();
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const {selectedCustomerId} = useCustomer()
-  const {selectedSellerId} = useSeller()
+  const history                           = useHistory();
+  const {selectedCustomerId}              = useCustomer();
+  const {selectedSellerId}                = useSeller();
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [isLoading, setIsLoading]         = useState(false);
 
   const handleFileChange = (files : File[], fullPrivacy : boolean = false) => {
     const keepFiles = selectedFiles.filter(e=>e.fullPrivacy !== fullPrivacy)

@@ -2,9 +2,6 @@ import { IgnisignJs, IgnisignJS_SignatureRequest_Initialization_Params } from '@
 import { IgnisignDocument_PrivateFileDto, IGNISIGN_APPLICATION_ENV } from '@ignisign/public';
 import React, { useEffect, useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom';
-import { useHistory } from "react-router";
-import { Button } from '../../components/button';
-import { useContract } from '../../contexts/contract.context';
 import { ApiService } from '../../services/api.service';
 
 const IGNISIGN_CLIENT_SIGN_URL = process?.env?.REACT_APP_IGNISIGN_CLIENT_SIGN_URL || 'https://sign.ignisign.io';
@@ -54,9 +51,9 @@ const EmbeddedSignature = ({signatureRequestId, signerId, token, authSecret, app
 }
 
 const SignAContract = () => {
-  const location = useLocation();
+  const location                  = useLocation();
   const [isLoading, setIsLoading] = useState(false)
-  const [contract, setContract] = useState(null)
+  const [contract, setContract]   = useState(null)
 
   const {contractId, userId} = useMemo(() => {
     const a = location?.pathname?.split('/user/')

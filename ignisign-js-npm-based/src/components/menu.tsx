@@ -41,17 +41,12 @@ const MenuContent = () => {
   return <div className='mt-2'>
     <MenuItem link={FrontUrlProvider.homePage()} text='Home'/>
     <MenuItem disabled={!signatureProfile} link={FrontUrlProvider.contractsPage()} text='Contracts'/>
-    {/* <MenuItem link={FrontUrlProvider.usersPage()} text='Users'/>
-    <MenuItem link={FrontUrlProvider.signatureRequestsPage()} text='Signature request'/> */}
   </div>
 }
 
 const Menu = ({children}) => {
   const history = useHistory();
   const {signatureProfile} = useGlobal()
-  // const selectSignatureProfile = (e) => {
-  //   doSelectSignatureProfile(e) 
-  // }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -61,16 +56,8 @@ const Menu = ({children}) => {
           <Typography variant="h6" noWrap component="div">
             Ignisign example - Contract signing app
           </Typography>
-          {/* <Dropdown 
-          callback={e=>selectSignatureProfile(e)} 
-          value={selectedSignatureProfileId}
-          items={signatureProfiles?.map(e=>({label: e.name, value: e._id}))}
-          label='Choose signature profile'
-          name='signatureProfile'/> */}
           <Button disabled={!signatureProfile} onClick={() => history.push(FrontUrlProvider.makeContract())}>Start by creating a contract</Button>
         </Toolbar>
-        
-        {/* {selectedSignatureProfile?._id} */}
       </AppBar>
       <Drawer
         variant="permanent"

@@ -14,12 +14,10 @@ export const sellerController = (router: Router) => {
 
   router.post('/v1/sellers', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // console.log(req.body);
-      const found: any = await UserService.addUser(MY_USER_TYPES.SELLER, req.body);
-      // console.log({found});
       
-      // let res = found && found.length ? found[0] : null
+      const found: any = await UserService.addUser(MY_USER_TYPES.SELLER, req.body);
       return jsonSuccess(res, found)
+      
     } catch(e) { next(e) }
   })
 } 
