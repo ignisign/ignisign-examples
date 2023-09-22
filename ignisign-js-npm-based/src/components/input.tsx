@@ -9,7 +9,7 @@ type IInputProps = {
   className ?: string
   type      ?: string
   dataset   ?: {label: string, value: string}[]
-  required?: boolean
+  required  ?: boolean
 }
 
 export const Input = ({label, form, name, className = '', type = 'text', dataset = [], required = false }: IInputProps) => {

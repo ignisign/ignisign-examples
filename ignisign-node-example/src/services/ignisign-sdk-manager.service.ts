@@ -78,7 +78,7 @@ async function init() {
         console.error("handleLaunchSignatureRequestWebhook ERROR : ", error);
         return;
       }
-      const {signatureRequestExternalId, signatureRequestId, signers} = content;
+      const { signatureRequestExternalId, signatureRequestId, signers } = content;
       if(signers){
         await ContractService.handleLaunchSignatureRequestWebhook(signatureRequestExternalId, signatureRequestId, signers)
       }
@@ -121,7 +121,6 @@ async function init() {
 async function getSignatureProfile(signatureProfileId): Promise<IgnisignSignatureProfile> {
   const profiles = await ignisignSdkInstance.getSignatureProfiles()
   return profiles?.find(p => p._id === signatureProfileId)
-  // await ignisignSdkInstance.getSignatureProfile(signatureProfileId);
 }
 
 async function checkWebhookEndpoint() {

@@ -15,11 +15,11 @@ async function getFileHash(input: HashDataInput) : Promise<string>{
 
 const saveFileToFolder = (filePath, folderPath, fileName = null) => {
   return new Promise((resolve, reject) => {
-    const name = filePath.split('/').pop(); // Extract the file name from the file path
+    
+    const name            = filePath.split('/').pop(); // Extract the file name from the file path
     const destinationPath = `${folderPath}/${fileName ?? name}`;
-
-    const readStream = fs.createReadStream(filePath);
-    const writeStream = fs.createWriteStream(destinationPath);
+    const readStream      = fs.createReadStream(filePath);
+    const writeStream     = fs.createWriteStream(destinationPath);
 
     readStream.on('error', reject);
     writeStream.on('error', reject);

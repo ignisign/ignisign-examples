@@ -10,11 +10,12 @@ import { FrontUrlProvider } from '../utils/front-url-provider'
 import { useHistory } from "react-router";
 
 const Contracts = () => {
-  const history = useHistory()
-  const {isEmbedded} = useGlobal()
+  const history       = useHistory()
+  const {isEmbedded}  = useGlobal()
+  
+  const {sellers}     = useSeller()
+  const {customers}   = useCustomer()
   const {contracts, getContracts, reset, isLoading} = useContract()
-  const {sellers} = useSeller()
-  const {customers} = useCustomer()
 
   const users = [...sellers ?? [], ...customers ?? []]
   const [selectedUserId, setSelectedUserId] = useState()
@@ -96,7 +97,6 @@ const Contracts = () => {
               </div>
             </>
           }
-          
         </>
       }
 

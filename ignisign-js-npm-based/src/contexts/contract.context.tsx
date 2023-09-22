@@ -4,10 +4,10 @@ import { Contract } from "../models/contract.front-model";
 import { ApiService } from "../services/api.service";
 
 export interface IContractContext {
-  contracts: Contract[]
-  isLoading: boolean
-  getContracts: (userId: string) => Promise<void>
-  reset: () => void
+  contracts     : Contract[]
+  isLoading     : boolean
+  getContracts  : (userId: string) => Promise<void>
+  reset         : () => void
 }
 
 export const ContractContextProvider = ({ children }) => {

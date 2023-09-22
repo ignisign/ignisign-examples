@@ -9,9 +9,9 @@ export type Contract = {
   signatureRequestId    ?: string;
 
   signers?: {
-    ignisignSignerId   ?: string;
-    userId   ?: string;
-    ignisignSignatureToken      ?: string;
+    ignisignSignerId        ?: string;
+    userId                  ?: string;
+    ignisignSignatureToken  ?: string;
   }[]
 }
 

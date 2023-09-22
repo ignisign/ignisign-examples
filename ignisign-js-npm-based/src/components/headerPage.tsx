@@ -2,11 +2,11 @@ import React from 'react'
 import { Button } from "./button";
 
 interface IHeaderPageProps {
-  title           : string;
-  subTitle       ?: string;
-  action         ?: {
+  title     : string;
+  subTitle ?: string;
+  action   ?: {
     label     : string;
-    onClick  : () => void;
+    onClick   : () => void;
     disabled ?: boolean;
   }
 }

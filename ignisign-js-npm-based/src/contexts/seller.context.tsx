@@ -5,18 +5,18 @@ import { ApiService } from "../services/api.service";
 import { useGlobal } from "./global.context";
 
 export interface ISellerContext {
-  sellers: MyUser[]
-  addSeller: (data) => Promise<void>
-  isLoading: boolean
-  setSelectedSellerId: (id: string) => void
-  selectedSellerId: string
+  sellers             : MyUser[]
+  addSeller           : (data) => Promise<void>
+  isLoading           : boolean
+  setSelectedSellerId : (id: string) => void
+  selectedSellerId    : string
 }
 
 export const SellerContextProvider = ({ children }) => {
 
-  const [sellers, setSellers] = useState<MyUser[]>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [selectedSellerId, setSelectedSellerId] = useState<string>(null)
+  const [sellers,           setSellers]           = useState<MyUser[]>(null)
+  const [isLoading,         setIsLoading]         = useState<boolean>(false)
+  const [selectedSellerId,  setSelectedSellerId]  = useState<string>(null)
 
   const addSeller = async (data) => {
     setIsLoading(true)
@@ -54,7 +54,6 @@ export const SellerContextProvider = ({ children }) => {
     isLoading,
     setSelectedSellerId,
     selectedSellerId,
-    // reset
   };
 
   return (

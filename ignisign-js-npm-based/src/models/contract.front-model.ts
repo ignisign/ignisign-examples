@@ -1,13 +1,13 @@
 import { IGNISIGN_APPLICATION_ENV } from "@ignisign/public";
 
 export type Contract = {
-  _id: string;
-  signatureRequestId: string;
-  signers: {
-    ignisignSignerId: string;
-    userId: string;
-    ignisignSignatureToken?: string;
-    status: 'INIT' | 'DONE';
+  _id : string;
+  signatureRequestId : string;
+  signers : {
+    ignisignSignerId        : string;
+    userId                  : string;
+    ignisignSignatureToken ?: string;
+    status                  : 'INIT' | 'DONE';
   }[]
 }
 

@@ -5,6 +5,7 @@ import { UserService } from "../services/user.service";
 import { MY_USER_TYPES } from "../models/user.db.model";
   
 export const customerController = (router: Router) => {
+
   router.get('/v1/customers', async (req: Request, res: Response, next: NextFunction) => {
     try {
       const found = await UserService.getUsers(MY_USER_TYPES.CUSTOMER);
@@ -18,4 +19,5 @@ export const customerController = (router: Router) => {
       return jsonSuccess(res, found)
     } catch(e) { next(e) }
   })
+  
 } 

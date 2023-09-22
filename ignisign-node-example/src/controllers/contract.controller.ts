@@ -10,9 +10,9 @@ const upload    = multer({ dest: UPLOAD_TMP });
 export const contractController = (router: Router) => {
   router.get('/v1/contracts/:contractId/user/:userId', async (req, res, next) => {
     try {
-      const {contractId, userId}: any = req.params
+      const { contractId, userId }: any = req.params
+
       const found = await ContractService.getContractContextByUser(contractId, userId)
-      console.log(found);
       
       return jsonSuccess(res, found)
     } catch(e) { next(e) }
@@ -21,7 +21,7 @@ export const contractController = (router: Router) => {
   router.get('/v1/contracts/user/:userId', async (req, res, next) => {
     try {
       const {userId}: any = req.params
-      const found = await ContractService.getContracts(userId)
+      const found         = await ContractService.getContracts(userId)
       return jsonSuccess(res, found)
     } catch(e) { next(e) }
   })

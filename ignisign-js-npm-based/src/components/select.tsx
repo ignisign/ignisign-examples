@@ -6,7 +6,6 @@ type SelectType = {
 }
 
 const Select = ({options = [], callback}: SelectType) => {
-
   return (
     <select className='h-8 w-full' onChange={(e)=>callback(e.target.value)}>
       {
