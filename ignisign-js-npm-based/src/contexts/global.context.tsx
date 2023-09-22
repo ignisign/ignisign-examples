@@ -1,24 +1,24 @@
 
-import { IgnisignSignatureProfile, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_INTEGRATION_MODE } from "@ignisign/public";
+import { IgnisignSignatureProfile, IgnisignWebhook, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_INTEGRATION_MODE, IGNISIGN_SIGNER_CREATION_INPUT_REF } from "@ignisign/public";
 import { createContext, useContext, useEffect, useState } from "react";
 import { ApiService } from "../services/api.service";
 
 export interface IGlobalContext {
-  requiredInputs
-  isEmbedded
-  signatureProfile
-  isFilesPrivates
-  webhooks
-  isLoading
+  requiredInputs: IGNISIGN_SIGNER_CREATION_INPUT_REF[]
+  signatureProfile: IgnisignSignatureProfile
+  webhooks: IgnisignWebhook[]
+  isEmbedded: boolean
+  isFilesPrivates: boolean
+  isLoading: boolean
 }
 
 export const GlobalContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [requiredInputs, setRequiredInputs] = useState<any>([])
-  const [isEmbedded, setIsEmbedded] = useState(null)
+  const [requiredInputs, setRequiredInputs] = useState<IGNISIGN_SIGNER_CREATION_INPUT_REF[]>([])
+  const [isEmbedded, setIsEmbedded] = useState<boolean>(null)
   const [signatureProfile, setSignatureProfile] = useState<IgnisignSignatureProfile>(null)
-  const [isFilesPrivates, setIsFilesPrivates] = useState(null)
-  const [webhooks, setWebhooks] = useState(null)
+  const [isFilesPrivates, setIsFilesPrivates] = useState<boolean>(null)
+  const [webhooks, setWebhooks] = useState<IgnisignWebhook[]>(null)
 
   const getAppContext = async () => {
     setIsLoading(true)

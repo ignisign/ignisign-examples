@@ -3,9 +3,9 @@ import { IgnisignSdkManagerService } from "./ignisign-sdk-manager.service";
 import * as FormData from "form-data";
 import * as fs from 'fs';
 import { FileService } from "./files.service";
-import { IgnisignSignatureRequest_UpdateDto, IGNISIGN_DOCUMENT_TYPE } from "@ignisign/public";
+import { IgnisignSignatureRequest_UpdateDto, IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE } from "@ignisign/public";
 import { IgnisignSdkFileContentUploadDto } from "@ignisign/sdk";
-import { ContractModel } from "../models/contract.db.model";
+import { Contract, ContractContext, ContractModel } from "../models/contract.db.model";
 import { UserService } from "./user.service";
 
 const handlePrivacyContract = async (signatureRequestId, contractFile: any) => {
@@ -33,7 +33,7 @@ const handleStandardFile = async (signatureRequestId, contractFile: any) => {
   return documentId
 }
 
-const createNewContract = async (customerId: string, sellerId: string, contractFile: any) => {  
+const createNewContract = async (customerId: string, sellerId: string, contractFile: any): Promise<void> => {  
   try {
     const signatureProfileId = process.env.IGNISIGN_SIGNATURE_PROFILE_ID
     const signatureProfile = await IgnisignSdkManagerService.getSignatureProfile(signatureProfileId)
@@ -69,7 +69,7 @@ const createNewContract = async (customerId: string, sellerId: string, contractF
   }
 }
 
-const getContracts = async (userId) => {
+const getContracts = async (userId): Promise<Contract[]> => {
   return new Promise((resolve, reject) => {
     ContractModel.find().toArray((error, found) => {
       if (error) {
@@ -84,7 +84,7 @@ const getContracts = async (userId) => {
   });
 }
 
-const getContractContextByUser = async (contractId, userId) => {
+const getContractContextByUser = async (contractId, userId): Promise<ContractContext> => {
   return new Promise((resolve, reject) => {
     ContractModel.findOne({_id: contractId}, async (error, contract) => {
       if (error) {
@@ -100,7 +100,7 @@ const getContractContextByUser = async (contractId, userId) => {
           ignisignSignatureToken: signer.ignisignSignatureToken,
           ignisignUserAuthSecret: user.ignisignAuthSecret,
           ignisignAppId: process.env.IGNISIGN_APP_ID,
-          ignisignAppEnv: process.env.IGNISIGN_APP_ENV,
+          ignisignAppEnv: process.env.IGNISIGN_APP_ENV as IGNISIGN_APPLICATION_ENV,
 
         })
       }

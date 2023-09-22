@@ -21,7 +21,7 @@ const createFakeBirthDate = () => {
   return `${birthDate.getFullYear()}-${birthDate.getMonth() < 10 ? '0' : ''}${birthDate.getMonth() + 1}-${birthDate.getDate() < 10 ? '0' : ''}${birthDate.getDate()}`
 }
 
-export const INPUTS = [
+export const INPUTS: any = [
   {label: 'First name',     name: 'firstName',     faker: faker.person.firstName },
   {label: 'Last name',      name: 'lastName',      faker: faker.person.lastName },
   {label: 'Email',          name: 'email',         faker: () => createRandomEmail(DEFAULT_EMAIL) },

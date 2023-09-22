@@ -1,6 +1,9 @@
-import { IgnisignSignatureProfile, IgnisignWebhook } from '@ignisign/public';
+import { IgnisignDocument_PrivateFileDto, IgnisignSignatureProfile, IgnisignWebhook } from '@ignisign/public';
 
 import axios, { AxiosRequestConfig } from "axios";
+import { Contract, ContractContext } from '../models/contract.front-model';
+import { AppContextType } from '../models/global.front-model';
+import { MyUser } from '../models/user.front.model';
 
 const APP_BACKEND_ENDPOINT = process?.env?.REACT_APP_BACKEND_ENDPOINT || "http://localhost:4242"
 
@@ -29,26 +32,26 @@ export const ApiService = {
 }
 
 /** DEMO APP CONTEXT */
-async function getAppContext(): Promise<{requiredInputs, signatureProfile: IgnisignSignatureProfile, webhooks: IgnisignWebhook[]}> {
+async function getAppContext(): Promise<AppContextType> {
   return http.get(`/v1/app-context`)
 }
 
 /** PRIVATE FILE */
-async function getPrivateFileUrl(documentHash){
+async function getPrivateFileUrl(documentHash): Promise<IgnisignDocument_PrivateFileDto>{
   return http.get(`/v1/files/${documentHash}`)
 }
 
 /** CONTRACTS */
 
-async function getContractContext(contractId, userId) {
+async function getContractContext(contractId, userId): Promise<ContractContext> {
   return http.get(`/v1/contracts/${contractId}/user/${userId}`)
 }
 
-async function getContracts(userId: string) {
+async function getContracts(userId: string): Promise<Contract> {
   return http.get(`/v1/contracts/user/${userId}`)
 }
 
-async function createContract(selectedCustomerId, selectedSellerId, selectedFile) {
+async function createContract(selectedCustomerId, selectedSellerId, selectedFile): Promise<any> {
   const formData = new FormData();
   formData.append('customerId', selectedCustomerId);
   formData.append('sellerId', selectedSellerId);
@@ -57,19 +60,19 @@ async function createContract(selectedCustomerId, selectedSellerId, selectedFile
 }
 
 /** CUSTOMERS */
-async function getCustomers() {
+async function getCustomers(): Promise<MyUser[]> {
   return http.get(`/v1/customers`)
 }
 
-async function addCustomer(body) {
+async function addCustomer(body): Promise<MyUser> {
   return http.post(`/v1/customers`, body)
 }
 
 /** SELLERS */
-async function getSellers() {
+async function getSellers(): Promise<MyUser[]> {
   return http.get(`/v1/sellers`)
 }
 
-async function addSeller(body) {
+async function addSeller(body): Promise<MyUser> {
   return http.post(`/v1/sellers`, body)
 }

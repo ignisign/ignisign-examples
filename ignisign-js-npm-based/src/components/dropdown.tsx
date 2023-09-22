@@ -2,7 +2,7 @@ import { InputLabel, MenuItem, Select } from '@mui/material'
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
-type Props = {
+type DropdownType = {
   label: string
   // form: UseFormReturn<any>
   callback
@@ -11,7 +11,7 @@ type Props = {
   items: {label, value}[]
 }
 
-const Dropdown = ({label, value, items, callback = null, name}: Props) => {
+const Dropdown = ({label, value, items, callback = null, name}: DropdownType) => {
   return <div>
     {/* <InputLabel id="simple-select-label">{label}</InputLabel> */}
     <Select
