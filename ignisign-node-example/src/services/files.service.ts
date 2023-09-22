@@ -4,28 +4,30 @@ import { saveFileToFolder } from "../utils/files.util";
 import { MyFile, MyFileModel } from "../models/file.db.model";
 import { MyUser } from "../models/user.db.model";
 
-
-
 const buildFileAccessPath = (documentId: string) => {
   return `${process.env.MY_SERVER_URL}/uploads/${documentId}`
 }
 
 const getPrivateFileUrl = (documentId) : Promise<IgnisignDocument_PrivateFileDto> => {
   return new Promise((resolve, reject) => {
-    MyFileModel.findOne({documentId}, (error, found: MyFile) => {
-      if (error) {
-        reject(error);
-      } else {
-        const url = buildFileAccessPath(documentId)
-        resolve({
-          documentId,
-          fileUrl  : url,
-          mimeType : found.mimeType,
-          fileName : found.fileName,
-          bearer   : generateBearerToken()
-        });
-      }
-    });
+    MyFileModel.findOne(
+      { documentId },
+      ( error, found: MyFile ) => {
+        if (error) {
+          console.error(error)
+          reject(error);
+
+        } else {
+          const url = buildFileAccessPath(documentId)
+          resolve({
+            documentId,
+            fileUrl  : url,
+            mimeType : found.mimeType,
+            fileName : found.fileName,
+            bearer   : generateBearerToken()
+          });
+        }
+      });
   });
 }
 const saveFile = (fileHash, file, documentId) => {
@@ -33,14 +35,16 @@ const saveFile = (fileHash, file, documentId) => {
 
     const path = await saveFileToFolder(file.path, 'uploads', documentId)
     const data = {
-      filePath: path, 
+      filePath  : path, 
+      mimeType  : file.mimetype,
+      fileName  : file.originalname,
       fileHash,
-      mimeType: file.mimetype,
-      fileName: file.originalname,
       documentId
-    }    
+    }
+        
     MyFileModel.insert(data, async (error, found: MyUser[]) => {
       if (error) {
+        console.error(error)
         reject(error);
       } else {
         resolve(found);

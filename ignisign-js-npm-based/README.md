@@ -2,10 +2,10 @@
 
 This example application demonstrates how to use Ignisign in an `embedded` mode with NPM based application using the Ignisign JS library.
 
-- You can also use Ignisign with a `By-side` integration,In this case, Ignisign manage all the signature process for you and you will receive informations about the signature process by webhook or manage the whole process through the IgniSign console.
+- You can also use Ignisign with a `By-side` integration,In this case, Ignisign manage all the signature process for you and you will receive informations about the signature process by webhook or manage the whole process through the IgniSign's Console.
 
-this example application is linked to a a demo Backend application. 
-You can find the source code of the backend application writed in NodeJS [here](https://github.com/ignisign/ignisign-node/tree/main/example)
+This example application is linked to the Backend demo application. 
+You can find the source code of the backend application writed in NodeJS [here](https://github.com/ignisign/ignisign-examples/tree/main/ignisign-node-example)
 
 ### Prerequisites
 

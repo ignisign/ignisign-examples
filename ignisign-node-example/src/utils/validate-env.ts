@@ -7,7 +7,6 @@ const standart: any = {
   IGNISIGN_APP_ID: str(),
   IGNISIGN_APP_ENV: str(),
   IGNISIGN_APP_SECRET: str(),
-  IGNISIGN_SERVER_URL: url(),
 }
 
 function validateEnv() {
