@@ -8,6 +8,7 @@ import { useGlobal } from '../contexts/global.context'
 import { useSeller } from '../contexts/seller.context'
 import { FrontUrlProvider } from '../utils/front-url-provider'
 import { useHistory } from "react-router";
+import { ApiService } from '../services/api.service'
 
 const Contracts = () => {
   const history       = useHistory()
@@ -28,6 +29,12 @@ const Contracts = () => {
     else{
       getContracts(e)
     }
+  }
+
+  const downloadSignatureProof = async () => {
+    const proof = await ApiService.downloadSignatureProof(selectedUserId)
+    console.log(proof)
+
   }
 
   return (
@@ -64,6 +71,12 @@ const Contracts = () => {
                               <div>
                                 Contract n°{e._id}
                               </div>
+                              {
+                                e.isSignatureProofReady && <Button onClick={downloadSignatureProof}>
+                                  Download signature proof
+                                </Button>
+
+                              }
                               <div>
                                 {
                                   e.signers.find(e=>e.userId === selectedUserId).status === 'DONE' ? <>

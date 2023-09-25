@@ -7,11 +7,13 @@ const db = getDb()
 export type Contract = {
   _id                   ?: string;
   signatureRequestId    ?: string;
-
+  documentId            ?: string;
+  isSignatureProofReady ?: boolean;
   signers?: {
     ignisignSignerId        ?: string;
     userId                  ?: string;
     ignisignSignatureToken  ?: string;
+    status                  ?: 'INIT' | 'DONE';
   }[]
 }
 

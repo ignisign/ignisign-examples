@@ -64,8 +64,8 @@ function App() {
       <CssBaseline/>
       <Router>
         <IgnisignSnackbarProvider>
-          <Menu>
-            <GlobalContextProvider>
+          <GlobalContextProvider>
+            <Menu>
               <ContractContextProvider>
                 <CustomerContextProvider>
                   <SellerContextProvider>
@@ -73,8 +73,8 @@ function App() {
                   </SellerContextProvider>
                 </CustomerContextProvider>
               </ContractContextProvider>
-            </GlobalContextProvider>
-          </Menu>
+            </Menu>
+          </GlobalContextProvider>
         </IgnisignSnackbarProvider>
       </Router>
     </MuiThemeProvider>
