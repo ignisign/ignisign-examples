@@ -23,12 +23,17 @@ export const ApiService = {
   createContract,
   getContracts,
   getContractContext,
+  downloadSignatureProof,
 
   getSellers,
   addSeller,
 
   addCustomer,
   getCustomers,
+}
+
+async function downloadSignatureProof(contractId) {
+  return http.get(`/v1/contracts/${contractId}/download-signature-proof`)
 }
 
 /** DEMO APP CONTEXT */

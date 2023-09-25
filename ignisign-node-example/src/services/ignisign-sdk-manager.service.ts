@@ -23,6 +23,8 @@ import {
   IgnisignWebhook,
   IgnisignWebhookDto_SignatureRequest,
   IgnisignWebhookDto_Signature,
+  IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF,
+  IgnisignWebhookDto_SignatureProof,
 } from '@ignisign/public';
 import { IgnisignSdk, IgnisignSdkFileContentUploadDto } from '@ignisign/sdk';
 import { ContractService } from './contract.service';
@@ -44,6 +46,7 @@ export const IgnisignSdkManagerService = {
   getSignatureRequestContext,
   getSignatureProfile,
   getWebhookEndpoints,
+  downloadSignatureProof,
 }
 
 const IGNISIGN_APP_ID     = process.env.IGNISIGN_APP_ID
@@ -89,6 +92,7 @@ async function init() {
       IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST.LAUNCHED
     );
 
+
     const handleFinalizeSignatureWebhook = async (
       content     : IgnisignWebhookDto_Signature,
       error       : IgnisignError = null,
@@ -111,11 +115,49 @@ async function init() {
       IGNISIGN_WEBHOOK_ACTION_SIGNATURE.FINALIZED
     );
 
+
+    const handleSignatureProofWebhook = async (
+      content     : IgnisignWebhookDto_SignatureProof,
+      error       : IgnisignError = null,
+      msgNature  ?: IGNISIGN_WEBHOOK_MESSAGE_NATURE,
+      action     ?: IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF,
+      topic      ?: IGNISIGN_WEBHOOK_TOPICS
+    ): Promise<any> => {
+      console.log('handleFinalizeSignatureWebhook');
+      
+      if(msgNature === IGNISIGN_WEBHOOK_MESSAGE_NATURE.ERROR) {
+        console.error("handleFinalizeSignatureWebhook ERROR : ", error);
+        return;
+      }
+      const {signatureRequestExternalId, signatureRequestId} = content;
+
+      await ContractService.handleSignatureProofWebhook(signatureRequestExternalId)
+    }
+
+    await ignisignSdkInstance.registerWebhookCallback_SignatureProof(
+      handleSignatureProofWebhook,
+      IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF.SIGNATURE_PROOF_GENERATED
+    );
+
     await checkWebhookEndpoint();
       
   } catch (e){
     console.error("Error while initializing Ignisign Nameger Service", e)
   }
+}
+
+async function downloadSignatureProof(documentId) {
+  const signatureProof = await ignisignSdkInstance.downloadSignatureProofDocument(documentId);
+  console.log(typeof signatureProof);
+  
+//   signatureProof.on('data', data => {
+//     console.log(data);
+// });
+
+// signatureProof.on('end', () => {
+//     console.log("stream done");
+// });
+  return signatureProof;
 }
 
 async function getSignatureProfile(signatureProfileId): Promise<IgnisignSignatureProfile> {

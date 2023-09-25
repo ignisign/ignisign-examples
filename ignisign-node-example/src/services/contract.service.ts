@@ -7,6 +7,7 @@ import { IgnisignSignatureRequest_UpdateDto, IGNISIGN_APPLICATION_ENV, IGNISIGN_
 import { IgnisignSdkFileContentUploadDto } from "@ignisign/sdk";
 import { Contract, ContractContext, ContractModel } from "../models/contract.db.model";
 import { UserService } from "./user.service";
+import { Readable, Stream } from "stream";
 
 const handlePrivacyContract = async (signatureRequestId, contractFile: any) => {
   const fileHash      = await getFileHash(fs.createReadStream(contractFile.path))
@@ -55,7 +56,7 @@ const createNewContract = async (customerId: string, sellerId: string, contractF
     ]
   
     ContractModel.insert(
-      { signatureRequestId, signers }, 
+      { signatureRequestId, signers, documentId: documentIds[0] }, 
       async (error, found)=>{
         if(found && found.length){
           const dto : IgnisignSignatureRequest_UpdateDto = {
@@ -126,14 +127,18 @@ const handleLaunchSignatureRequestWebhook = async (contractId, signatureRequestI
     status                  : 'INIT'
   }))
 
-  await ContractModel.update(
-    {_id: contractId}, 
-    {
-      signatureRequestId,
-      signers: formatedSigners,
-    }, 
-    async (error, found) => {
-      console.info('handleLaunchSignatureRequestWebhook', error, found);
+  await ContractModel.findOne({_id: contractId}, async (error, found)=>{
+    const contract = found
+    await ContractModel.update(
+      {_id: contractId}, 
+      {
+        documentId: contract.documentId,
+        signatureRequestId,
+        signers: formatedSigners,
+      }, 
+      async (error, found) => {
+        console.info('handleLaunchSignatureRequestWebhook', error, found);
+    });
   });
 }
 
@@ -152,6 +157,7 @@ const handleFinalizeSignatureWebhook = async (contractId, signatureRequestId, us
     await ContractModel.update(
       {_id: contractId}, 
       {
+        documentId: contract.documentId,
         signatureRequestId,
         signers,
       }, 
@@ -161,10 +167,43 @@ const handleFinalizeSignatureWebhook = async (contractId, signatureRequestId, us
   });
 }
 
+const handleSignatureProofWebhook = async (contractId) => {
+  await ContractModel.findOne({_id: contractId}, async (error, found)=>{
+    const contract = found
+    await ContractModel.update({_id: contractId}, {
+      isSignatureProofReady: true,
+      signatureRequestId: contract.signatureRequestId,
+      documentId: contract.documentId,
+      signers: contract.signers,
+    }, async (error, found)=>{
+      console.info('handleSignatureProofWebhook', error, found);
+    });
+  });
+}
+
+const downloadSignatureProof = async (contractId): Promise<Readable> => {
+  return await ContractModel.findOne({_id: contractId}, async (error, found)=>{
+    if(found?.isSignatureProofReady){
+      // console.log(found.documentId);
+      
+      const signatureProof = await IgnisignSdkManagerService.downloadSignatureProof(found.documentId)
+
+      // console.log(signatureProof);
+      
+      return signatureProof
+      // const file = await FileService.getFile(signatureProof.documentId)
+      // return file
+    }
+  })
+}
+
+
 export const ContractService = {
   createNewContract,
   getContracts,
   getContractContextByUser,
   handleLaunchSignatureRequestWebhook,
-  handleFinalizeSignatureWebhook
+  handleFinalizeSignatureWebhook,
+  handleSignatureProofWebhook,
+  downloadSignatureProof,
 }
