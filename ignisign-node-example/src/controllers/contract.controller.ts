@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { ContractService } from "../services/contract.service";
+import { IgnisignSdkManagerService } from "../services/ignisign-sdk-manager.service";
 import { jsonError, jsonSuccess } from "../utils/controller.util";
 import { deleteFile } from "../utils/files.util";
+import {Readable, Writable} from 'stream'
 
 const UPLOAD_TMP = 'uploads_tmp/'
 const multer    = require('multer');
@@ -46,5 +48,46 @@ export const contractController = (router: Router) => {
         deleteFile(pathToDelete)
       }
     }
+  });
+
+  router.get('/v1/contracts/:contractId/download-signature-proof', async (req, res, next) => {
+    // Get the contractId from the request parameters
+    const { contractId } = req.params;
+    res.setHeader('Content-Type', 'application/pdf');
+
+    // const writable = new Writable()
+    const readableStream = await ContractService.downloadSignatureProof(contractId)
+    // const stream = readableStream;
+    readableStream.pipe(res)
+    // jsonSuccess()
+    res.send(readableStream)
+    // const read = new Readable().wrap(readableStream).pipe(res)
+    // const writable = new WritableStream()
+    // readableStream.pipeTo(writable)
+
+    // res.send(writable)
+    // readableStream.on('end',()=>console.log('done'));
+    // let text = await new Response(readableStream).text();
+    // console.log(text);
+    
+    // writable.pipe(readableStream)
+    // readableStream.pipe(writable)
+    // res.write(writable)
+    // readableStream.
+    // readableStream.then(e=>{
+    //   console.log(e);
+    //   return e
+    // })
+
+
+
+    // readableStream.pipeTo()
+    // console.log(readableStream);
+    // const readableStream = fs.createReadStream('path_to_your_file.txt');
+
+    // Set the appropriate response headers
+    // readableStream.pipe(res)
+    // Pipe the readable stream to the response object
+    // readableStream.pipeTo(res as any);
   });
 }

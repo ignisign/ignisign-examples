@@ -3,6 +3,8 @@ import { IGNISIGN_APPLICATION_ENV } from "@ignisign/public";
 export type Contract = {
   _id : string;
   signatureRequestId : string;
+  documentId            ?: string;
+  isSignatureProofReady ?: boolean;
   signers : {
     ignisignSignerId        : string;
     userId                  : string;
