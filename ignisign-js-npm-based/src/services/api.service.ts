@@ -33,7 +33,7 @@ export const ApiService = {
 }
 
 async function downloadSignatureProof(contractId) {
-  return http.get(`/v1/contracts/${contractId}/download-signature-proof`)
+  return http.get(`/v1/contracts/${contractId}/download-signature-proof`, {responseType: 'blob'})
 }
 
 /** DEMO APP CONTEXT */
