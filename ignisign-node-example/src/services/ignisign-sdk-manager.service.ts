@@ -136,7 +136,7 @@ async function init() {
 
     await ignisignSdkInstance.registerWebhookCallback_SignatureProof(
       handleSignatureProofWebhook,
-      IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF.SIGNATURE_PROOF_GENERATED
+      IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF.GENERATED
     );
 
     await checkWebhookEndpoint();
