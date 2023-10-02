@@ -5,6 +5,7 @@ export type Contract = {
   signatureRequestId : string;
   documentId            ?: string;
   isSignatureProofReady ?: boolean;
+  signatureProofUrl?: string;
   signers : {
     ignisignSignerId        : string;
     userId                  : string;

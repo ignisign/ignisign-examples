@@ -129,9 +129,9 @@ async function init() {
         console.error("handleFinalizeSignatureWebhook ERROR : ", error);
         return;
       }
-      const {signatureRequestExternalId, signatureRequestId} = content;
+      const {signatureRequestExternalId, signatureProofUrl} = content as any;
 
-      await ContractService.handleSignatureProofWebhook(signatureRequestExternalId)
+      await ContractService.handleSignatureProofWebhook(signatureRequestExternalId, signatureProofUrl)
     }
 
     await ignisignSdkInstance.registerWebhookCallback_SignatureProof(
@@ -146,18 +146,8 @@ async function init() {
   }
 }
 
-async function downloadSignatureProof(documentId) {
-  const signatureProof = await ignisignSdkInstance.downloadSignatureProofDocument(documentId);
-  console.log(typeof signatureProof);
-  
-//   signatureProof.on('data', data => {
-//     console.log(data);
-// });
-
-// signatureProof.on('end', () => {
-//     console.log("stream done");
-// });
-  return signatureProof;
+async function downloadSignatureProof(documentId): Promise<NodeJS.ReadableStream> {
+  return await ignisignSdkInstance.downloadSignatureProofDocument(documentId);
 }
 
 async function getSignatureProfile(signatureProfileId): Promise<IgnisignSignatureProfile> {

@@ -51,43 +51,8 @@ export const contractController = (router: Router) => {
   });
 
   router.get('/v1/contracts/:contractId/download-signature-proof', async (req, res, next) => {
-    // Get the contractId from the request parameters
     const { contractId } = req.params;
-    res.setHeader('Content-Type', 'application/pdf');
-
-    // const writable = new Writable()
-    const readableStream = await ContractService.downloadSignatureProof(contractId)
-    // const stream = readableStream;
-    readableStream.pipe(res)
-    // jsonSuccess()
-    res.send(readableStream)
-    // const read = new Readable().wrap(readableStream).pipe(res)
-    // const writable = new WritableStream()
-    // readableStream.pipeTo(writable)
-
-    // res.send(writable)
-    // readableStream.on('end',()=>console.log('done'));
-    // let text = await new Response(readableStream).text();
-    // console.log(text);
-    
-    // writable.pipe(readableStream)
-    // readableStream.pipe(writable)
-    // res.write(writable)
-    // readableStream.
-    // readableStream.then(e=>{
-    //   console.log(e);
-    //   return e
-    // })
-
-
-
-    // readableStream.pipeTo()
-    // console.log(readableStream);
-    // const readableStream = fs.createReadStream('path_to_your_file.txt');
-
-    // Set the appropriate response headers
-    // readableStream.pipe(res)
-    // Pipe the readable stream to the response object
-    // readableStream.pipeTo(res as any);
+    const pdfStream: NodeJS.ReadableStream = await ContractService.downloadSignatureProof(contractId)
+    pdfStream.pipe(res).on('end', () => res.status(200).send())
   });
 }

@@ -9,6 +9,7 @@ import { useSeller } from '../contexts/seller.context'
 import { FrontUrlProvider } from '../utils/front-url-provider'
 import { useHistory } from "react-router";
 import { ApiService } from '../services/api.service'
+import FileSaver from 'file-saver'
 
 const Contracts = () => {
   const history       = useHistory()
@@ -31,10 +32,13 @@ const Contracts = () => {
     }
   }
 
-  const downloadSignatureProof = async () => {
-    const proof = await ApiService.downloadSignatureProof(selectedUserId)
-    console.log(proof)
+  const downloadSignatureProof = async (contractId) => {
+    const blob = await ApiService.downloadSignatureProof(contractId)
+    FileSaver.saveAs(blob, 'signature-proof.pdf');
+  }
 
+  const openSignatureProofUrl = async (url) => {
+    window.open(url, '_blank')
   }
 
   return (
@@ -72,10 +76,22 @@ const Contracts = () => {
                                 Contract n°{e._id}
                               </div>
                               {
-                                e.isSignatureProofReady && <Button onClick={downloadSignatureProof}>
-                                  Download signature proof
-                                </Button>
-
+                                e.signers.find(e=>e.userId === selectedUserId).status === 'DONE' && !e.isSignatureProofReady ? <>
+                                  <div className='text-yellow-400'>Waiting signature proof generation</div>
+                                </> : <>
+                                  {
+                                    e.isSignatureProofReady && <Button onClick={()=>downloadSignatureProof(e._id)}>
+                                      Download signature proof
+                                    </Button>
+    
+                                  }
+                                  {
+                                    e.signatureProofUrl && <Button onClick={()=>openSignatureProofUrl(e.signatureProofUrl)}>
+                                      Detailed signature proof
+                                    </Button>
+    
+                                  }
+                                </>
                               }
                               <div>
                                 {
