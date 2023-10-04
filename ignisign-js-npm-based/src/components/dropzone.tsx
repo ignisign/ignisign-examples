@@ -29,7 +29,7 @@ export function Dropzone({ title, description, files, displayExtensions = false,
             <p className="flex flex-col items-center font-semibold text-xl text-gray-500 px-6 text-center text-primary-600 truncate">
               <span className="text-base text-primary-300">{ description || 'Upload' }</span>
               
-              {files?.map(file => <span className="text-sm text-primary-200">{ file?.name  || file?.file?.name }</span>)}
+              {files?.map((file, i) => <span key={`file-${i}`} className="text-sm text-primary-200">{ file?.name  || file?.file?.name }</span>)}
             </p>
           </div>
         }

@@ -62,7 +62,8 @@ const createNewContract = async (customerId: string, sellerId: string, contractF
           const dto : IgnisignSignatureRequest_UpdateDto = {
             documentIds,
             signerIds: [customer.signerId, seller.signerId],
-            externalId : found[0]._id.toString()
+            externalId : found[0]._id.toString(),
+            title: 'Contract'
           };
 
           await IgnisignSdkManagerService.updateSignatureRequest(signatureRequestId, dto);
@@ -119,7 +120,6 @@ const getContractContextByUser = async (contractId, userId): Promise<ContractCon
 }
 
 const handleLaunchSignatureRequestWebhook = async (contractId, signatureRequestId, signers) => {
-
   const formatedSigners = signers.map( ({signerId, signerExternalId, token}) => ({
     ignisignSignerId        : signerId,
     ignisignSignatureToken  : token,
@@ -137,13 +137,12 @@ const handleLaunchSignatureRequestWebhook = async (contractId, signatureRequestI
         signers: formatedSigners,
       }, 
       async (error, found) => {
-        console.info('handleLaunchSignatureRequestWebhook', error, found);
+        console.info('done');
     });
   });
 }
 
 const handleFinalizeSignatureWebhook = async (contractId, signatureRequestId, userId) => {
-
   await ContractModel.findOne({_id: contractId}, async (error, found)=>{
     const contract = found
     
@@ -162,38 +161,35 @@ const handleFinalizeSignatureWebhook = async (contractId, signatureRequestId, us
         signers,
       }, 
       async (error, found) => {
-        console.info('handleFinalizeSignatureWebhook', error, found);
+        console.info('done');
       });
   });
 }
 
-const handleSignatureProofWebhook = async (contractId) => {
+const handleSignatureProofWebhook = async (contractId, signatureProofUrl) => {
   await ContractModel.findOne({_id: contractId}, async (error, found)=>{
     const contract = found
     await ContractModel.update({_id: contractId}, {
+      _id: contractId,
       isSignatureProofReady: true,
+      signatureProofUrl,
       signatureRequestId: contract.signatureRequestId,
       documentId: contract.documentId,
       signers: contract.signers,
     }, async (error, found)=>{
-      console.info('handleSignatureProofWebhook', error, found);
+      console.info('done');
     });
   });
 }
 
-const downloadSignatureProof = async (contractId): Promise<Readable> => {
-  return await ContractModel.findOne({_id: contractId}, async (error, found)=>{
-    if(found?.isSignatureProofReady){
-      // console.log(found.documentId);
-      
-      const signatureProof = await IgnisignSdkManagerService.downloadSignatureProof(found.documentId)
-
-      // console.log(signatureProof);
-      
-      return signatureProof
-      // const file = await FileService.getFile(signatureProof.documentId)
-      // return file
-    }
+const downloadSignatureProof = async (contractId): Promise<NodeJS.ReadableStream> => {
+  return new Promise(async (resolve, reject) => {
+    await ContractModel.findOne({_id: contractId}, async (error, found)=>{
+      if(found?.isSignatureProofReady){
+        const signatureProof = await IgnisignSdkManagerService.downloadSignatureProof(found.documentId)
+        resolve(signatureProof)
+      }
+    })
   })
 }
 

@@ -4,8 +4,8 @@ export const muiTheme = {
   palette: {
 
     primary: {
-      main: '#FD5B2D',
-      light: '#FD5B2D',
+      main: '#fd5b2d',
+      light: '#fd5b2d',
     },
     text: {
       primary: 'black',
