@@ -52,7 +52,7 @@ export const contractController = (router: Router) => {
 
   router.get('/v1/contracts/:contractId/download-signature-proof', async (req, res, next) => {
     const { contractId } = req.params;
-    const pdfStream: NodeJS.ReadableStream = await ContractService.downloadSignatureProof(contractId)
+    const pdfStream: Readable = await ContractService.downloadSignatureProof(contractId)
     pdfStream.pipe(res).on('end', () => res.status(200).send())
   });
 }
