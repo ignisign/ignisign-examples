@@ -7,7 +7,7 @@ import { IgnisignSignatureRequest_UpdateDto, IGNISIGN_APPLICATION_ENV, IGNISIGN_
 import { IgnisignSdkFileContentUploadDto } from "@ignisign/sdk";
 import { Contract, ContractContext, ContractModel } from "../models/contract.db.model";
 import { UserService } from "./user.service";
-import { Readable, Stream } from "stream";
+import { Readable } from "stream";
 
 const handlePrivacyContract = async (signatureRequestId, contractFile: any) => {
   const fileHash      = await getFileHash(fs.createReadStream(contractFile.path))
@@ -182,7 +182,7 @@ const handleSignatureProofWebhook = async (contractId, signatureProofUrl) => {
   });
 }
 
-const downloadSignatureProof = async (contractId): Promise<NodeJS.ReadableStream> => {
+const downloadSignatureProof = async (contractId): Promise<Readable> => {
   return new Promise(async (resolve, reject) => {
     await ContractModel.findOne({_id: contractId}, async (error, found)=>{
       if(found?.isSignatureProofReady){

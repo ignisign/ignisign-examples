@@ -27,6 +27,7 @@ import {
   IgnisignWebhookDto_SignatureProof,
 } from '@ignisign/public';
 import { IgnisignSdk, IgnisignSdkFileContentUploadDto } from '@ignisign/sdk';
+import { Readable, Stream } from 'stream';
 import { ContractService } from './contract.service';
 
 let ignisignSdkInstance: IgnisignSdk = null;
@@ -65,6 +66,7 @@ async function init() {
       appSecret       : IGNISIGN_APP_SECRET,
       displayWarning  : true,
     })
+    // console.log(ignisignSdkInstance)
 
     await ignisignSdkInstance.init();
 
@@ -146,7 +148,7 @@ async function init() {
   }
 }
 
-async function downloadSignatureProof(documentId): Promise<NodeJS.ReadableStream> {
+async function downloadSignatureProof(documentId): Promise<Readable> {
   return await ignisignSdkInstance.downloadSignatureProofDocument(documentId);
 }
 
