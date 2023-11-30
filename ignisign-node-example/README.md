@@ -17,7 +17,7 @@ This is an example of how to use the Ignisign NodeJS library in your application
   We suggest to use [ngrok](https://ngrok.com/) to create a tunnel to your localhost. (we don't have any agreement with ngrok, it's just a suggestion and a great tool!)<br/>
   The webhook endpoint should be `{your_url}/v1/ignisign-webhook`<br/>
 - `yarn install` (or npm if you prefer)
-- `yarn start` 
+- `yarn dev` 
 
 ### How it works
 - this is a tiny backend that manage some users and their documents
