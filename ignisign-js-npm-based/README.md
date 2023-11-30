@@ -13,10 +13,7 @@ You can find the source code of the backend application writed in NodeJS [here](
 - NPM/Yarn
 
 ### How to use
-- Create a `.env` from `.env.example` and fill it with your credentials.
-
-- Get appId and your appSecret from the Ignisign console & paste to .env
-- Choose your env: `DEVELOPMENT` | `STAGING` | `PRODUCTION`, 
+- Create a `.env` from `.env.example`
 
 - `yarn install` (or npm if you prefer)
 - `yarn dev` 

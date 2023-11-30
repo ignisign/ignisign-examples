@@ -25,6 +25,7 @@ import {
   IgnisignWebhookDto_Signature,
   IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF,
   IgnisignWebhookDto_SignatureProof,
+  IgnisignWebhook_CallbackParams,
 } from '@ignisign/public';
 import { IgnisignSdk, IgnisignSdkFileContentUploadDto } from '@ignisign/sdk';
 import { Readable, Stream } from 'stream';
@@ -70,15 +71,7 @@ async function init() {
 
     await ignisignSdkInstance.init();
 
-    const handleLaunchSignatureRequestWebhook = async (
-      content     : IgnisignWebhookDto_SignatureRequest,
-      error       : IgnisignError = null,
-      msgNature  ?: IGNISIGN_WEBHOOK_MESSAGE_NATURE,
-      action     ?: IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST,
-      topic      ?: IGNISIGN_WEBHOOK_TOPICS
-    ): Promise<any> => {
-      console.log('handleLaunchSignatureRequestWebhook');
-
+    const handleLaunchSignatureRequestWebhook = async ({ content, error, msgNature, action, topic }: IgnisignWebhook_CallbackParams<IgnisignWebhookDto_SignatureRequest>): Promise<any> => {
       if(msgNature === IGNISIGN_WEBHOOK_MESSAGE_NATURE.ERROR) {
         console.error("handleLaunchSignatureRequestWebhook ERROR : ", error);
         return;
@@ -89,19 +82,10 @@ async function init() {
       }
     }
 
-    await ignisignSdkInstance.registerWebhookCallback_SignatureRequest(
-      handleLaunchSignatureRequestWebhook,
-      IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST.LAUNCHED
-    );
+    await ignisignSdkInstance.registerWebhookCallback_SignatureRequest(handleLaunchSignatureRequestWebhook, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST.LAUNCHED);
 
 
-    const handleFinalizeSignatureWebhook = async (
-      content     : IgnisignWebhookDto_Signature,
-      error       : IgnisignError = null,
-      msgNature  ?: IGNISIGN_WEBHOOK_MESSAGE_NATURE,
-      action     ?: IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST,
-      topic      ?: IGNISIGN_WEBHOOK_TOPICS
-    ): Promise<any> => {
+    const handleFinalizeSignatureWebhook = async ({ content, error, msgNature, action, topic }: IgnisignWebhook_CallbackParams<IgnisignWebhookDto_Signature>): Promise<any> => {
       console.log('handleFinalizeSignatureWebhook');
       
       if(msgNature === IGNISIGN_WEBHOOK_MESSAGE_NATURE.ERROR) {
@@ -112,21 +96,9 @@ async function init() {
       await ContractService.handleFinalizeSignatureWebhook(signatureRequestExternalId, signatureRequestId, signerExternalId)
     }
 
-    await ignisignSdkInstance.registerWebhookCallback_Signature(
-      handleFinalizeSignatureWebhook,
-      IGNISIGN_WEBHOOK_ACTION_SIGNATURE.FINALIZED
-    );
-
-
-    const handleSignatureProofWebhook = async (
-      content     : IgnisignWebhookDto_SignatureProof,
-      error       : IgnisignError = null,
-      msgNature  ?: IGNISIGN_WEBHOOK_MESSAGE_NATURE,
-      action     ?: IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF,
-      topic      ?: IGNISIGN_WEBHOOK_TOPICS
-    ): Promise<any> => {
-      console.log('handleFinalizeSignatureWebhook');
-      
+    await ignisignSdkInstance.registerWebhookCallback_Signature(handleFinalizeSignatureWebhook, IGNISIGN_WEBHOOK_ACTION_SIGNATURE.FINALIZED);
+    
+    const handleSignatureProofWebhook = async ({ content, error, msgNature, action, topic }: IgnisignWebhook_CallbackParams<IgnisignWebhookDto_SignatureProof>): Promise<any> => {
       if(msgNature === IGNISIGN_WEBHOOK_MESSAGE_NATURE.ERROR) {
         console.error("handleFinalizeSignatureWebhook ERROR : ", error);
         return;
@@ -136,10 +108,7 @@ async function init() {
       await ContractService.handleSignatureProofWebhook(signatureRequestExternalId, signatureProofUrl)
     }
 
-    await ignisignSdkInstance.registerWebhookCallback_SignatureProof(
-      handleSignatureProofWebhook,
-      IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF.GENERATED
-    );
+    await ignisignSdkInstance.registerWebhookCallback_SignatureProof(handleSignatureProofWebhook, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF.GENERATED);
 
     await checkWebhookEndpoint();
       

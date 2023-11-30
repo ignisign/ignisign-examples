@@ -3,7 +3,9 @@ import { COUNTRY_LIST } from "@ignisign/public";
 
 const countriesDataset = COUNTRY_LIST.map(c => ({ label : c.name, value: c.code }));
 
-const getDefaultPhoneNumber = () => process.env.REACT_APP_PHONE ?? '';
+const getDefaultPhoneNumber = () => process.env.REACT_APP_PHONE ? 
+  (process.env.REACT_APP_PHONE === 'TODO' ? '' : process.env.REACT_APP_PHONE) : '';
+  
 const DEFAULT_EMAIL = process.env.REACT_APP_EMAIL ?? '';
 
 //Take a standard email adresse and create a random one by adding a random number before the @
@@ -13,6 +15,9 @@ const createRandomEmail = (email) => {
 
   const random = Math.floor(Math.random() * (10000 - 1 + 1)) + 1
   const [name, domain] = email.split('@')
+  if (domain === undefined) {
+    return ''
+  }
   return `${name}+${random}@${domain}`
 }
 

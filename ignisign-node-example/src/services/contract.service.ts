@@ -18,17 +18,11 @@ const handlePrivacyContract = async (signatureRequestId, contractFile: any) => {
 }
 
 const handleStandardFile = async (signatureRequestId, contractFile: any) => {
-  const formData = new FormData();
-  
-  formData.append('file', await fs.createReadStream(contractFile.path), {
-    filename: contractFile.originalname,
-    contentType: contractFile.mimetype
-  });
 
   const uploadDto : IgnisignSdkFileContentUploadDto = {
     fileStream  : await fs.createReadStream(contractFile.path),
-    filename    : contractFile.originalname,
-    contentType : contractFile.mimetype
+    fileName    : contractFile.originalname,
+    contentType : contractFile.mimetype,
   }
 
   const documentId = await IgnisignSdkManagerService.uploadDocument(signatureRequestId, uploadDto)
