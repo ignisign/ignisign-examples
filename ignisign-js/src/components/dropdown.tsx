@@ -1,6 +1,5 @@
 import { InputLabel, MenuItem, Select } from '@mui/material'
 import React from 'react'
-import { UseFormReturn } from 'react-hook-form'
 
 type DropdownType = {
   label: string

@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import {DropzoneOptions, useDropzone} from "react-dropzone";
 import { LoadingSpinner } from "./loadingSpinner";
 
