@@ -39,7 +39,7 @@ async function getPrivateFileUrl(documentId) : Promise<IgnisignDocument_PrivateF
   });
 }
 
-async function saveFile(fileHash, file, documentId){
+async function saveFile(fileHash, file, documentId) : Promise<MyFile>{
   return new Promise(async (resolve, reject) => {
 
     const path = await saveFileToFolder(file.path, 'uploads', documentId)
@@ -51,12 +51,15 @@ async function saveFile(fileHash, file, documentId){
       documentId
     }
         
-    MyFileModel.insert(data, async (error, found: MyUser[]) => {
+    MyFileModel.insert(data, async (error, found: MyFile[]) => {
       if (error) {
         console.error(error)
         reject(error);
+      } else if(!found || found.length === 0) {
+        reject(new Error("File not found"))
+        
       } else {
-        resolve(found);
+        resolve(found[0]);
       }
     });
   });

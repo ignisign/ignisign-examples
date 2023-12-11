@@ -29,7 +29,7 @@ const MenuItem = ({link, text, disabled = false}) => {
   }
 
   return <>
-    <div onClick={goTo} className={`justify-center py-3 px-5 border-t border-b  ${(disabled)? 'bg-gray-700 text-gray-500 cursor-not-allowed' : `${isSelected ? 'bg-primary-900' : ''} cursor-pointer`}`}>
+    <div onClick={goTo} className={`justify-center py-3 px-5 border-t border-b  ${(disabled)? 'bg-gray-200 text-gray-500 cursor-not-allowed' : `${isSelected ? 'bg-primary-200 text-primary-500 font-semibold' : 'hover:bg-gray-300 hover:underline hover:font-semibold'} cursor-pointer`}`}>
       {text}
     </div>
   </>
@@ -39,8 +39,9 @@ const MenuContent = () => {
   const {signatureProfile} = useGlobal()
 
   return <div className='mt-2'>
-    <MenuItem link={FrontUrlProvider.homePage()} text='Home'/>
-    <MenuItem disabled={!signatureProfile} link={FrontUrlProvider.contractsPage()} text='Contracts'/>
+    <MenuItem link={FrontUrlProvider.homePage()} text='Home Page'/>
+    <MenuItem link={FrontUrlProvider.createContract()} text='Create a contract'/>
+    <MenuItem disabled={!signatureProfile} link={FrontUrlProvider.contractsPage()} text='List contracts'/>
   </div>
 }
 
@@ -56,7 +57,7 @@ const Menu = ({children}) => {
           <Typography variant="h6" noWrap component="div">
             Ignisign example - Contract signing app
           </Typography>
-          <Button disabled={!signatureProfile} onClick={() => history.push(FrontUrlProvider.makeContract())}>Start by creating a contract</Button>
+          <Button disabled={!signatureProfile} onClick={() => history.push(FrontUrlProvider.createContract())}>Start by creating a contract</Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -67,7 +68,7 @@ const Menu = ({children}) => {
           [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
         }}
       >
-        <div className='pt-14 h-screen bg-gray-800'>
+        <div className='pt-14 h-screen bg-gray-200'>
           <MenuContent/>
         </div>
       </Drawer>

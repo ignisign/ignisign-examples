@@ -2,7 +2,7 @@ import { Router } from "express";
 import { jsonSuccess } from "../utils/controller.util";
 import { NextFunction, Request, Response } from 'express';
 import { UserService } from "../services/user.service";
-import { MY_USER_TYPES } from "../models/user.db.model";
+import { MY_USER_TYPES, MyUser } from "../models/user.db.model";
   
 // Example Controller used to manage customers
 export const customerController = (router: Router) => {
@@ -19,8 +19,9 @@ export const customerController = (router: Router) => {
   // The UserService.addUser method create signers.
   router.post('/v1/customers', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const found = await UserService.addUser(MY_USER_TYPES.CUSTOMER, req.body);
-      return jsonSuccess(res, found)
+      const user : MyUser = await UserService.addUser(MY_USER_TYPES.CUSTOMER, req.body);
+      console.log("user controller", user)
+      return jsonSuccess(res, user)
     } catch(e) { next(e) }
   })
   

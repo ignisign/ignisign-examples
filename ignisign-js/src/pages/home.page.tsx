@@ -17,9 +17,17 @@ export function HomePage() {
       <div>
           <div className="mt-4">
             <ExplanationHome1/>
-            <div className="my-8">
-              <Card>
-                <div>Signature profile informations</div>
+            <div className="flex justify-center mt-4">
+            <Button 
+              disabled={!signatureProfile} 
+              onClick={() => history.push(FrontUrlProvider.createContract())}>
+
+                Start by creating a contract
+            </Button>
+            </div>
+            <div className="mt-4">
+              <Card className="flex-col">
+                <div className="text-lg font-semibold">Signature Profile informations</div>
                 <div className="mt-2">
                   <div>
                     {(signatureProfile) ? 
@@ -28,14 +36,9 @@ export function HomePage() {
                         <Explanation_IsPrivateFile/>
                     </> : 
                     <>
-                      {(isLoading) ? 
-                        <>
-                          <div>Loading...</div>
-                        </> : 
-                        <>
-                          <div className="text-red-500">Cannot find signature profile</div>
-                        </>
-                      }
+                      {(isLoading) 
+                        ? <div>Loading...</div>
+                        : <div className="text-red-500">Cannot find signature profile</div>}
                     </>
                   }
                 </div>
@@ -44,14 +47,7 @@ export function HomePage() {
             </Card>
           </div>
 
-          <div className="flex justify-center">
-            <Button 
-              disabled={!signatureProfile} 
-              onClick={() => history.push(FrontUrlProvider.makeContract())}>
-
-                Start by creating a contract
-            </Button>
-          </div>
+          
         </div>
       </div>
     

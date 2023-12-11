@@ -35,7 +35,7 @@ const NewSellerDialog = ({isOpen, onClose}) => {
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <form onSubmit={form.handleSubmit(add)}>
-        <DialogTitle>Add seller</DialogTitle>
+        <DialogTitle>Create a new Seller</DialogTitle>
         <DialogContent>
           <div className='flex flex-wrap'>
               {
@@ -66,7 +66,7 @@ export const Sellers = () => {
         isDialogOpen && 
         <NewSellerDialog isOpen={true} onClose={()=>setIsDialogOpen(false)}/>
       }
-      <Card>
+      <Card className="flex-1 flex-col">
         <div className='flex items-center gap-3'>
           <div className='font-medium'>Choose a seller</div>
           <div>

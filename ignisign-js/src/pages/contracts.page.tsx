@@ -21,9 +21,11 @@ const Explanation_Contract_Embedded = () => {
   const {isEmbedded}  = useGlobal()
   if(!isEmbedded) return (<></>)
 
-  return ( <div className='mt-4'>
+
+  return ( <div className='mt-4 border border-blue-600 bg-blue-100 text-xs text-blue-600 p-4 rounded'>
+    <div className='font-semibold'>Embedded Mode</div>
     <div>As signers tokens are provided through webhook, it may took some time to display signing button</div>
-    <div>If, after a while, the 'Sign my document' button has not appeared, something may have gone wrong. Please check the webhook and backend.</div>
+    <div>If after a while, the 'Sign my document' button has not appeared, something may have gone wrong. Please check the webhook and backend.</div>
   </div>)
 } 
 
@@ -59,7 +61,7 @@ const Contracts = () => {
 
   return (
     <div>
-      <Card>
+      <Card className='flex-col'>
         <Explanation_Contract_Header/>
         {(!users.length)? 
           <> No Users - Please create a client or a seller</> : 
@@ -86,29 +88,14 @@ const Contracts = () => {
                           <div key={e._id} className='mb-4'>
                             <Card>
                               <div className='flex justify-between items-center'>
-                                <div>
+                                <div className='mr-2'>
                                   Contract n°{e._id}
                                 </div>
-                                { (e.signers.find(e=>e.userId === selectedUserId).status === 'DONE' && !e.isSignatureProofReady )? 
-                                  <>
-                                    <div className='text-yellow-400'>Waiting signature proof generation</div>
-                                  </> : 
-                                  <>
-                                    { e.isSignatureProofReady && 
-                                      <Button onClick={()=>downloadSignatureProof(e._id)}>
-                                        Download signature proof
-                                      </Button> }
-                                      
-                                    { e.signatureProofUrl && 
-                                      <Button onClick={()=>openSignatureProofUrl(e.signatureProofUrl)}>
-                                        Detailed signature proof
-                                      </Button> }
-                                  </>
-                                }
+                                
                                 {/* The User has signed the contract */}
                                 <div>
                                   {(e.signers.find(e=>e.userId === selectedUserId).status === 'DONE')? 
-                                    <div className='text-green-500'> 
+                                    <div className='text-green-500 text-xs py-1 px-2 bg-green-50 border-green-500 border rounded mr-2 '> 
                                       Signed 
                                     </div> : 
                                     <>
@@ -119,16 +106,33 @@ const Contracts = () => {
                                                 onClick={() => history.push(FrontUrlProvider.signContract(e._id, selectedUserId))}>
                                                   Sign my document
                                               </Button> :
-                                              <div className='text-yellow-400'>
+                                              <div className='text-yellow-500 text-xs py-1 px-2 bg-yellow-50 border-yellow-500 border rounded mr-2 '>
                                                 Waiting webhook, please refresh
                                               </div>
                                           }
                                         </> : 
-                                        <div className='text-yellow-400'>Waiting signature - Request have been sent by email</div>
+                                        <div className='text-yellow-500 text-xs py-1 px-2 bg-green-50 border-yellow-500 border rounded mr-2 '>Waiting signature - Request have been sent by email</div>
                                       }
                                     </>
                                   }
                                 </div>
+                                { (e.signers.find(e=>e.userId === selectedUserId).status === 'DONE' && !e.isSignatureProofReady )? 
+                                  <>
+                                    <div className='text-yellow-500 text-xs py-1 px-2 bg-yellow-50 border-yellow-500 border rounded  mr-2 '>Waiting signature proof generation</div>
+                                  </> : 
+                                  <div className='flex flex-row gap-2'>
+                                    { e.isSignatureProofReady && 
+                                      <Button className="mr-2" onClick={()=>downloadSignatureProof(e._id)}>
+                                        Download signature proof
+                                      </Button> }
+                                      
+                                    { e.signatureProofUrl && 
+                                      <Button className="mr-2" onClick={()=>openSignatureProofUrl(e.signatureProofUrl)}>
+                                        Detailed signature proof
+                                      </Button> }
+                                  </div>
+                                }
+
                               </div>
                             </Card>
                           </div>

@@ -12,7 +12,7 @@ import { Customers } from '../components/customer'
 import { Sellers } from '../components/seller'
 import { useHistory } from "react-router";
 
-const MakeContract = () => {
+const CreateContract = () => {
   const history                           = useHistory();
   const {selectedCustomerId}              = useCustomer();
   const {selectedSellerId}                = useSeller();
@@ -42,13 +42,13 @@ const MakeContract = () => {
   }
 
   return (
-    <div>
-      <div className='flex gap-4'>
+    <div className='w-full'>
+      <div className='flex gap-4 w-full'>
         <Sellers/>
         <Customers/>
       </div>
       <div className='mt-4'>
-        <Card>
+        <Card className='flex-col'>
           <div className='font-medium'>Upload Contract</div>
           <div className='mt-2'>
             <Dropzone
@@ -68,4 +68,4 @@ const MakeContract = () => {
   )
 }
 
-export default MakeContract
+export default CreateContract

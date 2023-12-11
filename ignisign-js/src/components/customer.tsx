@@ -36,7 +36,7 @@ const NewCustomerDialog = ({isOpen, onClose}) => {
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <form onSubmit={form.handleSubmit(add)}>
-        <DialogTitle>Add customer</DialogTitle>
+        <DialogTitle>Create a new Customer</DialogTitle>
         <DialogContent>
           <div className='flex flex-wrap'>
             {
@@ -66,9 +66,9 @@ export const Customers = () => {
     <>
       {isDialogOpen && 
         <NewCustomerDialog isOpen={true} onClose={()=>setIsDialogOpen(false)}/>}
-      <Card>
+      <Card className="flex-col flex-1">
         <div className='flex items-center gap-3'>
-          <div className='font-medium'>Choose a customer</div>
+          <div className='font-medium'>Choose a Customer</div>
           <div>
             <Button onClick={()=>setIsDialogOpen(true)}>New customer</Button>
           </div>

@@ -10,13 +10,13 @@ export enum MY_USER_TYPES {
 
 export type MyUser = {
   type                 : MY_USER_TYPES;
-  firstName            : string;
-  lastName             : string;
-  email                : string;
-  nationality         ?: COUNTRIES;
-  birthDate           ?: Date;
+  firstName           ?: string;
+  lastName            ?: string;
+  email               ?: string;
+  nationality         ?: string;
+  birthDate           ?: string;
   birthPlace          ?: string;
-  birthCountry        ?: COUNTRIES;
+  birthCountry        ?: string;
   signerId            ?: string;
   ignisignAuthSecret  ?: string;
   phoneNumber         ?: string;

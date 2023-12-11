@@ -9,7 +9,7 @@ import Menu from './components-ui/menu';
 import muiTheme from './utils/mui-theme';
 import { FrontUrlProvider } from './utils/front-url-provider';
 import './index.css';
-import MakeContract from './pages/make-contract.page';
+import CreateContract from './pages/create-contract.page';
 import { CustomerContextProvider } from './contexts/customer.context';
 import { GlobalContextProvider } from './contexts/global.context';
 import { SellerContextProvider } from './contexts/seller.context';
@@ -36,8 +36,8 @@ function AppRouter() {
         <Route exact path={FrontUrlProvider.signContract()}>
           <SignAContract/>
         </Route>
-        <Route exact path={FrontUrlProvider.makeContract()}>
-          <MakeContract/>
+        <Route exact path={FrontUrlProvider.createContract()}>
+          <CreateContract/>
         </Route>
         <Route exact path={FrontUrlProvider.contractsPage()}>
           <Contracts/>
@@ -76,8 +76,8 @@ function App() {
 }
 
 const container = document.getElementById('root');
-const root = createRoot(container!); // createRoot(container!) if you use TypeScript
-root.render(<App  />);
+const root = createRoot(container!);
+root.render(<App/>);
 
 
 

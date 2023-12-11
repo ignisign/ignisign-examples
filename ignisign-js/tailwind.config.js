@@ -72,7 +72,7 @@ module.exports = {
       safelist: whitelist,
     }
   },
-  darkMode: "class", // or 'media' or 'class'
+  // darkMode: "class", // or 'media' or 'class'
   theme: {
     minHeight: {
       p100: '100px',
@@ -120,8 +120,6 @@ module.exports = {
   variants: {
 
     extend: {
-      
-     
       borderWidth: ['hover', 'focus'],
       display : [ "hover"],
       padding : [ "hover" ],
@@ -133,7 +131,7 @@ module.exports = {
     },
   },
   plugins: [
-    require("nightwind"),
+    
     require('@tailwindcss/line-clamp'),
     require('@tailwindcss/aspect-ratio'),
   ],

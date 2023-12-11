@@ -5,10 +5,11 @@ import { LoadingSpinner } from './loadingSpinner';
 
 type ButtonType = 'button' | 'submit';
 interface IButtonProps {
-  onClick  ?: () => void;
-  type     ?: ButtonType;
-  disabled ?: boolean;
-  loading  ?: boolean;
+  onClick   ?: () => void;
+  type      ?: ButtonType;
+  disabled  ?: boolean;
+  loading   ?: boolean;
+  className ?: string;
 };
 
 const Button = ({
@@ -16,6 +17,7 @@ const Button = ({
   type     = 'button',
   disabled = false,
   loading  = false,
+  className = '',
   children
 } : PropsWithChildren<IButtonProps>) => {
 
@@ -28,7 +30,7 @@ const Button = ({
       }
 
       <MuiButton
-        className={`${disabled || loading ? 'text-gray-500' : ''}`} 
+        className={`${disabled || loading ? 'text-gray-500' : ''} ${className}`} 
         disabled={disabled || loading} 
         type={type} 
         sx={{textTransform: 'none'}} 

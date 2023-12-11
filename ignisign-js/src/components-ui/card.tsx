@@ -1,12 +1,11 @@
 
-import { Card as MaterialCard } from '@material-ui/core'
 import React from 'react'
 
-const Card = ({children, light = false}) => {
+const Card = ({children, className = ""}) => {
   return (
-    <MaterialCard className={`flex-1 ${light ? 'bg-gray-500' : 'bg-gray-700'} p-4`}>
+    <div className={"border p-4 rounded bg-gray-50 flex " + className }>
       {children}
-    </MaterialCard>
+    </div>
   )
 }
 

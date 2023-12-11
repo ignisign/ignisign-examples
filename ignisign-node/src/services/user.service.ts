@@ -72,15 +72,18 @@ async function addUser(type: MY_USER_TYPES, inputs: IgnisignSigner_CreationReque
               ...(inputs?.birthDate && { birthDate : inputs.birthDate.toString()}), 
             }
 
-            // TODO update this to use the new IgnisignSdkManagerService.createSigner method
             const signer = await IgnisignSdkManagerService.createNewSigner(signatureProfileId, inputToCreate, userId);
   
             const { signerId, authSecret } = signer;
+
+            const toUpdate = {  ...inputs, type, signatureProfileId , signerId, ignisignAuthSecret: authSecret};
           
             MyUserModel.update(
               {_id: userId}, 
-              {signerId, ignisignAuthSecret: authSecret, ...inputs, type, signatureProfileId}, 
-              (error, user)=> error ? reject(error) : resolve(user));
+              toUpdate, 
+              (error, result)=> error ? reject(error) : resolve({...toUpdate, _id: userId}));
+            
+            
             
           } catch (error) {
             console.error(error)
