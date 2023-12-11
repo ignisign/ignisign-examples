@@ -32,9 +32,6 @@ export const ApiService = {
   getCustomers,
 }
 
-async function downloadSignatureProof(contractId) {
-  return http.get(`/v1/contracts/${contractId}/download-signature-proof`, {responseType: 'blob'})
-}
 
 /** DEMO APP CONTEXT */
 async function getAppContext(): Promise<AppContextType> {
@@ -54,6 +51,10 @@ async function getContractContext(contractId, userId): Promise<ContractContext> 
 
 async function getContracts(userId: string): Promise<Contract> {
   return http.get(`/v1/user/${userId}/contracts`)
+}
+
+async function downloadSignatureProof(contractId) {
+  return http.get(`/v1/contracts/${contractId}/download-signature-proof`, {responseType: 'blob'})
 }
 
 async function createContract(selectedCustomerId, selectedSellerId, selectedFile): Promise<any> {

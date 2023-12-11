@@ -6,7 +6,6 @@ export function formattedDate(date: Date, displayHours: boolean = false) {
     moment(new Date(date)).format("DD/MM/YY")
 }
 
-
 export function formattedTimeFromDate(date: Date) {
   return moment(new Date(date)).format("HH:mm:ss") 
 }
