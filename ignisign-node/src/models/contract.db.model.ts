@@ -19,12 +19,12 @@ export type Contract = {
 }
 
 export type ContractContext = {
-  signatureRequestId: string,
-  ignisignSignerId: string,
-  ignisignSignatureToken: string,
-  ignisignUserAuthSecret: string,
-  ignisignAppId: string,
-  ignisignAppEnv: IGNISIGN_APPLICATION_ENV,
+  signatureRequestId      : string,
+  ignisignSignerId        : string,
+  ignisignSignatureToken  : string,
+  ignisignUserAuthSecret  : string,
+  ignisignAppId           : string,
+  ignisignAppEnv          : IGNISIGN_APPLICATION_ENV,
 }
 
 export const ContractModel   = db.collection("contracts");

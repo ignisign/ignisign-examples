@@ -19,6 +19,8 @@ export const ContractContextProvider = ({ children }) => {
     try {
       const contracts = await ApiService.getContracts(userId)
       setContracts(contracts)
+    } catch (error) {
+      console.log(error)  
     } finally {
       setIsLoading(false)
     }

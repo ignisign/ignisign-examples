@@ -5,17 +5,17 @@ import { CssBaseline, MuiThemeProvider } from "@material-ui/core";
 import { createTheme } from "@material-ui/core/styles";
 import { IgnisignSnackbarProvider } from './contexts/snackbar.context';
 import { HomePage } from './pages/home.page';
-import Menu from './components/menu';
+import Menu from './components-ui/menu';
 import muiTheme from './utils/mui-theme';
 import { FrontUrlProvider } from './utils/front-url-provider';
 import './index.css';
-import MakeContract from './pages/contract/make-contract.page';
+import MakeContract from './pages/make-contract.page';
 import { CustomerContextProvider } from './contexts/customer.context';
 import { GlobalContextProvider } from './contexts/global.context';
 import { SellerContextProvider } from './contexts/seller.context';
 import Contracts from './pages/contracts.page';
 import { ContractContextProvider } from './contexts/contract.context';
-import SignAContract from './pages/contract/sign-a-contract.page';
+import SignAContract from './pages/sign-a-contract.page';
 
 const NotFoundPage = () => {
   return (
@@ -30,27 +30,21 @@ function AppRouter() {
   return (
     <div className='mt-12'>
       <Switch>
-
         <Route exact path={FrontUrlProvider.homePage()}>
           <HomePage/>
         </Route>
-
         <Route exact path={FrontUrlProvider.signContract()}>
           <SignAContract/>
         </Route>
-
         <Route exact path={FrontUrlProvider.makeContract()}>
           <MakeContract/>
         </Route>
-
         <Route exact path={FrontUrlProvider.contractsPage()}>
           <Contracts/>
         </Route>
-
         <Route>
           <NotFoundPage/>
         </Route>
-
       </Switch>
     </div>
   )

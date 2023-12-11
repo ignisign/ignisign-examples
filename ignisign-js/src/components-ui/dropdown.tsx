@@ -1,4 +1,4 @@
-import { InputLabel, MenuItem, Select } from '@mui/material'
+import { MenuItem, Select } from '@mui/material'
 import React from 'react'
 
 type DropdownType = {

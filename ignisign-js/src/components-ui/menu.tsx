@@ -29,7 +29,7 @@ const MenuItem = ({link, text, disabled = false}) => {
   }
 
   return <>
-    <div onClick={goTo} className={`justify-center py-3 px-5 border-t border-b  ${disabled ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : `${isSelected ? 'bg-primary-900' : ''} cursor-pointer`}`}>
+    <div onClick={goTo} className={`justify-center py-3 px-5 border-t border-b  ${(disabled)? 'bg-gray-700 text-gray-500 cursor-not-allowed' : `${isSelected ? 'bg-primary-900' : ''} cursor-pointer`}`}>
       {text}
     </div>
   </>

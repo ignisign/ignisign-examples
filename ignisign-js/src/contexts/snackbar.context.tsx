@@ -57,14 +57,14 @@ const IgnisignSnackbarProviderContent = ({ children}) => {
     notiSnackBar.enqueueSnackbar(notifDto.message, notifDto.options)
   }
 
-  const notifyWarn = ( message)    => treatFormattedNotification(message, "warning")
-
+  const notifyWarn    = ( message) => treatFormattedNotification(message, "warning")
   const notifySuccess = ( message) => treatFormattedNotification(message, "success")
-  const notifyInfo = ( message)    => treatFormattedNotification(message, "info")
+  const notifyInfo    = ( message) => treatFormattedNotification(message, "info")
+  const notifyError   = ( message, errorToLog?: any)   => {
+    if(errorToLog)
+      console.log(errorToLog)
 
-  const notifyError = ( message, errorToLog?: any)   => {
-
-  treatFormattedNotification(message, "error")
+    treatFormattedNotification(message, "error")
   }
 
   const context = { notifyWarn, notifyError, notifySuccess, notifyInfo};
@@ -75,7 +75,6 @@ const IgnisignSnackbarProviderContent = ({ children}) => {
       </IgnisignSnackbarContext.Provider>
   )
 }
-
 
 const useIgniSnackbar = () => useContext(IgnisignSnackbarContext)
 

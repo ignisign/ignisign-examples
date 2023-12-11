@@ -30,6 +30,8 @@ export const GlobalContextProvider = ({ children }) => {
       setIsEmbedded(appContext.signatureProfile.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED)
       setIsFilesPrivates(appContext.signatureProfile.documentTypes.includes(IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE))
       setWebhooks(appContext.webhooks)
+    } catch (error) {
+      console.log(error)  
     }
     finally {
       setIsLoading(false)

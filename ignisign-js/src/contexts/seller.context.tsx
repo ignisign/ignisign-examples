@@ -39,6 +39,8 @@ export const SellerContextProvider = ({ children }) => {
       }
       
       setSellers(sellers)
+    } catch (error) {
+      console.log(error)
     } finally {
       setIsLoading(false)
     }
@@ -63,5 +65,5 @@ export const SellerContextProvider = ({ children }) => {
   )
 }
 
-export const useSeller = () => useContext(SellerContext);
+export const useSeller     = () => useContext(SellerContext);
 export const SellerContext = createContext<ISellerContext>({} as ISellerContext);

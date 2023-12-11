@@ -1,13 +1,13 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "../../components/button";
-import Card from "../../components/card";
-import { Input } from "../../components/input";
-import Select from "../../components/select";
-import { useCustomer } from "../../contexts/customer.context";
-import { useGlobal } from "../../contexts/global.context";
-import { INPUTS } from "../../utils/inputs";
+import { Button } from "../components-ui/button";
+import Card from "../components-ui/card";
+import { Input } from "../components-ui/input";
+import Select from "../components-ui/select";
+import { useCustomer } from "../contexts/customer.context";
+import { useGlobal } from "../contexts/global.context";
+import { INPUTS } from "../utils/inputs.utils";
 
 const NewCustomerDialog = ({isOpen, onClose}) => {
   const form                      = useForm();
@@ -64,10 +64,8 @@ export const Customers = () => {
 
   return (
     <>
-      {
-        isDialogOpen && 
-        <NewCustomerDialog isOpen={true} onClose={()=>setIsDialogOpen(false)}/>
-      }
+      {isDialogOpen && 
+        <NewCustomerDialog isOpen={true} onClose={()=>setIsDialogOpen(false)}/>}
       <Card>
         <div className='flex items-center gap-3'>
           <div className='font-medium'>Choose a customer</div>
@@ -76,14 +74,14 @@ export const Customers = () => {
           </div>
         </div>
         <div className='mt-4 w-full'>
-          {
-            isLoading ? <>
+          {(isLoading)? 
+            <>
               <div className='text-center'>Loading customers...</div>
-            </> : <>
-              {
-                !customers || customers.length === 0 ? <div className='text-center'>No customers found</div>
-                : <Select callback={setSelectedCustomerId} options={customers?.map(e=>({key: e._id, value: e.email}))}/>
-              }
+            </> :
+            <>
+              {(!customers || customers.length === 0 )? 
+                <div className='text-center'>No customers found</div>
+                : <Select callback={setSelectedCustomerId} options={customers?.map(e=>({key: e._id, value: e.email}))}/>}
             </>
           }
         </div>

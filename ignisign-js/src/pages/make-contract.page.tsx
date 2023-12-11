@@ -1,21 +1,15 @@
 
-import { faker } from '@faker-js/faker'
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { Button } from '../../components/button'
-import Card from '../../components/card'
-import { Dropzone } from '../../components/dropzone'
-import { Input } from '../../components/input'
-import Select from '../../components/select'
-import { useCustomer } from '../../contexts/customer.context'
-import { useGlobal } from '../../contexts/global.context'
-import { useSeller } from '../../contexts/seller.context'
-import { ApiService } from '../../services/api.service'
-import { FrontUrlProvider } from '../../utils/front-url-provider'
-import { INPUTS } from '../../utils/inputs'
-import { Customers } from './customer'
-import { Sellers } from './seller'
+
+import { Button } from '../components-ui/button'
+import Card from '../components-ui/card'
+import { Dropzone } from '../components-ui/dropzone'
+import { useCustomer } from '../contexts/customer.context'
+import { useSeller } from '../contexts/seller.context'
+import { ApiService } from '../services/api.service'
+import { FrontUrlProvider } from '../utils/front-url-provider'
+import { Customers } from '../components/customer'
+import { Sellers } from '../components/seller'
 import { useHistory } from "react-router";
 
 const MakeContract = () => {
@@ -55,7 +49,7 @@ const MakeContract = () => {
       </div>
       <div className='mt-4'>
         <Card>
-          <div className='font-medium'>Upload contract</div>
+          <div className='font-medium'>Upload Contract</div>
           <div className='mt-2'>
             <Dropzone
               onDrop={async files => handleFileChange(files)}
@@ -67,7 +61,7 @@ const MakeContract = () => {
         </Card>
       </div>
       <div className='mt-4 flex justify-center items-center'>
-        <Button disabled={isLoading || !selectedCustomerId || !selectedSellerId || !selectedFiles.length} onClick={sendContract}>Send contract request</Button>
+        <Button disabled={isLoading || !selectedCustomerId || !selectedSellerId || !selectedFiles.length} onClick={sendContract}>Send Contract Request</Button>
         {isLoading && <div className='ml-4'>...Loading</div>}
       </div>
     </div>

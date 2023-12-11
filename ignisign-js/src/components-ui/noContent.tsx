@@ -33,7 +33,6 @@ export const NoContent = ({title, description, className = '', button}: INoConte
       <Button onClick={button.onClick}>
         <div className="flex items-center gap-3">
           <FaPlusCircle/>
-
           {button.label}
         </div>
       </Button>

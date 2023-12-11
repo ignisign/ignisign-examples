@@ -19,7 +19,7 @@ export const Input = ({label, form, name, className = '', type = 'text', dataset
   return (
     <div className={className}>
       {
-        type === 'select' ? 
+        (type === 'select')? 
           <>
             <InputLabel id={`${label}-label`}>{label}</InputLabel>
             <Select 

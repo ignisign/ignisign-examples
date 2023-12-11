@@ -3,25 +3,20 @@ import * as path from 'path';
 // @ts-ignore
 global['appRoot'] = path.join(__dirname, '..');
 
-
 import * as express from 'express';
 import cookieParser = require('cookie-parser');
 import cors = require('cors');
 
 import validateEnv from './utils/validate-env';
-
-import { NextFunction, Request, Response } from 'express';
   
 import 'dotenv/config'; 
 import { IgnisignSdkManagerService } from './services/ignisign-sdk-manager.service';
-import { deleteFile } from './utils/files.util';
-import { FileService } from './services/files.service';
+
 import { errorMiddleware } from './utils/error.middleware';
 import { checkBearerToken } from './utils/authorization.middleware';
 import { jsonError, jsonSuccess } from './utils/controller.util';
 import { customerController } from './controllers/customer.controller';
 import { sellerController } from './controllers/seller.controller';
-import { IGNISIGN_INTEGRATION_MODE } from '@ignisign/public';
 import { contractController } from './controllers/contract.controller';
 import { appController } from './controllers/app.controller';
 

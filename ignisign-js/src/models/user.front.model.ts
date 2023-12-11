@@ -6,7 +6,7 @@ export enum MY_USER_TYPES {
 }
 
 export type MyUser = {
-  type: MY_USER_TYPES;
+  type          : MY_USER_TYPES;
   email         : string;
   firstName    ?: string;
   lastName     ?: string;

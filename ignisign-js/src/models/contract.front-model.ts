@@ -1,11 +1,12 @@
 import { IGNISIGN_APPLICATION_ENV } from "@ignisign/public";
 
 export type Contract = {
-  _id : string;
-  signatureRequestId : string;
+  _id                    : string;
+  signatureRequestId     : string;
   documentId            ?: string;
   isSignatureProofReady ?: boolean;
-  signatureProofUrl?: string;
+  signatureProofUrl     ?: string;
+  
   signers : {
     ignisignSignerId        : string;
     userId                  : string;
@@ -15,10 +16,10 @@ export type Contract = {
 }
 
 export type ContractContext = {
-  signatureRequestId: string,
-  ignisignSignerId: string,
-  ignisignSignatureToken: string,
-  ignisignUserAuthSecret: string,
-  ignisignAppId: string,
-  ignisignAppEnv: IGNISIGN_APPLICATION_ENV,
+  signatureRequestId      : string,
+  ignisignSignerId        : string,
+  ignisignSignatureToken  : string,
+  ignisignUserAuthSecret  : string,
+  ignisignAppId           : string,
+  ignisignAppEnv          : IGNISIGN_APPLICATION_ENV,
 }

@@ -2,9 +2,15 @@ import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as crypto from "crypto";
 
-const ALGORITHM   = 'sha256'
+const ALGORITHM     = 'sha256'
 const ENCODING      = 'base64'
 type HashDataInput  = string | NodeJS.ReadableStream;
+
+export {
+  getFileHash,
+  saveFileToFolder,
+  deleteFile,
+}
 
 async function getFileHash(input: HashDataInput) : Promise<string>{
   if(_.isString(input))
@@ -13,7 +19,7 @@ async function getFileHash(input: HashDataInput) : Promise<string>{
   return getHashFromStream(<NodeJS.ReadableStream>input);
 }
 
-const saveFileToFolder = (filePath, folderPath, fileName = null) => {
+async function saveFileToFolder(filePath, folderPath, fileName = null) : Promise<string>{
   return new Promise((resolve, reject) => {
     
     const name            = filePath.split('/').pop(); // Extract the file name from the file path
@@ -32,31 +38,34 @@ const saveFileToFolder = (filePath, folderPath, fileName = null) => {
   });
 }
 
+async function getHashFromStream(input: any): Promise<string> {
 
-async function getHashFromStream(input: any): Promise<string>{
   return new Promise((resolve, reject) => {
     try {
       const hash = crypto.createHash(ALGORITHM);
+
       input.on('error', (err)   => reject(err));
       input.on('data',  (chunk) => hash.update(chunk));
       input.on('end',   ()      => resolve(hash.digest(ENCODING)));
+
     } catch (e) {
       reject(e);
     }
   });
 }
 
-const deleteFile = (filePath) => {
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      console.error('Error deleting file:', err);
-      return;
-    }
+async function deleteFile(filePath) : Promise<void>{
+  
+  return new Promise((resolve, reject) => {
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error('Error when deleting file:' + filePath);
+        reject(err);
+
+      } else {
+        resolve()
+      }
+    });
   });
 }
 
-export {
-  getFileHash,
-  saveFileToFolder,
-  deleteFile,
-}

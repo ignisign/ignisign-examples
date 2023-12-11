@@ -43,7 +43,7 @@ async function getAppContext(): Promise<AppContextType> {
 
 /** PRIVATE FILE */
 async function getPrivateFileUrl(documentHash): Promise<IgnisignDocument_PrivateFileDto>{
-  return http.get(`/v1/files/${documentHash}`)
+  return http.get(`/v1/files/${documentHash}/private-file-info`)
 }
 
 /** CONTRACTS */
@@ -53,7 +53,7 @@ async function getContractContext(contractId, userId): Promise<ContractContext> 
 }
 
 async function getContracts(userId: string): Promise<Contract> {
-  return http.get(`/v1/contracts/user/${userId}`)
+  return http.get(`/v1/user/${userId}/contracts`)
 }
 
 async function createContract(selectedCustomerId, selectedSellerId, selectedFile): Promise<any> {

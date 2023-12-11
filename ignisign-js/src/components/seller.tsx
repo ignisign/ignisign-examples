@@ -1,13 +1,13 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "../../components/button";
-import Card from "../../components/card";
-import { Input } from "../../components/input";
-import Select from "../../components/select";
-import { useSeller } from "../../contexts/seller.context";
-import { useGlobal } from "../../contexts/global.context";
-import { INPUTS } from "../../utils/inputs";
+import { Button } from "../components-ui/button";
+import Card from "../components-ui/card";
+import { Input } from "../components-ui/input";
+import Select from "../components-ui/select";
+import { useSeller } from "../contexts/seller.context";
+import { useGlobal } from "../contexts/global.context";
+import { INPUTS } from "../utils/inputs.utils";
 
 const NewSellerDialog = ({isOpen, onClose}) => {
   const form                    = useForm();
