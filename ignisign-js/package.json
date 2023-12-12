@@ -5,7 +5,7 @@
   "private": false,
   "scripts": {
     "start": "env-cmd -f ./.env craco --max_old_space_size=4096 --openssl-legacy-provider start",
-    "build-web": "env-cmd -f ./.env craco --max_old_space_size=8192 --openssl-legacy-provider build",
+    "build": "env-cmd -f ./.env craco --max_old_space_size=8192 --openssl-legacy-provider build",
     "test": "craco --max_old_space_size=4096 test",
     "eject": "craco --max_old_space_size=4096 eject",
     "clean": "rm -rf ./dist && rm -f tsconfig.tsbuildinfo"

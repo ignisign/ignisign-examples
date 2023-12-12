@@ -1,53 +1,53 @@
-## Ignisign Node Example
+## Ignisign Node Example: Integrating the Ignisign NodeJS SDK
 
-This is an example of how to use the Ignisign NodeJS library in your application.
-The example application is a tiny backend that manage some seller, customer and contract between them.
+This repository offers a practical example of integrating the Ignisign NodeJS SDK into your application. 
+The sample is a straightforward CRM backend, demonstrating key Ignisign functionalities.
 
 ### Prerequisites
 
-- NodeJS > 18.0.0
-- NPM/Yarn
+- NodeJS, version 18.0.0 or higher
+- NPM or Yarn
 
-### How to use
-- Create a `.env` from `.env.example` and fill it with your credentials.
+### Setup and Usage
 
-- Get AppId from application settings & paste to .env
-- Choose your env: `DEVELOPMENT` | `STAGING` | `PRODUCTION`, 
-- generate secret key & paste to .env
+1. **Environment Configuration**: Start by creating a `.env` file from `.env.example`. Fill in your Ignisign credentials.
 
-- Create a webhook endpoint in your application into the ignisign console.<br/>
-  We suggest to use [ngrok](https://ngrok.com/) to create a tunnel to your localhost. (we don't have any agreement with ngrok, it's just a suggestion and a great tool!)<br/>
-  The webhook endpoint should be `{your_url}/v1/ignisign-webhook`<br/>
-- `yarn install` (or npm if you prefer)
-- `yarn dev` 
+2. **Acquire API Keys**:
+   - Find your `appId`, `appEnv`, and `appSecret` in the "API Keys" section of the [Ignisign Console](https://console.ignisign.io/).
+   - Specify a `signatureProfileId`, obtainable from the "Signature Profile" section of the Ignisign Console. Select your desired signature profile, expand its details, and copy the SignatureProfileId value.
 
-### How to use it with the Ignisign JS Example
+3. **Setting up a Webhook Endpoint**:
+   - Create a webhook endpoint in your application and register it in the Ignisign Console.
+   - Consider using [ngrok](https://ngrok.com/) during your development to establish a tunnel to your localhost. (Note: This is a suggestion, not an endorsement.)
+   - Your webhook endpoint should follow the format: `{your_url}/v1/ignisign-webhook`.
 
-- You can use the Ignisign JS Example to test this backend. (`../ignisign-js-example`)
-- See instruction Into the README.md of the Ignisign JS Example for the installation and the configuration. <br/>
-  Ignisign JS is an example of `Embedded` integration into your application.<br/> 
-- You can also use Ignisign with a `By-side` integration,In this case, Ignisign manage all the signature process for you and you will receive informations about the signature process by webhook.
+4. **Installation and Launch**:
+   - Install dependencies with `yarn install` (or `npm install`).
+   - Launch the application using `yarn dev`.
 
+### Integration with the Ignisign JS Example
 
-### Key point regarding Ignisign Interactions : 
-- The `src/services/ignisign-sdk-manager.service.ts` manage all core interactions with the IgniSign API. HAve a look on it to understand how to communicate with the IgniSign API.
+- Pair this backend with the Ignisign JS Example (`../ignisign-js`).
+- Follow instructions in the README.md of the Ignisign JS Example for setup and configuration.
 
-- Main endpoint that handle interaction with the IgniSign API : 
-    - Into `src/controllers/app.controller.ts` the `POST /v1/ignisign-webhook` is used to receive webhooks from Ignisign. The Url have to be configurated into the Ignisign Console
+### Key Points on Ignisign Interactions
 
-    - Into `src/controllers/app.controller.ts` the `GET /v1/files/:fileHash/private-file-info` is used to provide information related to private file to needed by the IgnisignJS SDK (front-end) to presente the file.
+- **Core Interactions**: The `src/services/ignisign-sdk-manager.service.ts` file handles essential interactions with the Ignisign API.
+- **Main Endpoints**:
+  - `src/controllers/app.controller.ts`:
+    - `POST /v1/ignisign-webhook` for receiving Ignisign webhooks.
+    - `GET /v1/files/:fileHash/private-file-info` for providing information on private files to the IgnisignJS SDK.
+    - `GET /v1/app-context` offers a `requiredInputs` field to determine necessary information for creating a signer.
+  - `src/controllers/contract.controller.ts`:
+    - `POST /v1/contracts` for creating signature requests.
+  - `src/controllers/customer.controller.ts` and `src/controllers/seller.controller.ts`:
+    - `POST /v1/customers` and `POST /v1/seller` for creating signers.
 
-    - Into `src/controllers/app.controller.ts` the `GET /v1/app-context` provide a field named `requiredInputs` that get the `getSignatureProfileSignerInputsConstraints`.  It allows to know which information are required to create a signer.
+### Additional Information
 
-    - Into `src/controllers/contract.controller.ts` the `POST /v1/contracts` create signature requests
-
-    - Into `src/controllers/customer.controller.ts` the `POST /v1/customers` and Into `src/controllers/seller.controller.ts` the `POST /v1/seller` create signers.
-
-
-### More Information:
-- Global documentation: https://docs.ignisign.io
-- Ignisign Console URL : https://console.ignisign.io
-- Ignisign NodeJS library sources: https://github.com/ignisign/ignisign-node
-- Ignisign JS library: https://github.com/ignisign/ignisign-js
-- More information about Integration Mode : https://doc.ignisign.io/#tag/Embeded-or-By-Side-Integration
-- More information about Webhook Events: https://doc.ignisign.io/#tag/Webhook-Events
+- Global Documentation: [Ignisign Docs](https://docs.ignisign.io)
+- Ignisign Console: [Access Here](https://console.ignisign.io)
+- Ignisign NodeJS Library: [GitHub Repository](https://github.com/ignisign/ignisign-node)
+- Ignisign JS Library: [GitHub Repository](https://github.com/ignisign/ignisign-js)
+- Integration Mode Details: [Embedded or By-Side Integration](https://doc.ignisign.io/#tag/Embeded-or-By-Side-Integration)
+- Webhook Events Details: [Webhook Events](https://doc.ignisign.io/#tag/Webhook-Events)

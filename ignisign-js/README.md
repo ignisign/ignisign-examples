@@ -1,36 +1,44 @@
 # Ignisign JS - Front-End Example Application (NPM-Based)
 
-This example application showcases the use of Ignisign in an `embedded` mode within an NPM-based application, utilizing the Ignisign JS library.
+- This repository provides a comprehensive example of integrating the Ignisign JS library into a front-end application. 
+- It's designed to pair with a backend demo, such as our [Ignisign Node Example](https://github.com/ignisign/ignisign-examples/tree/main/ignisign-node). 
+- The application supports various signature profiles and can be used with both `Embedded` and `By Side` integration methods, accommodating `standard` and `private` files. 
+- Signature profile configurations are managed in the backend application.
+- In `Embedded` mode, the application leverages the Ignisign JS library for seamless integration.
 
-Key Integration Modes:
-- **Embedded Mode**: Direct integration into your application.
-- **By-side Integration**: In this mode, Ignisign manages the entire signature process. You'll receive updates via webhook or can manage the process through IgniSign's Console.
+## Prerequisites
 
-This front-end application is designed to complement our Back-end demo application. You can explore the NodeJS-based back-end application's source code [here](https://github.com/ignisign/ignisign-examples/tree/main/ignisign-node-example).
-
-### Prerequisites
-
-Ensure you have the following installed:
-- NodeJS, version 18.0.0 or higher
+Before starting, ensure you have:
+- NodeJS (version 18.0.0 or higher)
 - NPM or Yarn
 
-### Getting Started
+## Getting Started
 
-1. Create a `.env` file based on the `.env.example`.
-2. Install dependencies with `yarn install` (or `npm install` if you prefer).
-3. Launch the application using `yarn dev`.
+1. Clone the repository and create a `.env` file following the `.env.example`.
+2. Install dependencies using `yarn install` or `npm install`.
+3. Set up and launch a compatible backend, such as our [Ignisign Node Example](https://github.com/ignisign/ignisign-examples/tree/main/ignisign-node), to handle API calls.
+4. Start the application with `yarn start`.
 
-## Application Structure
+## Application Overview
 
-The application is a straightforward React application featuring a single page. The IgniSign integration is implemented in the `src/pages/signature-request-details.page.tsx` file.
+This React-based application demonstrates the practical integration of Ignisign into a front-end environment.
 
-### Additional Resources:
+### Showcase Features:
+The application simulates a basic CRM system to demonstrate Ignisign's capabilities. You can:
+- Create sellers and customers.
+- Facilitate contract creation between sellers and customers.
+- Enable electronic signing of contracts through IgniSign.
+- Provide signature proof upon completion of signings.
+
+### Key Components
+
+Key areas of the application include:
+- `src/components/embedded-signature.tsx`: Demonstrates initiating Ignisign JS instances.
+- `src/pages/create-contract.page.tsx`: Provides insights into creating signature requests.
+
+### Additional Resources
 
 - **Global Documentation**: [Ignisign Documentation](https://docs.ignisign.io)
 - **Ignisign Console**: [Access Here](https://console.ignisign.io)
 - **Ignisign JS Library**: [GitHub Repository](https://github.com/ignisign/ignisign-js)
 - **Integration Mode Details**: [Embedded or By-Side Integration](https://doc.ignisign.io/#tag/Embeded-or-By-Side-Integration)
-
----
-
-This revision enhances the clarity and readability of the text, making it more accessible and informative for users.
