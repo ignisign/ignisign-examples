@@ -17,10 +17,12 @@ The sample is a straightforward CRM backend, demonstrating key Ignisign function
    - Specify a `signatureProfileId`, obtainable from the "Signature Profile" section of the Ignisign Console. Select your desired signature profile, expand its details, and copy the SignatureProfileId value.
 
 3. **Setting up a Webhook Endpoint**:
-   - Create a webhook endpoint in your application and register it in the Ignisign Console.
+   - Create a webhook endpoint in your application and register it as a `webhook end-point` in the Ignisign Console (webhooks section).
    - Consider using [ngrok](https://ngrok.com/) during your development to establish a tunnel to your localhost. (Note: This is a suggestion, not an endorsement.)
-   - If you are using ngrok, the command to establish a tunnel is `ngrok http http://localhost:4242`.
-   - Your webhook endpoint should follow the format: `{your_url}/v1/ignisign-webhook`.
+     - If you are using ngrok, the command to establish a tunnel is `ngrok http http://localhost:4242`. 
+     - The process must be keeped live (use a dedicated terminal to execute). 
+     - The process will generate a URL that you can use as the server_root for your webhook endpoint.
+   - Your webhook endpoint should follow the format: `{your_server_root_url}/v1/ignisign-webhook`.
 
 4. **Installation and Launch**:
    - Install dependencies with `yarn install` (or `npm install`).
