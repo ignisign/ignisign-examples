@@ -19,6 +19,7 @@ The sample is a straightforward CRM backend, demonstrating key Ignisign function
 3. **Setting up a Webhook Endpoint**:
    - Create a webhook endpoint in your application and register it in the Ignisign Console.
    - Consider using [ngrok](https://ngrok.com/) during your development to establish a tunnel to your localhost. (Note: This is a suggestion, not an endorsement.)
+   - If you are using ngrok, the command to establish a tunnel is `ngrok http http://localhost:4242`.
    - Your webhook endpoint should follow the format: `{your_url}/v1/ignisign-webhook`.
 
 4. **Installation and Launch**:

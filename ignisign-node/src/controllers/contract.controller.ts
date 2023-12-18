@@ -1,10 +1,9 @@
 import { Router } from "express";
 import { NextFunction, Request, Response } from 'express';
 import { ContractService } from "../services/contract.service";
-import { IgnisignSdkManagerService } from "../services/ignisign-sdk-manager.service";
 import { jsonError, jsonSuccess } from "../utils/controller.util";
 import { deleteFile } from "../utils/files.util";
-import {Readable, Writable} from 'stream'
+import {Readable} from 'stream'
 import { Contract, ContractContext } from "../models/contract.db.model";
 
 const UPLOAD_TMP = 'uploads_tmp/'
