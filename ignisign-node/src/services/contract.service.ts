@@ -164,6 +164,8 @@ async function getAllContractToSignContexts(): Promise<ContractContext[]> {
         ignisignSignerId          : s.ignisignSignerId,
         ignisignSignatureToken    : s.ignisignSignatureToken,
         ignisignUserAuthSecret    : user.ignisignAuthSecret,
+        signerEmail               : user.email,
+        documentId                : c.documentId,
       }
       
     })

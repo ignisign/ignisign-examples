@@ -44,7 +44,7 @@ export const contractController = (router: Router) => {
     } catch(e) { next(e) }
   })
 
-
+  // This endpoint is used to retrieve all contracts context to sign for all users.
   router.get('/v1/contract-to-sign-contexts', async (req: Request, res: Response, next: NextFunction) => {
     try {
 
