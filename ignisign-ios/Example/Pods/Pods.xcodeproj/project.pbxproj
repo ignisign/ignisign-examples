@@ -14,6 +14,7 @@
 		3250AD9B262A8232D368C9BF7E44E247 /* ignisign-ios-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = F68148A63E78EF2D8FDAAC719055804D /* ignisign-ios-dummy.m */; };
 		3C2441059662B636BE52F7B82F117586 /* Pods-ignisign-ios_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B0A1F6FBFFAD939705C85BC28FFD9F49 /* Pods-ignisign-ios_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		438C23962F4341B98B1ADBC3E91902AD /* Pods-ignisign-ios_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 3F9390A3AE43C915975843A9315B6C92 /* Pods-ignisign-ios_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		49CBAEB82B35BED000B4AF03 /* IgnisignBroadcastableActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CBAEB72B35BED000B4AF03 /* IgnisignBroadcastableActions.swift */; };
 		49F7DCF92B358BF8002A1CA5 /* Ignisign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F7DCF82B358BF8002A1CA5 /* Ignisign.swift */; };
 		49F7DCFC2B358DFC002A1CA5 /* SessionCallbacksProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F7DCFB2B358DFC002A1CA5 /* SessionCallbacksProtocol.swift */; };
 		49F7DD0A2B358F5D002A1CA5 /* SignatureMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F7DCFD2B358F5C002A1CA5 /* SignatureMethods.swift */; };
@@ -60,6 +61,7 @@
 		3E4DD6BC90FBBE9E71E92C3F5D482271 /* ignisign-ios-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ignisign-ios-umbrella.h"; sourceTree = "<group>"; };
 		3F9390A3AE43C915975843A9315B6C92 /* Pods-ignisign-ios_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-ignisign-ios_Example-umbrella.h"; sourceTree = "<group>"; };
 		41433845DC5324173C3504F205C1D286 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		49CBAEB72B35BED000B4AF03 /* IgnisignBroadcastableActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnisignBroadcastableActions.swift; sourceTree = "<group>"; };
 		49F7DCF82B358BF8002A1CA5 /* Ignisign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ignisign.swift; sourceTree = "<group>"; };
 		49F7DCFB2B358DFC002A1CA5 /* SessionCallbacksProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCallbacksProtocol.swift; sourceTree = "<group>"; };
 		49F7DCFD2B358F5C002A1CA5 /* SignatureMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignatureMethods.swift; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 				49F7DD082B358F5D002A1CA5 /* SignerClaims.swift */,
 				49F7DD012B358F5C002A1CA5 /* Signers.swift */,
 				49F7DCFB2B358DFC002A1CA5 /* SessionCallbacksProtocol.swift */,
+				49CBAEB72B35BED000B4AF03 /* IgnisignBroadcastableActions.swift */,
 			);
 			path = Public;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 				49F7DD132B358F5D002A1CA5 /* IgnisignApplications.swift in Sources */,
 				49F7DD112B358F5D002A1CA5 /* DocumentEntities.swift in Sources */,
 				49F7DD0F2B358F5D002A1CA5 /* IgnisignSignatureLanguages.swift in Sources */,
+				49CBAEB82B35BED000B4AF03 /* IgnisignBroadcastableActions.swift in Sources */,
 				49F7DD0E2B358F5D002A1CA5 /* Signers.swift in Sources */,
 				49F7DCF92B358BF8002A1CA5 /* Ignisign.swift in Sources */,
 				3250AD9B262A8232D368C9BF7E44E247 /* ignisign-ios-dummy.m in Sources */,

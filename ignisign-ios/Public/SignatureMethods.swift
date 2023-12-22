@@ -7,8 +7,8 @@
 
 import Foundation
 
-enum IgnisignSignatureMethodRef {
-    case SIMPLE_STD
-    case ADVANCED_STD
-    case QUALIFIED_STD
+enum IgnisignSignatureMethodRef: String {
+    case SIMPLE_STD = "SIMPLE_STD"
+    case ADVANCED_STD = "ADVACED_STD"
+    case QUALIFIED_STD = "QUALIFIED_STD"
 }

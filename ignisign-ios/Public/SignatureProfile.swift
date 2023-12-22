@@ -7,9 +7,9 @@
 
 import Foundation
 
-enum IgnisignSignatureProfileStatus {
-    case PUBLISHED
-    case ARCHIVED
+enum IgnisignSignatureProfileStatus: String {
+    case PUBLISHED = "PUBLISHED"
+    case ARCHIVED = "ARCHIVED"
 }
 
 struct IgnisignSignatureProfile {

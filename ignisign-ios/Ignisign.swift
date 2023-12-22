@@ -8,14 +8,14 @@
 import Foundation
 import WebKit
 
-public class Ignisign:  WKWebView, WKScriptMessageHandler, WKNavigationDelegate {
+public class Ignisign: WKWebView, WKScriptMessageHandler, WKNavigationDelegate {
     var ignisignClientSignUrlDefault = "https://sign.ignisign.io"
     let IFRAME_MIN_HEIGHT: Int = 400
     let IFRAME_MIN_WIDTH: Int = 300
     var appId: String?
     var env: IgnisignApplicationEnv?
     var ignisignClientSignUrl: String?
-    var debug = false
+    var debug = true
     
     var signerId: String?
     var signatureRequestId: String?
@@ -27,7 +27,7 @@ public class Ignisign:  WKWebView, WKScriptMessageHandler, WKNavigationDelegate 
     var signatureAuthToken: String?
     var dimensions: IgnisignSignatureSessionDimensions?
     
-    private func debugPrint(message: String) {
+    private func debugPrint(_ message: String) {
         if debug {
             print(message)
         }
@@ -43,7 +43,6 @@ public class Ignisign:  WKWebView, WKScriptMessageHandler, WKNavigationDelegate 
     }
     
     func initWebView(config: WKWebViewConfiguration) {
-        
         let contentController = config.userContentController
         contentController.add(self, name: "message")
         navigationDelegate = self
@@ -61,7 +60,7 @@ public class Ignisign:  WKWebView, WKScriptMessageHandler, WKNavigationDelegate 
     }
     
     public func initSignatureSession(initParams: IgnisignInitParams) {
-        print("trace ignisign ios - init Signature session called : \(initParams)")
+        debugPrint("trace ignisign ios - init Signature session called : \(initParams)")
         signerId = initParams.signerId
         signatureRequestId = initParams.signatureRequestId
         closeOnFinish = initParams.closeInFinish
@@ -77,63 +76,87 @@ public class Ignisign:  WKWebView, WKScriptMessageHandler, WKNavigationDelegate 
             let signerAuthSecret = signerAuthToken,
             let displayOptions = displayOptions {
             let signatureSessionLink = getUrlSessionLink(signatureRequestId: signatureRequestId, signerId: signerId, signatureSessionToken: signatureSessionToken, signerAuthSecret: signerAuthSecret, displayOptions: displayOptions)
-            print("trace ignisign ios - init Signature session called load webview : \(signatureSessionLink)")
+            debugPrint("trace ignisign ios - init Signature session called load webview : \(signatureSessionLink)")
             load(URLRequest(url: URL(string: signatureSessionLink)!))
         } else {
-            print("trace ignisign ios - values nil")
+            debugPrint("trace ignisign ios - values nil")
         }
     }
     
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-       let jsCode = """
-       (function() {
-           function receiveMessage(event) {
-               window.webkit.messageHandlers.message.postMessage(JSON.stringify(event.data));
-           }
-           window.addEventListener("message", receiveMessage, false);
-       })()
-       """
-       webView.evaluateJavaScript(jsCode, completionHandler: nil)
-   }
+    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        let jsCode = """
+        (function() {
+            function receiveMessage(event) {
+                window.webkit.messageHandlers.message.postMessage(JSON.stringify(event.data));
+            }
+            window.addEventListener("message", receiveMessage, false);
+        })()
+        """
+         debugPrint("trace webview didFinish")
+        webView.evaluateJavaScript(jsCode, completionHandler: nil)
+    }
 
    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
        if message.name == "message", let messageBody = message.body as? String {
+           debugPrint("message : \(messageBody)")
            handleEvent(message: messageBody)
        }
    }
     
     private func handleEvent(message: String) {
-        print("Message received from JS: \(message)")
+        debugPrint("Message received from JS: \(message)")
         if let args = jsonToMap(json: message) {
             if let type = args["type"] as? String {
                 if let data = args["data"] as? [String: Any] {
-                    if type == "NEED_PRIVATE_FILE_URL" {
-                        print("trace callback - need private file url")
-                        managePrivateFileInfoProvisioning(data: data)
-                    } else if type == "OPEN_URL" {
+                    if type == IgnisignBroadcastableActions.needPrivateFileUrl.rawValue {
+                        debugPrint("trace callback - need private file url")
+                        
+                        if let documentId = data["documentId"] as? String, let externalDocumentId = data["externalDocumentId"] as? String {
+                            let data = IgnisignBroadcastableActionPrivateFileRequestDto.PrivateFileRequestData(
+                                documentId: documentId,
+                                externalDocumentId: externalDocumentId
+                            )
+                            
+                            let actionPrivateFileDto = IgnisignBroadcastableActionPrivateFileRequestDto(
+                                type: IgnisignBroadcastableActions.needPrivateFileUrl,
+                                data: data
+                            )
+                            
+                            managePrivateFileInfoProvisioning(action: actionPrivateFileDto)
+                        }
+                    } else if type == IgnisignBroadcastableActions.openUrl.rawValue {
                         if let url = data["url"] as? String {
                             load(URLRequest(url: URL(string:url)!))
                         }
-                    } else if type == "SIGNATURE_FINALIZED" {
-                        print("trace callback - signature finalized")
-                        finalizeSignatureRequest(data: data)
-                    } else if type == "SIGNATURE_ERROR" {
-                        print("trace callback - signature error")
-                        manageSignatureRequestError(data: data)
+                    } else if type == IgnisignBroadcastableActions.signatureFinalized.rawValue {
+                        debugPrint("trace callback - signature finalized")
+                        if let signatureIds = data["signatureIds"] as? [String] {
+                            let data = IgnisignBroadcastableActionSignatureFinalizedDto.SignatureFinalizedData(signatureIds: signatureIds)
+                            let actionSignatureFinalizedDto = IgnisignBroadcastableActionSignatureFinalizedDto(type: IgnisignBroadcastableActions.signatureFinalized, data: data)
+                            finalizeSignatureRequest(action: actionSignatureFinalizedDto)
+                        }
+                        
+                    } else if type == IgnisignBroadcastableActions.signatureError.rawValue {
+                        debugPrint("trace callback - signature error")
+                        if let errorCode = data["errorCode"] as? String, let errorContext = data["errorContext"] {
+                            let data = IgnisignBroadcastableActionSignatureErrorDto.SignatureErrorData(errorCode: errorCode, errorContext: errorContext)
+                            let signatureErrorActionDto = IgnisignBroadcastableActionSignatureErrorDto(type: IgnisignBroadcastableActions.signatureError, data: data)
+                            manageSignatureRequestError(action: signatureErrorActionDto)
+                        }
                     }
                 }
-            }
-            else if (args["type"] != nil && (args["data"] == nil || ((args["data"] as? [String: Any]) == nil))) {
+            } else if (args["type"] != nil && (args["data"] == nil || ((args["data"] as? [String: Any]) == nil))) {
                
            }
         }
     }
     
-    private func managePrivateFileInfoProvisioning(data: [String: Any]) {
-        let documentId = data["documentId"] as? String
-        let externalDocumentId = data["externalDocumentId"] as? String
-
-        if let documentId = documentId, let externalDocumentId = externalDocumentId, let signerId = signerId, let signatureRequestId = signatureRequestId {
+    private func managePrivateFileInfoProvisioning(action: IgnisignBroadcastableActionPrivateFileRequestDto) {
+        
+        let documentId = action.data.documentId
+        let externalDocumentId = action.data.externalDocumentId
+        
+        if let signerId = signerId, let signatureRequestId = signatureRequestId {
             sessionCallbacks?.handlePrivateFileInfoProvisioning(documentId: documentId, externalDocumentId: externalDocumentId, signerId: signerId, signatureRequestId: signatureRequestId)
         }
 
@@ -142,9 +165,9 @@ public class Ignisign:  WKWebView, WKScriptMessageHandler, WKNavigationDelegate 
         }
     }
 
-    private func finalizeSignatureRequest(data: [String: Any]) {
-        if let signatureIds = data["signatureIds"] as? [String], let signerId = signerId, let signatureRequestId = signatureRequestId {
-            sessionCallbacks?.handleSignatureSessionFinalized(signatureIds: signatureIds, signerId: signerId, signatureRequestId: signatureRequestId)
+    private func finalizeSignatureRequest(action: IgnisignBroadcastableActionSignatureFinalizedDto) {
+        if let signerId = signerId, let signatureRequestId = signatureRequestId {
+            sessionCallbacks?.handleSignatureSessionFinalized(signatureIds: action.data.signatureIds, signerId: signerId, signatureRequestId: signatureRequestId)
         }
 
         if closeOnFinish {
@@ -152,16 +175,16 @@ public class Ignisign:  WKWebView, WKScriptMessageHandler, WKNavigationDelegate 
         }
     }
 
-    private func manageSignatureRequestError(data: [String: Any]) {
-        let errorCode = data["errorCode"] as? String
-        let errorContext = data["errorContext"] as? Any
+    private func manageSignatureRequestError(action: IgnisignBroadcastableActionSignatureErrorDto) {
+        let errorCode = action.data.errorCode
+        let errorContext = action.data.errorContext
         
-        print("errorCode : \(errorCode)")
-        print("errorContext : \(errorContext)")
-        print("signerId : \(signerId)")
-        print("signatureRequestId : \(signatureRequestId)")
+        debugPrint("errorCode : \(errorCode)")
+        debugPrint("errorContext : \(errorContext)")
+        debugPrint("signerId : \(signerId)")
+        debugPrint("signatureRequestId : \(signatureRequestId)")
 
-        if let errorCode = errorCode, let errorContext = errorContext, let signerId = signerId, let signatureRequestId = signatureRequestId {
+        if let signerId = signerId, let signatureRequestId = signatureRequestId {
             sessionCallbacks?.handleSignatureSessionError(errorCode: errorCode, errorContext: errorContext, signerId: signerId, signatureRequestId: signatureRequestId)
         }
 
@@ -169,23 +192,6 @@ public class Ignisign:  WKWebView, WKScriptMessageHandler, WKNavigationDelegate 
             closeIFrame()
         }
     }
-
-    private func checkIfFrameIsTooSmall() { //todo fix
-        let jsCode = """
-            function checkIfIframeIsTooSmall() {
-                var docElement = document.documentElement;
-                if (docElement.offsetHeight < \(IFRAME_MIN_HEIGHT) || docElement.offsetWidth < \(IFRAME_MIN_WIDTH)) {
-                    window.webkit.messageHandlers.onIframeTooSmall.postMessage({width: docElement.offsetWidth, height: docElement.offsetHeight});
-                } else {
-                    window.webkit.messageHandlers.onIframeTooSmall.postMessage({width: docElement.offsetWidth, height: docElement.offsetHeight});
-                }
-            }
-            checkIfIframeIsTooSmall();
-        """
-    
-        evaluateJavaScript(jsCode, completionHandler: nil)
-    }
-
     
     private func closeIFrame() {
         load(URLRequest(url: URL(string: "about:blank")!))
@@ -200,7 +206,7 @@ public class Ignisign:  WKWebView, WKScriptMessageHandler, WKNavigationDelegate 
             do {
                 return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
             } catch {
-                print("Erreur lors de la conversion du JSON en map: \(error)")
+                debugPrint("Erreur lors de la conversion du JSON en map: \(error)")
             }
         }
         return nil

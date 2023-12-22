@@ -7,8 +7,8 @@
 
 import Foundation
 
-enum IgnisignSignatureLanguages {
-    case EN
-    case FR
-    case DE
+enum IgnisignSignatureLanguages: String {
+    case EN = "EN"
+    case FR = "FR"
+    case DE = "DE"
 }

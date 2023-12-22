@@ -7,28 +7,28 @@
 
 import Foundation
 
-enum IgnisignSignerEntityType {
-    case NATURAL
-    case LEGAL
-    case VIRTUAL
+enum IgnisignSignerEntityType: String {
+    case NATURAL = "NATURAL"
+    case LEGAL = "LEGAL"
+    case VIRTUAL = "VIRTUAL"
 }
 
-enum IgnisignSignerStatus {
-    case CREATED
-    case PENDING
-    case BLOCKED
-    case ACTIVE
+enum IgnisignSignerStatus: String {
+    case CREATED = "CREATED"
+    case PENDING = "PENDING"
+    case BLOCKED = "BLOCKED"
+    case ACTIVE = "ACTIVE"
 }
 
-enum IgnisignSignerCreationInputRef {
-    case FIRST_NAME
-    case LAST_NAME
-    case EMAIL
-    case PHONE
-    case NATIONALITY
-    case BIRTH_DATE
-    case BIRTH_PLACE
-    case BIRTH_COUNTRY
+enum IgnisignSignerCreationInputRef: String {
+    case FIRST_NAME = "FIRST_NAME"
+    case LAST_NAME = "LAST_NAME"
+    case EMAIL = "EMAIL"
+    case PHONE = "PHONE"
+    case NATIONALITY = "NATIONALITY"
+    case BIRTH_DATE = "BIRTH_DATE"
+    case BIRTH_PLACE = "BIRTH_PLACE"
+    case BIRTH_COUNTRY = "BIRTH_COUNTRY"
 }
 
 struct IgnisignSigner {

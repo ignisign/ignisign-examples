@@ -77,9 +77,17 @@ class IgnisignAndroid: WebView, IJSEventListener {
     private val IFRAME_MIN_WIDTH  = 200;
     private val IFRAME_MIN_HEIGHT = 400;
 
+    private val debug = true
+
     constructor(context: Context) : super(context) {}
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+
+    fun debugPrint(message: String) {
+        if (debug) {
+            Log.d(TAG, message)
+        }
+    }
 
     fun setValues(appId: String, env: IgnisignApplicationEnv, ignisignClientSignUrl: String? = null) {
         this.appId = appId
@@ -95,7 +103,7 @@ class IgnisignAndroid: WebView, IJSEventListener {
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
 
-        Log.d(TAG, "trace initSignatureSession : params: " + initParams.toString())
+        debugPrint("trace initSignatureSession : params: " + initParams.toString())
 
         this.idFrame = initParams.idFrame
         this.signerId = initParams.signerId
@@ -129,31 +137,15 @@ class IgnisignAndroid: WebView, IJSEventListener {
                         "}" +
                         "window.addEventListener(\"message\", receiveMessage, false);"+
                         "})()")
-
-                /*val jsCode = """
-                    function getDocumentSize() {
-                        var width = document.documentElement.scrollWidth;
-                        var height = document.documentElement.scrollHeight;
-                        AndroidInterface.onDocumentSizeReceived(width, height);
-                    }
-                    getDocumentSize(); 
-                """
-
-                loadUrl("javascript:$jsCode")*/
-
-
-                //checkIfFrameIsTooSmall()
             }
         }
 
-        Log.d(TAG, "trace webview - display iFrame with id : " + idFrame)
+        debugPrint("trace webview - display iFrame with id : " + idFrame)
 
         val jsInterface = JavaScriptInterface()
         jsInterface.listener = this
         addJavascriptInterface(jsInterface, "AndroidInterface")
         loadUrl(signatureSessionLink)
-
-        //todo gestion taille
     }
 
     public fun cancelSignatureSession() {
@@ -163,53 +155,85 @@ class IgnisignAndroid: WebView, IJSEventListener {
     /*** private ***/
 
     private fun closeIFrame() {
-        /*CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             loadUrl("")
             destroy()
-        }*/
+        }
     }
 
     private class JavaScriptInterface {
         private val TAG: String? = "JSInterface"
         lateinit var listener: IJSEventListener
-        /*fun onDocumentSizeReceived(width: Int, height: Int) {
-            Log.d("WebView", "Taille du document: Largeur=$width, Hauteur=$height")
-        }*/
         @JavascriptInterface
         fun onMessageReceived(message: String) {
             if (listener != null) {
                 listener.handleEvent(message)
             }
         }
-
-        /*@JavascriptInterface
-        fun onIframeTooSmall(width: Int, height: Int) {
-            Log.d(TAG, "L'iframe est trop petit: Largeur=$width, Hauteur=$height")
-        }*/
     }
 
     override fun handleEvent(message: String) {
         val args = jsonToMap(message)
-        Log.d(TAG, "trace webview : map args : " + args)
-
+        debugPrint("trace webview : map args : " + args)
         if (args.containsKey("type") && args.containsKey("data")) {
             val type = args["type"]
             val data = args["data"] as Map<String, Any>
             if (type == IgnisignBroadcastableActions.NEED_PRIVATE_FILE_URL.name) {
-                Log.d(TAG, "trace webview - case private file url") //todo
-                managePrivateFileInfoProvisioning(data)
+                debugPrint("trace webview - case private file url")
+                val documentId = data["documentId"] as? String
+                val externalDocumentId = data["externalDocumentId"] as? String
+                val privateFileRequestDto = documentId?.let {
+                    IgnisignBroadcastableActionPrivateFileRequestDto.PrivateFileRequestData(
+                        documentId = it,
+                        externalDocumentId = externalDocumentId
+                    )
+                }?.let {
+                    IgnisignBroadcastableActionPrivateFileRequestDto(
+                        type = IgnisignBroadcastableActions.NEED_PRIVATE_FILE_URL,
+                        data = it
+                    )
+                }
+
+                if (privateFileRequestDto != null) {
+                    managePrivateFileInfoProvisioning(privateFileRequestDto)
+                }
             }  else if (type == IgnisignBroadcastableActions.OPEN_URL.name) {
-                Log.d(TAG, "trace webview - case open url")
+                debugPrint( "trace webview - case open url")
                 val url = data["url"] as? String
                 if (url != null) {
                     loadUrl(url)
                 }
             } else if(type == IgnisignBroadcastableActions.SIGNATURE_FINALIZED.name) {
-                Log.d(TAG, "trace webview - case finalized")
-                finalizeSignatureRequest(data)
+                debugPrint("trace webview - case finalized")
+                val signatureIds = data["signatureIds"]?.let { convertAnyToStringList(it) }
+                val signatureRequestDto = signatureIds?.let {
+                    IgnisignBroadcastableActionSignatureFinalizedDto.SignatureFinalizedData(
+                        signatureIds = it
+                    )
+                }?.let {
+                    IgnisignBroadcastableActionSignatureFinalizedDto(
+                        type = IgnisignBroadcastableActions.SIGNATURE_FINALIZED,
+                        data = it
+                    )
+                }
+
+                if (signatureRequestDto != null) {
+                    finalizeSignatureRequest(signatureRequestDto)
+                }
             } else if (type == IgnisignBroadcastableActions.SIGNATURE_ERROR.name) {
-                Log.d(TAG, "trace webview - case error")
-                manageSignatureRequestError(data)
+                debugPrint("trace webview - case error")
+                val errorCode = data["errorCode"] as? String
+                val errorContext = data["errorContext"] as? Any
+                if (errorCode != null && errorContext != null) {
+                    val signatureErrorDto = IgnisignBroadcastableActionSignatureErrorDto(
+                        type = IgnisignBroadcastableActions.SIGNATURE_ERROR,
+                        data = IgnisignBroadcastableActionSignatureErrorDto.SignatureErrorData(
+                            errorCode = errorCode,
+                            errorContext = errorContext
+                        )
+                    )
+                    manageSignatureRequestError(signatureErrorDto)
+                }
             }
         } else if (args.containsKey("type") && (!args.containsKey("data") || (args.containsKey("data") && (args["data"] as? Map<String, Any>)?.entries?.isEmpty() == true))) {
             sessionCallbacks.handleSignatureSessionError(
@@ -221,9 +245,9 @@ class IgnisignAndroid: WebView, IJSEventListener {
         }
     }
 
-    private fun managePrivateFileInfoProvisioning(data: Map<String, Any>) { //Ignisign Broadcastble Action
-        val documentId = data["documentId"] as? String
-        val externalDocumentId = data["externalDocumentId"] as? String
+    private fun managePrivateFileInfoProvisioning(action: IgnisignBroadcastableActionPrivateFileRequestDto) { //Ignisign Broadcastble Action
+        val documentId = action.data.documentId
+        val externalDocumentId = action.data.externalDocumentId
 
         if (documentId != null && externalDocumentId != null) {
             sessionCallbacks.handlePrivateFileInfoProvisioning(
@@ -239,8 +263,8 @@ class IgnisignAndroid: WebView, IJSEventListener {
         }
     }
 
-    private fun finalizeSignatureRequest(data: Map<String, Any>) {
-        val signatureIds = data["signatureIds"]?.let { convertAnyToStringList(it) }
+    private fun finalizeSignatureRequest(action: IgnisignBroadcastableActionSignatureFinalizedDto) {
+        val signatureIds = action.data.signatureIds
         if (signatureIds != null) {
             sessionCallbacks.handleSignatureSessionFinalized(
                 signatureIds,
@@ -254,9 +278,9 @@ class IgnisignAndroid: WebView, IJSEventListener {
         }
     }
 
-    private fun manageSignatureRequestError(data: Map<String, Any>) {
-        val errorCode = data["errorCode"] as? String
-        val errorContext = data["errorContext"] as? Any
+    private fun manageSignatureRequestError(action: IgnisignBroadcastableActionSignatureErrorDto) {
+        var errorCode = action.data.errorCode
+        var errorContext = action.data.errorContext
 
         if (errorCode != null && errorContext != null) {
             sessionCallbacks.handleSignatureSessionError(
@@ -270,28 +294,6 @@ class IgnisignAndroid: WebView, IJSEventListener {
         if (closeOnFinish) {
             closeIFrame()
         }
-    }
-
-    private fun checkIfFrameIsTooSmall() { //todo
-        /*val jsCode = """
-            function checkIfIframeIsTooSmall() { 
-                if (document.offsetHeight < $IFRAME_MIN_HEIGHT || document.offsetWidth < $IFRAME_MIN_WIDTH) {
-                    AndroidInterface.onIframeTooSmall(docElement.offsetWidth, docElement.offsetHeight);
-                } else {
-                    AndroidInterface.onIframeTooSmall(docElement.offsetWidth, docElement.offsetHeight);
-                }
-            }
-            checkIfIframeIsTooSmall(); 
-        """
-        loadUrl("javascript:$jsCode")*/
-
-        val jsCode = """
-            function checkIfIframeIsTooSmall() { 
-                AndroidInterface.onIframeTooSmall(docElement.offsetWidth, docElement.offsetHeight);
-            }
-            checkIfIframeIsTooSmall(); 
-        """
-        loadUrl("javascript:$jsCode")
     }
 
     private fun convertAnyToStringList(value: Any): List<String>? {

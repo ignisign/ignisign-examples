@@ -7,21 +7,21 @@
 
 import Foundation
 
-enum IgnisignSignatureMode {
-    case INIT
-    case SIGNED
-    case FAILED
+enum IgnisignSignatureMode: String {
+    case INIT = "INIT"
+    case SIGNED = "SIGNED"
+    case FAILED = "FAILED"
 }
 
-enum IgnisignSignatureStatus {
-    case INIT
-    case SIGNED
-    case FAILED
+enum IgnisignSignatureStatus: String {
+    case INIT = "INIT"
+    case SIGNED = "SIGNED"
+    case FAILED = "FAILED"
 }
 
-enum IgnisignIntegrationMode {
-    case BY_SIDE
-    case EMBEDDED
+enum IgnisignIntegrationMode: String {
+    case BY_SIDE = "BY_SIDE"
+    case EMBEDDED = "EMBEDDED"
 }
 
 struct IgnisignSignature {
