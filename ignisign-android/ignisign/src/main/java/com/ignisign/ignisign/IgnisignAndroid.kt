@@ -70,7 +70,7 @@ class IgnisignAndroid: WebView, IJSEventListener {
     lateinit var signatureSessionToken: String
     lateinit var signerAuthToken: String
     lateinit var sessionCallbacks: ISessionCallbacks
-    var closeOnFinish: Boolean = false
+    var closeOnFinish: Boolean = true
     lateinit var dimensions: IgnisignSignatureSessionDimensions
     lateinit var displayOptions: IgnisignJSSignatureSessionsDisplayOptions
 
@@ -119,6 +119,8 @@ class IgnisignAndroid: WebView, IJSEventListener {
         this.ignisignClientSignUrl = IGNISIGN_CLIENT_SIGN_URL
 
         val signatureSessionLink = getUrlSessionLink(signatureRequestId, signerId, signatureSessionToken, signerAuthToken, displayOptions)
+
+        debugPrint("trace session link : " + signatureSessionLink)
 
         webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(
@@ -222,18 +224,26 @@ class IgnisignAndroid: WebView, IJSEventListener {
                 }
             } else if (type == IgnisignBroadcastableActions.SIGNATURE_ERROR.name) {
                 debugPrint("trace webview - case error")
-                val errorCode = data["errorCode"] as? String
-                val errorContext = data["errorContext"] as? Any
-                if (errorCode != null && errorContext != null) {
-                    val signatureErrorDto = IgnisignBroadcastableActionSignatureErrorDto(
-                        type = IgnisignBroadcastableActions.SIGNATURE_ERROR,
-                        data = IgnisignBroadcastableActionSignatureErrorDto.SignatureErrorData(
-                            errorCode = errorCode,
-                            errorContext = errorContext
-                        )
-                    )
-                    manageSignatureRequestError(signatureErrorDto)
+                var errorCode = ""
+                (data["errorCode"] as? String).let {
+                    if (it != null) {
+                        errorCode = it
+                    }
                 }
+                val errorContext = data["errorContext"] as? Any
+
+                debugPrint("trace errorCode : " + errorCode)
+                debugPrint("trace errorContext : " + errorCode)
+
+                val signatureErrorDto = IgnisignBroadcastableActionSignatureErrorDto(
+                    type = IgnisignBroadcastableActions.SIGNATURE_ERROR,
+                    data = IgnisignBroadcastableActionSignatureErrorDto.SignatureErrorData(
+                        errorCode = errorCode,
+                        errorContext = errorContext
+                    )
+                )
+                manageSignatureRequestError(signatureErrorDto)
+
             }
         } else if (args.containsKey("type") && (!args.containsKey("data") || (args.containsKey("data") && (args["data"] as? Map<String, Any>)?.entries?.isEmpty() == true))) {
             sessionCallbacks.handleSignatureSessionError(
@@ -282,7 +292,7 @@ class IgnisignAndroid: WebView, IJSEventListener {
         var errorCode = action.data.errorCode
         var errorContext = action.data.errorContext
 
-        if (errorCode != null && errorContext != null) {
+        if (errorCode != null /*&& errorContext != null*/) {
             sessionCallbacks.handleSignatureSessionError(
                 errorCode,
                 errorContext,

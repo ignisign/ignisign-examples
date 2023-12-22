@@ -12,12 +12,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-
         android:theme="@style/Theme.ExampleIgnisign"
         tools:targetApi="31"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".MainActivity"
+            android:name=".ActivityListContracts"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ExampleIgnisign.NoActionBar">
@@ -31,6 +30,9 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <!--<activity android:name=".ActivityListContracts" android:exported="true"/>-->
+        <activity android:name=".ActivitySignContract" android:exported="true"/>
     </application>
 
 </manifest>

@@ -4,35 +4,49 @@ import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.ignisign.ignisign.*
 
-class SignContractFragment : Fragment(), ISessionCallbacks {
+class ActivitySignContract: AppCompatActivity(), ISessionCallbacks {
     private val TAG: String?  = "SignContractFragment"
     lateinit var ignisignAndroid: IgnisignAndroid
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_sign_a_contract, container, false)
+    var signatureRequestId = ""
+    var signatureSessionToken = ""
+    var signerId = ""
+    var authSecret =  ""
 
-        ignisignAndroid = view.findViewById(R.id.embedded_signature)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_sign_contract)
 
-        val signatureRequestId = "65854b1d5c7395001c9a5a39"
-        val signatureSessionToken = "pRC0l2S5SW2VsdWu1xAHr5SY4Q2FpEbYrMEQpbObWUU0jPFSEPxI0bsiCeZWpYv"
+        ignisignAndroid = findViewById(R.id.embedded_signature)
 
-        val signerId = "6582fc68ef3841001b92e413"
-        val authSecret = "ffbdae8b-8ead-4fed-a601-d4ea62dcda50"
+        val extras = intent.extras
+
+        extras?.getString("signatureRequestId")?.let {
+            signatureRequestId = it
+        }
+        extras?.getString("signatureSessionToken")?.let {
+            signatureSessionToken = it
+        }
+        extras?.getString("signerId")?.let {
+            signerId = it
+        }
+        extras?.getString("authSecret")?.let {
+            authSecret = it
+        }
+
+        Log.d(TAG, "trace signatureRequestId : " + signatureRequestId)
+        Log.d(TAG, "trace signatureSessionToken : " + signatureSessionToken)
+        Log.d(TAG, "trace signerId : " + signerId)
+        Log.d(TAG, "trace authSecret : " + authSecret)
 
         val dimensions = IgnisignSignatureSessionDimensions(
-            width = "${getScreenWidthDp(requireContext())-20}",
-            height = "${getScreenHeightDp(requireContext())-80}"
+            width = "${getScreenWidthDp(this)-20}",
+            height = "${getScreenHeightDp(this)-80}"
         )
 
         val displayOptions = IgnisignJSSignatureSessionsDisplayOptions(
@@ -57,8 +71,6 @@ class SignContractFragment : Fragment(), ISessionCallbacks {
 
         ignisignAndroid.setValues("com.ignisign.example", IgnisignApplicationEnv.DEVELOPMENT)
         ignisignAndroid.initSignatureSession(params)
-
-        return view
     }
 
     override fun handlePrivateFileInfoProvisioning(
@@ -68,6 +80,7 @@ class SignContractFragment : Fragment(), ISessionCallbacks {
         signatureRequestId: String
     ) {
         Log.d(TAG, "trace handlePrivateFileInfiProvisioning : documentId = " + documentId + " externalDocumentId : " + externalDocumentId + " signerId : " + signerId + " signatureRequestId : " + signatureRequestId)
+        showAlert(this@ActivitySignContract, "handlePrivateFileInfoProvisioning", "documentId: ${documentId} - externalDocumentId: ${externalDocumentId} - signerId: ${signerId} - signatureRequestId : ${signatureRequestId}")
     }
 
     override fun handleSignatureSessionError(
@@ -77,6 +90,7 @@ class SignContractFragment : Fragment(), ISessionCallbacks {
         signatureRequestId: String
     ) {
         Log.d(TAG, "trace handleSignatureSessionError : errorCode : " + errorCode + " errorContext : " + errorContext + " signerId : " + signerId + " signatureRequestId : " + signatureRequestId)
+        showAlert(this@ActivitySignContract, "handleSignatureSessionError", "errorCode: ${errorCode} - errorContext: ${errorContext} - signerId: ${signerId} - signatureRequestId : ${signatureRequestId}")
     }
 
     override fun handleSignatureSessionFinalized(
@@ -85,6 +99,7 @@ class SignContractFragment : Fragment(), ISessionCallbacks {
         signatureRequestId: String
     ) {
         Log.d(TAG, "trace handleSignatureSessionFinalized : signatureIds : " + signatureIds + " signerId : " + signerId + " signatureRequestId : " + signatureRequestId)
+        showAlert(this@ActivitySignContract, "handleSignatureSessionFinalized", "signatureIds: ${signatureIds} - signerId: ${signerId} - signatureRequestId : ${signatureRequestId}")
     }
 
     fun getScreenWidthDp(context: Context): Int {
@@ -99,4 +114,14 @@ class SignContractFragment : Fragment(), ISessionCallbacks {
         return (displayMetrics.heightPixels / displayMetrics.density).toInt()
     }
 
+    fun showAlert(context: Context, title: String, message: String) {
+        runOnUiThread {
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle(title)
+            builder.setMessage(message)
+            builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+        }
+    }
 }

@@ -7,17 +7,17 @@
 
 import Foundation
 
-enum IgnisignApplicationStatus {
-    case ACTIVE
-    case BLOCKED
-    case ARCHIVED
-    case ORG_ARCHIVED
+enum IgnisignApplicationStatus: String {
+    case ACTIVE = "ACTIVE"
+    case BLOCKED = "BLOCKED"
+    case ARCHIVED = "ARCHIVED"
+    case ORG_ARCHIVED = "ORG_ARCHIVED"
 }
 
-public enum IgnisignApplicationEnv {
-    case DEVELOPMENT
-    case STAGING
-    case PRODUCTION
+public enum IgnisignApplicationEnv: String, Decodable {
+    case DEVELOPMENT = "DEVELOPMENT"
+    case STAGING = "STAGING"
+    case PRODUCTION = "PRODUCTION"
 }
 
 struct IgnisignApplication {

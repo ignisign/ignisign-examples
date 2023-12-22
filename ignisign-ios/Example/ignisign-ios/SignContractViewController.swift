@@ -10,12 +10,20 @@ import UIKit
 import ignisign_ios
 import WebKit
 
-class ViewController: UIViewController, IgnisignJS_SignatureSession_Callbacks {
+class SignContractViewController: UIViewController, IgnisignJS_SignatureSession_Callbacks {
     
     var ignisign : Ignisign!
     
+    var signatureRequestId = ""
+    var signerId = ""
+    var signatureSessionToken = ""
+    var signerAuthSecret = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        navigationController?.navigationBar.barTintColor = UIColor.white
+//        navigationController?.navigationBar.isTranslucent = false
         
         let config = WKWebViewConfiguration()
         ignisign = Ignisign(frame: .zero, configuration: config)
@@ -28,11 +36,6 @@ class ViewController: UIViewController, IgnisignJS_SignatureSession_Callbacks {
             ignisign.rightAnchor.constraint(equalTo: view.rightAnchor)
         ])
         
-        let signatureRequestId = "65854b1d5c7395001c9a5a39"
-        let signerId = "6582fc68ef3841001b92e413"
-        let signatureSessionToken = "pRC0l2S5SW2VsdWu1xAHr5SY4Q2FpEbYrMEQpbObWUU0jPFSEPxI0bsiCeZWpYv5"
-        let signerAuthSecret = "ffbdae8b-8ead-4fed-a601-d4ea62dcda50"
-        
         let dimensins = IgnisignSignatureSessionDimensions(width: "400", height: "300")
         let displayOptions = IgnisignJSSignatureSessionsDisplayOptions(showTitle: true, showDescription: true)
         let initParams = IgnisignInitParams(signatureRequestId: signatureRequestId, signerId: signerId, signatureSessionToken: signatureSessionToken, signerAuthToken: signerAuthSecret, sessionCallbacks: self, closeInFinish: true, dimensions: dimensins, displayOptions: displayOptions)
@@ -42,14 +45,23 @@ class ViewController: UIViewController, IgnisignJS_SignatureSession_Callbacks {
     }
     
     func handlePrivateFileInfoProvisioning(documentId: String, externalDocumentId: String, signerId: String, signatureRequestId: String) {
-        print("trace handlePrivateFileInfoProvisioning : documentId : \(documentId) externalDocumentId : \(externalDocumentId) signatureRequestId : \(signatureRequestId)")
+        //print("trace handlePrivateFileInfoProvisioning : documentId : \(documentId) externalDocumentId : \(externalDocumentId) signatureRequestId : \(signatureRequestId)")
+        showAlert(title: "handlePrivateFileInfoProvisioning", message: "documentId: \(documentId) - externalDocumentId : \(externalDocumentId) - signatureRequestId : \(signatureRequestId)")
     }
     
     func handleSignatureSessionError(errorCode: String, errorContext: Any, signerId: String, signatureRequestId: String) {
-        print("trace handleSignatureSessionError : errorCode : \(errorCode) errorContext : \(errorContext) signerId : \(signerId) signatureRequestId : \(signatureRequestId)")
+        //print("trace handleSignatureSessionError : errorCode : \(errorCode) errorContext : \(errorContext) signerId : \(signerId) signatureRequestId : \(signatureRequestId)")
+        showAlert(title: "handlePrivateFileInfoProvisioning", message: "errorCode : \(errorCode) - signerId: \(signerId) - signatureRequestId : \(signatureRequestId)")
     }
     
     func handleSignatureSessionFinalized(signatureIds: [String], signerId: String, signatureRequestId: String) {
-        print("handleSignatureSessionFinalized signatureIds : \(signatureIds) signerId : \(signerId) signatureRequestId : \(signatureRequestId)")
+        showAlert(title: "handlePrivateFileInfoProvisioning", message: "signatureIds : \(signatureIds) - signerId : \(signerId) - signatureRequestId : \(signatureRequestId)")
+        //print("handleSignatureSessionFinalized signatureIds : \(signatureIds) signerId : \(signerId) signatureRequestId : \(signatureRequestId)")
+    }
+    
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 }
