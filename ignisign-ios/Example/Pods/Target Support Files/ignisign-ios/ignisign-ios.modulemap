@@ -1,0 +1,6 @@
+framework module ignisign_ios {
+  umbrella header "ignisign-ios-umbrella.h"
+
+  export *
+  module * { export * }
+}

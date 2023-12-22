@@ -1,0 +1,22 @@
+{
+  "name": "ignisign-ios",
+  "version": "0.1.0",
+  "summary": "A short description of ignisign-ios.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/Nigdelian/ignisign-ios",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Nigdelian": "marc.nigdelian@freshdev.fr"
+  },
+  "source": {
+    "git": "https://github.com/Nigdelian/ignisign-ios.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "10.0"
+  },
+  "source_files": "ignisign-ios/Classes/**/*"
+}

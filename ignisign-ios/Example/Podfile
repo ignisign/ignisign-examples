@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '10.0'
+
+target 'ignisign-ios_Example' do
+  pod 'ignisign-ios', :path => '../'
+
+  target 'ignisign-ios_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

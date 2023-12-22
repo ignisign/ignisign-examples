@@ -1,0 +1,16 @@
+PODS:
+  - ignisign-ios (0.1.0)
+
+DEPENDENCIES:
+  - ignisign-ios (from `../`)
+
+EXTERNAL SOURCES:
+  ignisign-ios:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  ignisign-ios: 40527a7ae1c47157590e75605d7a433124b3b890
+
+PODFILE CHECKSUM: 152d4f76475e0fa0ed42deb667b8b24ae08bbcef
+
+COCOAPODS: 1.13.0
