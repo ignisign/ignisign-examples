@@ -11,7 +11,24 @@ import { IgnisignSdkManagerService } from "./ignisign-sdk-manager.service";
 export const UserService = {
   getUser,
   addUser,
-  getUsers
+  getUsers,
+  getAllUsers,
+}
+
+
+async function getAllUsers(): Promise<MyUser[]> {
+  return new Promise(async (resolve, reject) => {
+
+    await MyUserModel.find({}).toArray((error, users) => {
+      if (error) {
+        console.error(error);
+        reject(error);
+        return
+      }
+      resolve(users);
+      
+    });
+  });
 }
 
 async function getUsers(type: MY_USER_TYPES): Promise<MyUser[]> {

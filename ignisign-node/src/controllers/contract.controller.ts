@@ -45,6 +45,16 @@ export const contractController = (router: Router) => {
   })
 
 
+  router.get('/v1/contract-to-sign-contexts', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+      const contracts: ContractContext[] = await ContractService.getAllContractToSignContexts()
+      return jsonSuccess(res, contracts)
+    } catch(e) { next(e) }
+  })
+
+
+
   // This endpoint is used to create a new contract.
   // The file is uploaded in the same time.
   // the `ContractService.createNewContract` used bellow method hightly communicate with Ignisign SDK.

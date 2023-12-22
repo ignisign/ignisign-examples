@@ -8,6 +8,8 @@ import { IgnisignSdkFileContentUploadDto } from "@ignisign/sdk";
 import { Contract, ContractContext, ContractModel } from "../models/contract.db.model";
 import { UserService } from "./user.service";
 import { Readable } from "stream";
+import { MyUser } from "../models/user.db.model";
+import _ = require("lodash");
 
 
 /** Promise Related Complexity WARNING : 
@@ -20,6 +22,7 @@ export const ContractService = {
   
   getContracts,
   getContractContextByUser,
+  getAllContractToSignContexts,
 
   handleLaunchSignatureRequestWebhook,
   handleFinalizeSignatureWebhook,
@@ -27,6 +30,7 @@ export const ContractService = {
   
   downloadSignatureProof,
 }
+
 
 
 async function createNewContract(customerId: string, sellerId: string, contractFile: any): Promise<void> {  
@@ -123,6 +127,53 @@ async function  getContracts(userId): Promise<Contract[]> {
   });
 }
 
+async function getAllContractToSignContexts(): Promise<ContractContext[]> {
+  const contracts : Contract[] = await new Promise(async (resolve, reject) => {
+
+    await ContractModel.find().toArray((error, cs) => {
+      if (error) {
+        console.error(error);
+        reject(error);
+        return;
+      }
+
+      
+      resolve(cs);
+    });
+  });
+
+  const allUsers : MyUser[] = await UserService.getAllUsers();
+
+  const resultWrapped : ContractContext[][] = contracts.map( c => {
+
+    const resultForAContract : ContractContext[] = c.signers.map( s => {
+      const user = allUsers.find( u => u._id.toString() === s.userId)
+
+      if(!user){
+        console.error('User not found', s.userId)
+        return null;
+      }
+
+      if (s.status === 'DONE')
+        return null;
+
+      return {
+        signatureRequestId        : c.signatureRequestId,
+        ignisignAppId             : process.env.IGNISIGN_APP_ID,
+        ignisignAppEnv            : process.env.IGNISIGN_APP_ENV as IGNISIGN_APPLICATION_ENV,
+        ignisignSignerId          : s.ignisignSignerId,
+        ignisignSignatureToken    : s.ignisignSignatureToken,
+        ignisignUserAuthSecret    : user.ignisignAuthSecret,
+      }
+      
+    })
+
+    return resultForAContract.filter( r => r !== null);
+    
+  })
+
+  return _.flatten(resultWrapped);
+}
 
 async function  getContractContextByUser(contractId, userId): Promise<ContractContext> {
   return new Promise(async (resolve, reject) => {
