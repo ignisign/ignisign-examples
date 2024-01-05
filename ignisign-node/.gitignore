@@ -7,3 +7,6 @@ uploads/**
 !uploads/.gitkeep
 uploads_tmp/**
 !uploads_tmp/.gitkeep
+dist
+tsconfig.tsbuildinfo
+.DS_Store
