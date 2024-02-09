@@ -10,6 +10,7 @@ import { UserService } from "./user.service";
 import { Readable } from "stream";
 import { MyUser } from "../models/user.db.model";
 import _ = require("lodash");
+import axios from "axios";
 
 
 /** Promise Related Complexity WARNING : 
@@ -326,6 +327,62 @@ async function  downloadSignatureProof(contractId): Promise<Readable> {
         }
 
         if(contract.isSignatureProofReady){
+
+
+          
+          const signatureRequestContext = await IgnisignSdkManagerService.getSignatureRequestContext(contract.signatureRequestId);
+
+          if(!signatureRequestContext)
+            throw new Error("Cannot find signature request context with id : " + contract.signatureRequestId)
+
+          const maybeDocument = signatureRequestContext.documents.find(d => d._id === contract.documentId);
+
+          if(!maybeDocument)
+            throw new Error("Cannot find document with id : " + contract.documentId)
+
+          if(maybeDocument.documentNature === IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE){
+
+
+            // This is the URL of the private proof generator module
+            // This is a module that is used to generate the proof of signature of a private file
+            // Obtaining this module needs to be done through a commercial agreement with Ignisign
+            // If you are interested in this module, please contact us at contact@ignisign.io
+            if(process.env.IGNISIGN_PRIVATE_PROOF_GENERATOR_URL){
+              console.log("Using private proof generator module")
+              const url = `${process.env.IGNISIGN_PRIVATE_PROOF_GENERATOR_URL}/v1/signature-requests/${contract.signatureRequestId}/documents/${contract.documentId}/signature-proof`;
+              const localFile = await FileService.getFileByDocumentId(contract.documentId);
+
+              if(!localFile)
+                throw new Error('Cannot find local file')
+              
+
+              console.log(localFile)
+              const formData = new FormData();
+
+              formData.append('file', await fs.createReadStream(localFile.filePath), {
+                filename    : localFile.fileName,
+                contentType : localFile.mimeType
+              });
+
+              try {
+                const { data } = await axios.post(url, formData, {
+                  headers : {
+                    ...formData.getHeaders()
+                  },
+                  responseType: 'stream'
+                })
+                resolve(data);
+              } catch (error) {
+                reject(error);
+              }
+              
+            } else {
+              return await IgnisignSdkManagerService.downloadSignatureProof(contract.documentId);
+            }
+
+          } else {
+            return await IgnisignSdkManagerService.downloadSignatureProof(contract.documentId);
+          }
 
           const signatureProof = await IgnisignSdkManagerService.downloadSignatureProof(contract.documentId)
           resolve(signatureProof)

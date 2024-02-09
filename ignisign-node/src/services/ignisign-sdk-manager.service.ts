@@ -19,11 +19,13 @@ import {
   IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF,
   IgnisignWebhookDto_SignatureProof,
   IgnisignWebhook_CallbackParams,
+  IGNISIGN_DOCUMENT_TYPE,
 } from '@ignisign/public';
 import { IgnisignSdk, IgnisignSdkFileContentUploadDto } from '@ignisign/sdk';
 import { Readable } from 'stream';
 import { ContractService } from './contract.service';
 import _ = require('lodash');
+import axios from 'axios';
 
 
 const DEBUG_LOG_ACTIVATED = true;

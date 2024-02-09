@@ -6,7 +6,29 @@ import { MyUser } from "../models/user.db.model";
 
 export const FileService = {
   getPrivateFileUrl,
-  saveFile
+  saveFile,
+  getFileByDocumentId,
+}
+
+
+async function getFileByDocumentId(documentId) : Promise<MyFile> {
+  return new Promise((resolve, reject) => {
+    MyFileModel.findOne({ documentId }, ( error, myFile: MyFile ) => {
+        if (error) {
+          console.error(error)
+          reject(error);
+          return;
+        }
+
+        if(!myFile){
+          reject(new Error('File not found'))
+          return;
+        }
+
+        resolve(myFile);
+      });
+  });
+
 }
 
 async function getPrivateFileUrl(documentId) : Promise<IgnisignDocument_PrivateFileDto> {
