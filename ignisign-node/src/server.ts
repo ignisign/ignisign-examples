@@ -27,6 +27,9 @@ const port      = process.env.PORT || 4242;
 const initExampleApp = async () =>{
   try {
 
+    console.log("IGNISIGN_APP_ID", process.env.IGNISIGN_APP_ID);
+    console.log("IGNISIGN_APP_ENV", process.env.IGNISIGN_APP_ENV);
+
     const app     : express.Application = express();
     const router  : express.Router      = express.Router();
 

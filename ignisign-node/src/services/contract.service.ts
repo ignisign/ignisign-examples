@@ -377,11 +377,20 @@ async function  downloadSignatureProof(contractId): Promise<Readable> {
               }
               
             } else {
-              return await IgnisignSdkManagerService.downloadSignatureProof(contract.documentId);
+              try {
+                const result = await IgnisignSdkManagerService.downloadSignatureProof(contract.documentId);
+                resolve(result);
+              } catch (error) {
+                reject(error);
+              }
             }
-
           } else {
-            return await IgnisignSdkManagerService.downloadSignatureProof(contract.documentId);
+            try {
+              const result = await IgnisignSdkManagerService.downloadSignatureProof(contract.documentId);
+              resolve(result);
+            } catch (error) {
+              reject(error);
+            }
           }
 
           const signatureProof = await IgnisignSdkManagerService.downloadSignatureProof(contract.documentId)
