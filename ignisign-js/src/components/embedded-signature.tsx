@@ -47,7 +47,7 @@ const EmbeddedSignature = ({signatureRequestId, signerId, signatureSessionToken,
         },
         closeOnFinish: true,                          // Close the signature session when the signature request is signed 
         htmlElementId: 'test-ignisign-sdk',           // The id of the html element where the signature session will be initialized
-        dimensions: { width: "100%", height: "710" }
+        dimensions: { width: "100%", height: "710px" }
       }
 
       // Initialize the signature session
