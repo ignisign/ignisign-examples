@@ -38,7 +38,7 @@ Key areas of the application include:
 
 ### Additional Resources
 
-- **Global Documentation**: [Ignisign Documentation](https://docs.ignisign.io)
+- **Global Documentation**: [Ignisign Documentation](https://ignisign.io/docs/core-concepts/Overview)
 - **Ignisign Console**: [Access Here](https://console.ignisign.io)
 - **Ignisign JS Library**: [GitHub Repository](https://github.com/ignisign/ignisign-js)
-- **Integration Mode Details**: [Embedded or By-Side Integration](https://doc.ignisign.io/#tag/Embeded-or-By-Side-Integration)
+- **Integration Mode Details**: [Embedded or By-Side Integration](https://ignisign.io/docs/core-concepts/Embeded_or_By-Side_Integration)
