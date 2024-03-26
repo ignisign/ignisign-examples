@@ -17,7 +17,7 @@ import {
   IgnisignWebhookDto_SignatureRequest,
   IgnisignWebhookDto_Signature,
   IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF,
-  IgnisignWebhookDto_SignatureProof,
+  IgnisignWebhookDto_SignatureProof_Success,
   IgnisignWebhook_CallbackParams,
   IGNISIGN_DOCUMENT_TYPE,
 } from '@ignisign/public';
@@ -144,12 +144,12 @@ async function _registerWebhookCallback(): Promise<void> {
   
 
   // The callback function is called when a webhook is received when a signature proof has been generated
-  const webhookHandler_SignatureProofGenerated = async ({ content, error, msgNature, action, topic }: IgnisignWebhook_CallbackParams<IgnisignWebhookDto_SignatureProof>): Promise<void> => {
+  const webhookHandler_SignatureProofGenerated = async ({ content, error, msgNature, action, topic }: IgnisignWebhook_CallbackParams<IgnisignWebhookDto_SignatureProof_Success>): Promise<void> => {
     if(msgNature === IGNISIGN_WEBHOOK_MESSAGE_NATURE.ERROR) {
       console.error("webhookHandler_SignatureProofGenerated ERROR : ", error);
       return;
     }
-    const { signatureRequestExternalId, signatureProofUrl } = content as IgnisignWebhookDto_SignatureProof;
+    const { signatureRequestExternalId, signatureProofUrl } = content as IgnisignWebhookDto_SignatureProof_Success;
 
     _logIfDebug("webhookHandler_SignatureProofGenerated", {signatureRequestExternalId, signatureProofUrl})
 
