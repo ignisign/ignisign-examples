@@ -25,6 +25,15 @@
     class-validator "^0.14.0"
     reflect-metadata "^0.1.13"
 
+"@ignisign/public@1.0.104":
+  version "1.0.104"
+  resolved "https://registry.yarnpkg.com/@ignisign/public/-/public-1.0.104.tgz#a388f70c0cbe3cc76105a7f4e9cb1333b6705e25"
+  integrity sha512-CS8zl+kEA0aGraZVTQh+UPVMxwBmljo4q8PBvOalCAxXVfekuqd0LQqOQnIMVYvdmbGr0JQGtQvWwsmJZi1gBg==
+  dependencies:
+    class-transformer "^0.5.1"
+    class-validator "^0.14.0"
+    reflect-metadata "^0.1.13"
+
 "@ignisign/sdk@1.0.100":
   version "1.0.100"
   resolved "https://registry.yarnpkg.com/@ignisign/sdk/-/sdk-1.0.100.tgz#4a64e45b988bec7d7bf0ba809cc34b9fbcae0f16"
