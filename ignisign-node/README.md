@@ -1,7 +1,7 @@
 ## Ignisign Node Example: Integrating the Ignisign NodeJS SDK
 
 This repository offers a practical example of integrating the Ignisign NodeJS SDK into your application. 
-The sample is a straightforward CRM backend, demonstrating key Ignisign functionalities.
+The sample is a straightforward CRM backend, demonstrating main Ignisign functionalities.
 
 ### Prerequisites
 
