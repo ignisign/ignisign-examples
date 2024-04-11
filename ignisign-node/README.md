@@ -52,5 +52,5 @@ The sample is a straightforward CRM backend, demonstrating main Ignisign functio
 - Ignisign Console: [Access Here](https://console.ignisign.io)
 - Ignisign NodeJS Library: [GitHub Repository](https://github.com/ignisign/ignisign-node)
 - Ignisign JS Library: [GitHub Repository](https://github.com/ignisign/ignisign-js)
-- Integration Mode Details: [Embedded or By-Side Integration](https://doc.ignisign.io/#tag/Embeded-or-By-Side-Integration)
-- Webhook Events Details: [Webhook Events](https://doc.ignisign.io/#tag/Webhook-Events)
+- Integration Mode Details: [Embedded or By-Side Integration](https://ignisign.io/docs/core-concepts/Embeded_or_By-Side_Integration)
+- Webhook Events Details: [Webhook Events](https://ignisign.io/docs/webhooks/webhooks)
