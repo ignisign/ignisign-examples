@@ -16,6 +16,7 @@ import { EmployeeContextProvider } from './contexts/employee.context';
 import Contracts from './pages/contracts.page';
 import { ContractContextProvider } from './contexts/contract.context';
 import SignAContract from './pages/sign-a-contract.page';
+import { BareSignature } from './pages/bare-signature';
 
 const NotFoundPage = () => {
   return (
@@ -41,6 +42,9 @@ function AppRouter() {
         </Route>
         <Route exact path={FrontUrlProvider.contractsPage()}>
           <Contracts/>
+        </Route>
+        <Route exact path={FrontUrlProvider.bareSignaturePage()}>
+          <BareSignature/>
         </Route>
         <Route>
           <NotFoundPage/>

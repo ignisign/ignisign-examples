@@ -16,21 +16,17 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@ignisign/public@1.0.106":
-  version "1.0.106"
-  resolved "https://registry.yarnpkg.com/@ignisign/public/-/public-1.0.106.tgz#23ac613f4d1bb5cb6078eb185ec0c8fe5b484c04"
-  integrity sha512-P8VAf5NZS17kzXA2ALhaVMCpi6Qjb+fV/dR1Vd2D0OFaKD1lwYY6Hxi26aqYUZT4TMBN8fAVjsJESDMjeho9vA==
+"@ignisign/public@file:../../ignisign-public-models":
+  version "4.0.0-beta.1"
   dependencies:
     class-transformer "^0.5.1"
     class-validator "^0.14.0"
     reflect-metadata "^0.1.13"
 
-"@ignisign/sdk@1.0.106":
+"@ignisign/sdk@file:../../ignisign-node":
   version "1.0.106"
-  resolved "https://registry.yarnpkg.com/@ignisign/sdk/-/sdk-1.0.106.tgz#a8d79f8f7b2c25737cf6d77b27bff620d5c48296"
-  integrity sha512-fTjAU6LsUjvUOqihrltiVzkANbd3eZ68LvUgys2R+ipOIv/zYP5ditwfBuR6GYQPYLJhwCyCbMUgg6ZNldT7JQ==
   dependencies:
-    "@ignisign/public" "1.0.106"
+    "@ignisign/public" "file:../../ignisign-public-models"
     axios "^0.21.1"
     form-data "^4.0.0"
     typescript "^4.1.3"
@@ -1722,9 +1718,9 @@ referrer-policy@1.2.0:
   integrity sha512-LgQJIuS6nAy1Jd88DCQRemyE3mS+ispwlqMk3b0yjZ257fI1v9c+/p6SD5gP5FGyXUIgrNOAfmyioHwZtYv2VA==
 
 reflect-metadata@^0.1.13:
-  version "0.1.13"
-  resolved "https://registry.npmjs.org/reflect-metadata/-/reflect-metadata-0.1.13.tgz"
-  integrity sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.14.tgz#24cf721fe60677146bb77eeb0e1f9dece3d65859"
+  integrity sha512-ZhYeb6nRaXCfhnndflDK8qI6ZQ/YcWZCISRAWICW9XYqMUwjZM9Z0DveWX/ABN01oxSHwVxKQmxeYZSsm0jh5A==
 
 regexp.prototype.flags@^1.5.0:
   version "1.5.0"
