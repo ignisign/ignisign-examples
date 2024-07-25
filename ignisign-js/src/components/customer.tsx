@@ -8,12 +8,13 @@ import Select from "../components-ui/select";
 import { useCustomer } from "../contexts/customer.context";
 import { useGlobal } from "../contexts/global.context";
 import { INPUTS } from "../utils/inputs.utils";
+import { MY_USER_TYPES } from "../models/user.front.model";
 
 const NewCustomerDialog = ({isOpen, onClose}) => {
   const form                      = useForm();
   const {addCustomer, isLoading}  = useCustomer();
-  const {requiredInputs}          = useGlobal();
-  const inputs                    = INPUTS.filter(e => requiredInputs.includes(e.name));
+  const {appContext}          = useGlobal();
+  const inputs                  = INPUTS.filter(e => appContext[MY_USER_TYPES.CUSTOMER].requiredInputs.includes(e.name))
   
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const NewCustomerDialog = ({isOpen, onClose}) => {
           <div className='flex flex-wrap'>
             {
               inputs.map(e => (
-                <div className='w-1/2 px-2 pb-4' key={e.name}>
+                <div className='px-2 pb-4' key={e.name}>
                   <Input required label={e.label} form={form} name={e.name} type={e.type} dataset={e?.dataset || []} /> 
                 </div>
               )
@@ -60,6 +61,7 @@ const NewCustomerDialog = ({isOpen, onClose}) => {
 
 export const Customers = () => {
   const {customers, isLoading, setSelectedCustomerId} = useCustomer()
+
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   return (

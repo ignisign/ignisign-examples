@@ -5,17 +5,17 @@ import { Button } from '../components-ui/button'
 import Card from '../components-ui/card'
 import { Dropzone } from '../components-ui/dropzone'
 import { useCustomer } from '../contexts/customer.context'
-import { useSeller } from '../contexts/seller.context'
+import { useEmployee } from '../contexts/employee.context'
 import { ApiService } from '../services/api.service'
 import { FrontUrlProvider } from '../utils/front-url-provider'
 import { Customers } from '../components/customer'
-import { Sellers } from '../components/seller'
+import { Employees } from '../components/employee'
 import { useHistory } from "react-router";
 
 const CreateContract = () => {
   const history                           = useHistory();
   const {selectedCustomerId}              = useCustomer();
-  const {selectedSellerId}                = useSeller();
+  const {selectedEmployeeId}                = useEmployee();
 
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isLoading, setIsLoading]         = useState(false);
@@ -35,7 +35,7 @@ const CreateContract = () => {
 
   const sendContract = async () => {
     setIsLoading(true)
-    await ApiService.createContract(selectedCustomerId, selectedSellerId, selectedFiles[0])
+    await ApiService.createContract(selectedCustomerId, selectedEmployeeId, selectedFiles[0])
     await reset()
     history.push(FrontUrlProvider.contractsPage())
     setIsLoading(false)
@@ -44,7 +44,7 @@ const CreateContract = () => {
   return (
     <div className='w-full'>
       <div className='flex gap-4 w-full'>
-        <Sellers/>
+        <Employees/>
         <Customers/>
       </div>
       <div className='mt-4'>
@@ -61,7 +61,7 @@ const CreateContract = () => {
         </Card>
       </div>
       <div className='mt-4 flex justify-center items-center'>
-        <Button disabled={isLoading || !selectedCustomerId || !selectedSellerId || !selectedFiles.length} onClick={sendContract}>Send Contract Request</Button>
+        <Button disabled={isLoading || !selectedCustomerId || !selectedEmployeeId || !selectedFiles.length} onClick={sendContract}>Send Contract Request</Button>
         {isLoading && <div className='ml-4'>...Loading</div>}
       </div>
     </div>

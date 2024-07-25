@@ -12,7 +12,7 @@ import './index.css';
 import CreateContract from './pages/create-contract.page';
 import { CustomerContextProvider } from './contexts/customer.context';
 import { GlobalContextProvider } from './contexts/global.context';
-import { SellerContextProvider } from './contexts/seller.context';
+import { EmployeeContextProvider } from './contexts/employee.context';
 import Contracts from './pages/contracts.page';
 import { ContractContextProvider } from './contexts/contract.context';
 import SignAContract from './pages/sign-a-contract.page';
@@ -62,9 +62,9 @@ function App() {
             <Menu>
               <ContractContextProvider>
                 <CustomerContextProvider>
-                  <SellerContextProvider>
+                  <EmployeeContextProvider>
                     <AppRouter/>
-                  </SellerContextProvider>
+                  </EmployeeContextProvider>
                 </CustomerContextProvider>
               </ContractContextProvider>
             </Menu>

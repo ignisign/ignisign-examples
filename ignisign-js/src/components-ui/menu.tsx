@@ -36,18 +36,18 @@ const MenuItem = ({link, text, disabled = false}) => {
 }
 
 const MenuContent = () => {
-  const {signatureProfile} = useGlobal()
+  // const {signatureProfile} = useGlobal()
 
   return <div className='mt-2'>
     <MenuItem link={FrontUrlProvider.homePage()} text='Home Page'/>
     <MenuItem link={FrontUrlProvider.createContract()} text='Create a contract'/>
-    <MenuItem disabled={!signatureProfile} link={FrontUrlProvider.contractsPage()} text='List contracts'/>
+    <MenuItem link={FrontUrlProvider.contractsPage()} text='List contracts'/>
   </div>
 }
 
 const Menu = ({children}) => {
   const history = useHistory();
-  const {signatureProfile} = useGlobal()
+  // const {signatureProfile} = useGlobal()
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -57,7 +57,7 @@ const Menu = ({children}) => {
           <Typography variant="h6" noWrap component="div">
             Ignisign example - Contract signing app
           </Typography>
-          <Button disabled={!signatureProfile} onClick={() => history.push(FrontUrlProvider.createContract())}>Start by creating a contract</Button>
+          <Button onClick={() => history.push(FrontUrlProvider.createContract())}>Start by creating a contract</Button>
         </Toolbar>
       </AppBar>
       <Drawer

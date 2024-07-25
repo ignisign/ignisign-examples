@@ -5,11 +5,12 @@ import Select from '../components-ui/select'
 import { useContract } from '../contexts/contract.context'
 import { useCustomer } from '../contexts/customer.context'
 import { useGlobal } from '../contexts/global.context'
-import { useSeller } from '../contexts/seller.context'
+import { useEmployee } from '../contexts/employee.context'
 import { FrontUrlProvider } from '../utils/front-url-provider'
 import { useHistory } from "react-router";
 import { ApiService } from '../services/api.service'
 import FileSaver from 'file-saver'
+import { IGNISIGN_INTEGRATION_MODE } from '@ignisign/public'
 
 const Explanation_Contract_Header = () => {
   return ( <div>
@@ -18,8 +19,8 @@ const Explanation_Contract_Header = () => {
 } 
 
 const Explanation_Contract_Embedded = () => {
-  const {isEmbedded}  = useGlobal()
-  if(!isEmbedded) return (<></>)
+  // const {isEmbedded}  = useGlobal()
+  // if(!isEmbedded) return (<></>)
 
 
   return ( <div className='mt-4 border border-blue-600 bg-blue-100 text-xs text-blue-600 p-4 rounded'>
@@ -31,17 +32,25 @@ const Explanation_Contract_Embedded = () => {
 
 const Contracts = () => {
   const history       = useHistory()
-  const {isEmbedded}  = useGlobal()
+  const {appContext}  = useGlobal()
   
-  const {sellers}     = useSeller()
+  const {employees}     = useEmployee()
   const {customers}   = useCustomer()
   const {contracts, getContracts, reset, isLoading} = useContract()
 
-  const users = [...sellers ?? [], ...customers ?? []]
+  const users = [...employees ?? [], ...customers ?? []]
+
   const [selectedUserId, setSelectedUserId] = useState()
+
+  const isEmployee = employees?.find(e=>e._id == selectedUserId)
+  const currentAppContext = isEmployee ? appContext?.EMPLOYEE : appContext?.CUSTOMER
+  const isEmbedded = currentAppContext?.signerProfile?.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED
+  console.log('isEmbedded', {isEmbedded, isEmployee, currentAppContext, employees, customers, selectedUserId});
+  
 
   const doSelectUser = (e) => {
     setSelectedUserId(e)
+
     if(!e){
       reset()
     }
@@ -70,7 +79,9 @@ const Contracts = () => {
           </div>
         }
       </Card>
-        <Explanation_Contract_Embedded/>
+      {
+        isEmbedded && <Explanation_Contract_Embedded/>
+      }
       { (selectedUserId) && 
         <>
           { isLoading ? 

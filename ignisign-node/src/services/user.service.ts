@@ -66,10 +66,13 @@ async function getUser(userId): Promise<MyUser> {
 }
 
 async function addUser(type: MY_USER_TYPES, inputs: IgnisignSigner_CreationRequestDto): Promise<MyUser> {
-  const signatureProfileId = process.env.IGNISIGN_SIGNATURE_PROFILE_ID;
+  const employeeSignerProfileId = process.env.IGNISIGN_EMPLOYEE_SIGNER_PROFILE_ID;
+  const customerSignerProfileId = process.env.IGNISIGN_CUSTOMER_SIGNER_PROFILE_ID;
+  const signerProfileId = type === MY_USER_TYPES.CUSTOMER ? customerSignerProfileId : employeeSignerProfileId;
+
   try {
     return new Promise<MyUser>((resolve, reject) => {
-      MyUserModel.insert( {...inputs, type, signatureProfileId},  async (error, inserted) => {
+      MyUserModel.insert( {...inputs, type, signerProfileId},  async (error, inserted) => {
           if (error) {
             console.error(error);
             reject(error);
@@ -89,11 +92,13 @@ async function addUser(type: MY_USER_TYPES, inputs: IgnisignSigner_CreationReque
               ...(inputs?.birthDate && { birthDate : inputs.birthDate.toString()}), 
             }
 
-            const signer = await IgnisignSdkManagerService.createNewSigner(signatureProfileId, inputToCreate, userId);
+            console.log("inputToCreate");
+            
+            const signer = await IgnisignSdkManagerService.createNewSigner(signerProfileId, inputToCreate, userId);
   
             const { signerId, authSecret } = signer;
 
-            const toUpdate = {  ...inputs, type, signatureProfileId , signerId, ignisignAuthSecret: authSecret};
+            const toUpdate = {  ...inputs, type, signerProfileId , signerId, ignisignAuthSecret: authSecret};
           
             MyUserModel.update(
               {_id: userId}, 

@@ -4,9 +4,10 @@ import { FileService } from "../services/files.service";
 import { IgnisignSdkManagerService } from "../services/ignisign-sdk-manager.service";
 import { jsonSuccess } from "../utils/controller.util";
 import { IgnisignDocument_PrivateFileDto } from "@ignisign/public";
+import { MY_USER_TYPES } from "../models/user.db.model";
 
 
-const signatureProfileId = process.env.IGNISIGN_SIGNATURE_PROFILE_ID
+// const signatureProfileId = process.env.IGNISIGN_SIGNATURE_PROFILE_ID
 
 export const appController = (router: Router) => {
   
@@ -28,11 +29,21 @@ export const appController = (router: Router) => {
   router.get('/v1/app-context', async (req: Request, res: Response, next: NextFunction) => {
     try {
       
-      const requiredInputs   = await IgnisignSdkManagerService.getSignatureProfileSignerInputsConstraints(signatureProfileId);
-      const signatureProfile = await IgnisignSdkManagerService.getSignatureProfile(signatureProfileId);
       const webhooks         = await IgnisignSdkManagerService.getWebhookEndpoints();
 
-      return jsonSuccess(res, { requiredInputs, signatureProfile, webhooks });
+      const employeeSignerProfileId = process.env.IGNISIGN_EMPLOYEE_SIGNER_PROFILE_ID;
+      const customerSignerProfileId = process.env.IGNISIGN_CUSTOMER_SIGNER_PROFILE_ID;
+      return jsonSuccess(res, { 
+        [MY_USER_TYPES.EMPLOYEE]: {
+          requiredInputs: await IgnisignSdkManagerService.getSignerInputsConstraintsFromSignerProfileId(employeeSignerProfileId),
+          signerProfile: await IgnisignSdkManagerService.getSignerProfile(employeeSignerProfileId),
+        },
+        [MY_USER_TYPES.CUSTOMER]: {
+          requiredInputs: await IgnisignSdkManagerService.getSignerInputsConstraintsFromSignerProfileId(customerSignerProfileId),
+          signerProfile: await IgnisignSdkManagerService.getSignerProfile(customerSignerProfileId),
+        },
+        webhooks
+      });
 
     } catch(e) { next(e) }
   })

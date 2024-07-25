@@ -14,7 +14,7 @@ The sample is a straightforward CRM backend, demonstrating main Ignisign functio
 
 2. **Acquire API Keys**:
    - Find your `appId`, `appEnv`, and `appSecret` in the "API Keys" section of the [Ignisign Console](https://console.ignisign.io/).
-   - Specify a `signatureProfileId`, obtainable from the "Signature Profile" section of the Ignisign Console. Select your desired signature profile, expand its details, and copy the SignatureProfileId value.
+   <!-- - Specify a `signatureProfileId`, obtainable from the "Signature Profile" section of the Ignisign Console. Select your desired signature profile, expand its details, and copy the SignatureProfileId value. -->
 
 3. **Setting up a Webhook Endpoint**:
    - Create a webhook endpoint in your application and register it as a `webhook end-point` in the Ignisign Console (webhooks section).

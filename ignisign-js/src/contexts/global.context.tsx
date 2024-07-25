@@ -2,34 +2,32 @@
 import { IgnisignSignatureProfile, IgnisignWebhook, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_INTEGRATION_MODE, IGNISIGN_SIGNER_CREATION_INPUT_REF } from "@ignisign/public";
 import { createContext, useContext, useEffect, useState } from "react";
 import { ApiService } from "../services/api.service";
+import { MY_USER_TYPES } from "../models/user.front.model";
+import { AppContextType } from "../models/global.front-model";
+// import { RequiredInputs } from "../models/global.front-model";
 
 export interface IGlobalContext {
-  requiredInputs: IGNISIGN_SIGNER_CREATION_INPUT_REF[]
-  signatureProfile: IgnisignSignatureProfile
-  webhooks: IgnisignWebhook[]
-  isEmbedded: boolean
+  appContext: AppContextType
   isFilesPrivates: boolean
   isLoading: boolean
+  disabled: boolean
 }
 
 export const GlobalContextProvider = ({ children }) => {
   const [isLoading,         setIsLoading]         = useState<boolean>(false)
-  const [requiredInputs,    setRequiredInputs]    = useState<IGNISIGN_SIGNER_CREATION_INPUT_REF[]>([])
-  const [isEmbedded,        setIsEmbedded]        = useState<boolean>(null)
-  const [signatureProfile,  setSignatureProfile]  = useState<IgnisignSignatureProfile>(null)
+
   const [isFilesPrivates,   setIsFilesPrivates]   = useState<boolean>(null)
-  const [webhooks,          setWebhooks]          = useState<IgnisignWebhook[]>(null)
+  const [appContext,       setAppContext]        = useState<AppContextType>(null)
+  const [disabled,         setDisabled]          = useState<boolean>(true)
 
   const getAppContext = async () => {
     setIsLoading(true)
     try {
       const appContext = await ApiService.getAppContext()
-      
-      setRequiredInputs(appContext.requiredInputs)
-      setSignatureProfile(appContext.signatureProfile)
-      setIsEmbedded(appContext.signatureProfile.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED)
-      setIsFilesPrivates(appContext.signatureProfile.documentTypes.includes(IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE))
-      setWebhooks(appContext.webhooks)
+      setAppContext(appContext)
+      setDisabled(
+        !(appContext?.CUSTOMER?.signerProfile && appContext?.CUSTOMER?.signerProfile)
+      )
     } catch (error) {
       console.log(error)  
     }
@@ -44,13 +42,15 @@ export const GlobalContextProvider = ({ children }) => {
   
 
   const context = {
-    requiredInputs,
-    isEmbedded,
-    signatureProfile,
+    appContext,
     isFilesPrivates,
-    webhooks,
     isLoading,
+    disabled,
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <GlobalContext.Provider value={context}>

@@ -63,18 +63,18 @@ export const contractController = (router: Router) => {
     let pathsToDelete = [];
     
     try {
-      const { customerId, sellerId } = req.body;
+      const { customerId, employeeId } = req.body;
 
       if(!customerId) 
         throw new Error('customerId is required')
 
-      if(!sellerId) 
-        throw new Error('sellerId is required')
+      if(!employeeId) 
+        throw new Error('employeeId is required')
 
       const contractFile = req.file
       pathsToDelete.push(`${contractFile.path}`)
 
-      await ContractService.createNewContract(customerId, sellerId, contractFile)
+      await ContractService.createNewContract(customerId, employeeId, contractFile)
       
       jsonSuccess(res, { status: 'ok' })
 

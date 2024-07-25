@@ -2,6 +2,7 @@
 import React, {useEffect, useState} from "react";
 import { useGlobal } from "../contexts/global.context";
 import Card from "../components-ui/card";
+import { IGNISIGN_INTEGRATION_MODE } from "@ignisign/public";
 
 
 export function ExplanationHome1() {
@@ -20,8 +21,8 @@ export function ExplanationHome1() {
         <div className="text-lg font-semibold mb-2">
           What the app does
         </div>
-        <div>- You can create sellers and customers.</div>
-        <div>- You can create a contract between a seller and a customer.</div>
+        <div>- You can create employees and customers.</div>
+        <div>- You can create a contract between an employee and a customer.</div>
         <div>- Both parties can electronically sign the contract using IgniSign.</div>
         <div>- After both signed the contract, they can retrieve the signature proof.</div>
        
@@ -33,7 +34,11 @@ export function ExplanationHome1() {
 
 
 export function Explanation_Embedded_BySide(){
-  const {isEmbedded, webhooks} = useGlobal();
+  const {appContext} = useGlobal();
+
+  const {webhooks, CUSTOMER, EMPLOYEE} = appContext;
+  const isEmbedded = CUSTOMER.signerProfile.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED 
+                    || EMPLOYEE.signerProfile.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED;
 
   return (<div>
     <div className="flex-col">

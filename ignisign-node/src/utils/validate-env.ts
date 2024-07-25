@@ -9,7 +9,7 @@ const envDef: any = {
   IGNISIGN_APP_ENV      : str(),
   IGNISIGN_APP_SECRET   : str(),
 
-  IGNISIGN_SIGNATURE_PROFILE_ID: str(),
+  // IGNISIGN_SIGNATURE_PROFILE_ID: str(),
 }
 
 function validateEnv() {

@@ -1,31 +1,29 @@
 
 import {
-  IGNISIGN_APPLICATION_ENV, 
-  IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, 
-  IGNISIGN_SIGNER_CREATION_INPUT_REF, 
-  IGNISIGN_WEBHOOK_MESSAGE_NATURE, 
+  IGNISIGN_APPLICATION_ENV,
+  IGNISIGN_SIGNER_CREATION_INPUT_REF,
   IGNISIGN_WEBHOOK_ACTION_SIGNATURE,
-  IgnisignDocument_InitializationDto, 
-  IgnisignSignatureProfile, 
-  IgnisignSignatureRequest_Context, 
-  IgnisignSignatureRequest_UpdateDto, 
-  IgnisignSigner_CreationRequestDto, 
-  IgnisignSigner_CreationResponseDto, 
-  IgnisignSignatureRequest_IdContainer,
-  IgnisignWebhook_ActionDto, 
-  IgnisignWebhook,
-  IgnisignWebhookDto_SignatureRequest,
-  IgnisignWebhookDto_Signature,
   IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF,
+  IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST,
+  IGNISIGN_WEBHOOK_MESSAGE_NATURE,
+  IgnisignDocument_InitializationDto,
+  IgnisignSignatureRequest_Context,
+  IgnisignSignatureRequest_IdContainer,
+  IgnisignSignatureRequest_UpdateDto,
+  IgnisignSignerProfile,
+  IgnisignSigner_CreationRequestDto,
+  IgnisignSigner_CreationResponseDto,
+  IgnisignWebhook,
+  IgnisignWebhookDto_Signature,
   IgnisignWebhookDto_SignatureProof_Success,
-  IgnisignWebhook_CallbackParams,
-  IGNISIGN_DOCUMENT_TYPE,
+  IgnisignWebhookDto_SignatureRequest,
+  IgnisignWebhook_ActionDto,
+  IgnisignWebhook_CallbackParams
 } from '@ignisign/public';
 import { IgnisignSdk, IgnisignSdkFileContentUploadDto } from '@ignisign/sdk';
 import { Readable } from 'stream';
 import { ContractService } from './contract.service';
 import _ = require('lodash');
-import axios from 'axios';
 
 
 const DEBUG_LOG_ACTIVATED = true;
@@ -44,13 +42,14 @@ export const IgnisignSdkManagerService = {
   consumeWebhook,
   updateSignatureRequest,
   publishSignatureRequest,
-  getSignatureProfiles,
+  // getSignatureProfiles,
+  getSignerProfile,
   initSignatureRequest,
   uploadHashDocument,
   uploadDocument,
-  getSignatureProfileSignerInputsConstraints,
+  getSignerInputsConstraintsFromSignerProfileId,
   getSignatureRequestContext,
-  getSignatureProfile,
+  // getSignatureProfile,
   getWebhookEndpoints,
   downloadSignatureProof,
 }
@@ -120,7 +119,8 @@ async function _registerWebhookCallback(): Promise<void> {
   
   await ignisignSdkInstance.registerWebhookCallback_SignatureRequest(     // Registering the webhookHandler_LaunchSignatureRequest callback function
     webhookHandler_LaunchSignatureRequest, 
-    IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST.LAUNCHED);
+    IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST.LAUNCHED
+  );
 
 
   // The callback function is called when a webhook is received when a signature has been finalized
@@ -208,29 +208,40 @@ async function consumeWebhook(actionDto: IgnisignWebhook_ActionDto) {
 /******************************************************************************************** SIGNATURE PROFILES ***********************************************************************/
 /******************************************************************************************** ******************************************************************************************/
 
-async function getSignatureProfiles(): Promise<IgnisignSignatureProfile[]> {  
-  return await ignisignSdkInstance.getSignatureProfiles()
-}
+// async function getSignatureProfiles(): Promise<IgnisignSignatureProfile[]> {  
+//   return await ignisignSdkInstance.getSignatureProfiles()
+// }
 
 
-async function getSignatureProfile(signatureProfileId): Promise<IgnisignSignatureProfile> {
+async function getSignerProfile(signerProfileId: string): Promise<IgnisignSignerProfile> {
   try {
-    const profiles = await ignisignSdkInstance.getSignatureProfiles()
-    const profile  = profiles?.find(p => p._id === signatureProfileId)
-    
-    if(!profile)
-      throw new Error("Cannot find signature profile with id : " + signatureProfileId)
-    return profile;
-
-  } catch (e){
-    console.error("IgnisignSdkManagerService: Error when retieveing signature profile", e)
-    throw e
+    return await ignisignSdkInstance.getSignerProfile(signerProfileId);
+  } catch (error) {
+    console.error(error.toString());
+    throw error
   }
 }
 
+// async function getSignatureProfile(signatureProfileId): Promise<IgnisignSignatureProfile> {
+//   try {
+//     const profiles = await ignisignSdkInstance.getSignatureProfiles()
+//     const profile  = profiles?.find(p => p._id === signatureProfileId)
+    
+//     if(!profile)
+//       throw new Error("Cannot find signature profile with id : " + signatureProfileId)
+//     return profile;
 
-async function getSignatureProfileSignerInputsConstraints(signatureProfileId: string): Promise<IGNISIGN_SIGNER_CREATION_INPUT_REF[]> {
-  const result = await ignisignSdkInstance.getSignatureProfileSignerInputsConstraints(signatureProfileId);
+//   } catch (e){
+//     console.error("IgnisignSdkManagerService: Error when retieveing signature profile", e)
+//     throw e
+//   }
+// }
+
+
+async function getSignerInputsConstraintsFromSignerProfileId(signatureProfileId: string): Promise<IGNISIGN_SIGNER_CREATION_INPUT_REF[]> {
+  console.log(ignisignSdkInstance);
+  
+  const result = await ignisignSdkInstance.getSignerInputsConstraintsFromSignerProfileId(signatureProfileId);
   return result.inputsNeeded;
 }
 
@@ -238,15 +249,15 @@ async function getSignatureProfileSignerInputsConstraints(signatureProfileId: st
 /******************************************************************************************** SIGNERS **********************************************************************************/
 /******************************************************************************************** ******************************************************************************************/
 
-async function createNewSigner(signatureProfileId, inputs: { [key in IGNISIGN_SIGNER_CREATION_INPUT_REF] ?: string } = {}, externalId: string = null): Promise<IgnisignSigner_CreationResponseDto> {  
+async function createNewSigner(signerProfileId, inputs: { [key in IGNISIGN_SIGNER_CREATION_INPUT_REF] ?: string } = {}, externalId: string = null): Promise<IgnisignSigner_CreationResponseDto> {  
 
   const dto : IgnisignSigner_CreationRequestDto = {
-    signatureProfileId,
+    signerProfileId,
     ...inputs,
     ...(externalId && {externalId})
   }
 
-  _logIfDebug("createNewSigner", dto)
+  // _logIfDebug("createNewSigner", dto)
   try {
     return await ignisignSdkInstance.createSigner(dto);
   } catch (error) {
@@ -265,9 +276,8 @@ async function revokeSigner(signerId: string) : Promise<{signerId : string}> {
 
 // This function is used to initialize a signature request.
 // See the Ignisign SDK documentation for more information about the global signature request creation process.
-async function initSignatureRequest(signatureProfileId: string): Promise<string>{
-  _logIfDebug("initSignatureRequest", signatureProfileId)
-  const { signatureRequestId } = await ignisignSdkInstance.initSignatureRequest({ signatureProfileId })
+async function initSignatureRequest(): Promise<string>{
+  const { signatureRequestId } = await ignisignSdkInstance.initSignatureRequest()
   return signatureRequestId
 }
 
@@ -277,7 +287,9 @@ async function updateSignatureRequest(signatureRequestId : string, dto: Ignisign
   try {
     _logIfDebug("updateSignatureRequest", {signatureRequestId, dto})
     const data = await ignisignSdkInstance.updateSignatureRequest(signatureRequestId, dto);
-    return data
+  //TODO:
+
+    return null //data
   } catch (error) {
     throw error;
   }

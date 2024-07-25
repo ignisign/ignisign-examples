@@ -1,8 +1,8 @@
 import { COUNTRIES } from "@ignisign/public";
 
 export enum MY_USER_TYPES {
-  CUSTOMER = 'CUSTOMER',
-  SELLER   = 'SELLER',
+  CUSTOMER  = 'CUSTOMER',
+  EMPLOYEE  = 'EMPLOYEE',
 }
 
 export type MyUser = {

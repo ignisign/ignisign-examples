@@ -34,17 +34,17 @@ export const ContractService = {
 
 
 
-async function createNewContract(customerId: string, sellerId: string, contractFile: any): Promise<void> {  
+async function createNewContract(customerId: string, employeeId: string, contractFile: any): Promise<void> {  
   
   return new Promise<void>(async (resolve, reject) => {
     try {
 
-      const signatureProfileId  = process.env.IGNISIGN_SIGNATURE_PROFILE_ID
+      // const signatureProfileId  = process.env.IGNISIGN_SIGNATURE_PROFILE_ID
   
-      const signatureProfile    = await IgnisignSdkManagerService.getSignatureProfile(signatureProfileId)
+      // const signatureProfile    = await IgnisignSdkManagerService.getSignatureProfile(signatureProfileId)
       const customer            = await UserService.getUser(customerId)
-      const seller              = await UserService.getUser(sellerId)
-      const signatureRequestId  = await IgnisignSdkManagerService.initSignatureRequest(signatureProfileId);
+      const employee              = await UserService.getUser(employeeId)
+      const signatureRequestId  = await IgnisignSdkManagerService.initSignatureRequest();
   
       // This function is used to handle private files.
       const handlePrivateFile = async (signatureRequestId, contractFile: any): Promise<string> => {
@@ -68,14 +68,18 @@ async function createNewContract(customerId: string, sellerId: string, contractF
         return await IgnisignSdkManagerService.uploadDocument(signatureRequestId, uploadDto) // upload the file to Ignisign
       }
   
-      const documentId  = signatureProfile.documentTypes.includes(IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE) 
-          ? await handlePrivateFile(signatureRequestId, contractFile) 
-          : await handleStandardFile(signatureRequestId, contractFile);
+      //TODO
+      const documentId  = await handleStandardFile(signatureRequestId, contractFile);
+      // signatureProfile.documentTypes.includes(IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE) 
+      //     ? await handlePrivateFile(signatureRequestId, contractFile) 
+      //     : await handleStandardFile(signatureRequestId, contractFile);
   
       const signers = [
         { userId: customerId, ignisignSignerId: customer.signerId },
-        { userId: sellerId,   ignisignSignerId: seller.signerId }
+        { userId: employeeId,   ignisignSignerId: employee.signerId }
       ]
+      console.log('signers', signers);
+      
     
       await ContractModel.insert({ signatureRequestId, signers, documentId }, async (error, inserted)=>{
   
@@ -94,10 +98,12 @@ async function createNewContract(customerId: string, sellerId: string, contractF
 
         const dto : IgnisignSignatureRequest_UpdateDto = {
           documentIds : [documentId],
-          signerIds   : [customer.signerId, seller.signerId],
+          signerIds   : [customer.signerId, employee.signerId],
           externalId  : contractId,
           title       : 'Contract'
         };
+
+        console.log(dto);
 
         await IgnisignSdkManagerService.updateSignatureRequest(signatureRequestId, dto);
         await IgnisignSdkManagerService.publishSignatureRequest(signatureRequestId);
@@ -327,6 +333,8 @@ async function  downloadSignatureProof(contractId): Promise<Readable> {
         }
 
         if(contract.isSignatureProofReady){
+          console.log('contract', contract);
+          
 
 
           

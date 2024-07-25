@@ -25,8 +25,8 @@ export const ApiService = {
   getContractContext,
   downloadSignatureProof,
 
-  getSellers,
-  addSeller,
+  getEmployees,
+  addEmployee,
 
   addCustomer,
   getCustomers,
@@ -57,10 +57,10 @@ async function downloadSignatureProof(contractId) {
   return http.get(`/v1/contracts/${contractId}/download-signature-proof`, {responseType: 'blob'})
 }
 
-async function createContract(selectedCustomerId, selectedSellerId, selectedFile): Promise<any> {
+async function createContract(selectedCustomerId, selectedEmployeeId, selectedFile): Promise<any> {
   const formData = new FormData();
   formData.append('customerId', selectedCustomerId);
-  formData.append('sellerId', selectedSellerId);
+  formData.append('employeeId', selectedEmployeeId);
   formData.append(`contractFile`, selectedFile.file);
   return http.post(`/v1/contracts`, formData, { headers: {'Content-Type': 'multipart/form-data'} })
 }
@@ -75,10 +75,10 @@ async function addCustomer(body): Promise<MyUser> {
 }
 
 /** SELLERS */
-async function getSellers(): Promise<MyUser[]> {
-  return http.get(`/v1/sellers`)
+async function getEmployees(): Promise<MyUser[]> {
+  return http.get(`/v1/employees`)
 }
 
-async function addSeller(body): Promise<MyUser> {
-  return http.post(`/v1/sellers`, body)
+async function addEmployee(body): Promise<MyUser> {
+  return http.post(`/v1/employees`, body)
 }

@@ -5,7 +5,7 @@ const db = getDb()
 
 export enum MY_USER_TYPES {
   CUSTOMER = 'CUSTOMER',
-  SELLER   = 'SELLER',
+  EMPLOYEE   = 'EMPLOYEE',
 }
 
 export type MyUser = {

@@ -16,7 +16,7 @@ import { errorMiddleware } from './utils/error.middleware';
 import { checkBearerToken } from './utils/authorization.middleware';
 import { jsonError, jsonSuccess } from './utils/controller.util';
 import { customerController } from './controllers/customer.controller';
-import { sellerController } from './controllers/seller.controller';
+import { employeeController } from './controllers/employee.controller';
 import { contractController } from './controllers/contract.controller';
 import { appController } from './controllers/app.controller';
 
@@ -46,7 +46,7 @@ const initExampleApp = async () =>{
     await appController(router)
     await contractController(router);
     await customerController(router);
-    await sellerController(router);
+    await employeeController(router);
 
     app.use(router);
     app.use(errorMiddleware);
