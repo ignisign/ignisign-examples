@@ -34,6 +34,18 @@ export const ApiService = {
 
   bareSignatureUploadFile,
   bareSignatureLogin,
+  
+  checkSealSetup,
+  createSealSignatureRequest,
+}
+
+/** SEALS */
+async function createSealSignatureRequest(): Promise<IgnisignSignatureProfile> {
+  return http.post(`/v1/seal/sign`, {})
+}
+
+async function checkSealSetup(): Promise<boolean> {
+  return http.get(`/v1/seal/setup`)
 }
 
 

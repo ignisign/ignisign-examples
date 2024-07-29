@@ -4,5 +4,6 @@ export const  FrontUrlProvider = {
   createContract    : () => '/create-contract',
   contractsPage     : () => '/contracts',
   bareSignaturePage : () => '/bare-signature',
+  createSeal        : () => '/create-seal',
 }
 
