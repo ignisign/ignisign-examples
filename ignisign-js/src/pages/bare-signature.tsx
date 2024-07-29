@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dropzone } from "../components-ui/dropzone";
 import ClientOAuth2 from 'client-oauth2';
 import crypto from 'crypto';
@@ -7,14 +7,78 @@ import axios from "axios";
 import { Button } from '../components-ui/button'
 import { IGNISIGN_APPLICATION_ENV } from "@ignisign/public";
 import { ApiService } from "../services/api.service";
+import { BARE_SIGNATURE_STATUS, BareSignature } from "../models/bare-signature.front-model";
 
-// const serverUrl = 'http://localhost:3101/v4';                             // TODO
-// const appId     = 'appId_18fbce98-98f5-4fc8-944c-0fe54cf8f09b';           // TODO
-// const appEnv    = IGNISIGN_APPLICATION_ENV.DEVELOPMENT;                   // TODO
-// const appSecret = 'sk_development_1f3426e0-7744-43f0-82f1-60bffe0edf14';  // TODO
-// const baseUrl = `${serverUrl}/envs/${appEnv}/oauth2`;                     // TODO
-    
-export const BareSignature = () => {
+
+export const BareSignaturePage = () => {
+  const [isLoading, setIsLoading]           = useState<boolean>(true);
+  const [bareSignatures, setBareSignatures] = useState<BareSignature[]>([]);
+  const [isInCreation, setIsInCreation]     = useState<boolean>(false);
+
+  useEffect(() => {
+    init();
+  }, [])
+
+  const init = async () => {
+    setIsLoading(false);
+    try {
+      const tmpBareSignatures = await ApiService.getBareSignatures();
+      setBareSignatures(tmpBareSignatures);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      {isLoading && <div>Loading...</div>}
+      {isInCreation && <BareSignatureCreation />}
+      {!isLoading && !isInCreation && 
+        <div>
+          <Button onClick={() => setIsInCreation(true)}>
+            Create Bare Signature
+          </Button>
+          
+          {bareSignatures.map((bareSignature) => (
+            <BareSignatureItem key={bareSignature._id} bareSignature={bareSignature} />
+          ))}
+        </div>
+      }
+    </div>
+  )
+}
+
+const BareSignatureItem = ({ bareSignature } : {bareSignature: BareSignature}) => {
+
+  const getProof = async () => {
+    const proof = await ApiService.bareSignatureGetProof(bareSignature._id);
+    console.log('getProof : ', proof);
+    // TODO
+  }
+
+  const goSign = async () => {
+    // TODO
+  }
+
+  return (
+    <div>
+      {bareSignature._id}
+
+      {bareSignature.status === BARE_SIGNATURE_STATUS.SIGNED 
+        ? <Button onClick={getProof}>
+            Get Proof
+          </Button>
+        : <Button onClick={goSign}>
+            Sign
+        </Button>
+      }
+    </div>
+  )
+}
+
+export const BareSignatureCreation = () => {
   const [selectedFile, setSelectedFile] = useState<File>(null);
   // const [hashes, setHashes]               = useState<string[]>([]);
   const [isLoading, setIsLoading]       = useState<boolean>(false);

@@ -62,6 +62,19 @@ export const bareSignatureController = (router: Router) => {
 
   });
 
+  router.get('/v1/bare-signatures', 
+    async (req: Request, res: Response, next: NextFunction) => {
+
+      try {
+        const allBareSignatures = await BareSignatureService.getBareSignatures();
+        jsonSuccess(res, allBareSignatures);
+      } catch (e) {
+        console.error(e);
+        next(e);
+      }
+    }
+  );
+
   router.get('/v1/bare-signatures/:bareSignatureId/login', 
     async (req: Request, res: Response, next: NextFunction) => {
 

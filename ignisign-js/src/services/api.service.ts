@@ -32,6 +32,7 @@ export const ApiService = {
   addCustomer,
   getCustomers,
 
+  getBareSignatures,
   bareSignatureUploadFile,
   bareSignatureLogin,
   bareSignatureSaveAccessToken,
@@ -121,3 +122,8 @@ async function bareSignatureSaveAccessToken(bareSignatureId: string, token: stri
 async function bareSignatureGetProof(bareSignatureId: string) {
   return http.get(`/v1/bare-signatures/${bareSignatureId}/proof`);
 }
+
+async function getBareSignatures(): Promise<BareSignature[]> {
+  return http.get(`/v1/bare-signatures`)
+}
+

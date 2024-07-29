@@ -16,6 +16,7 @@ const serverUrl = `${IGNISIGN_SERVER_URL}/v4`
 const baseUrl = `${serverUrl}/envs/${appEnv}/oauth2`;   
                   
 export const BareSignatureService = {
+  getBareSignatures,
   login,
   saveAccessToken,
   generateCodeVerifier,
@@ -39,6 +40,20 @@ function generateCodeChallenge(codeVerifier) {
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=/g, '');
+}
+
+async function getBareSignatures() : Promise<BareSignature[]> {
+  return await new Promise<BareSignature[]>(async (resolve, reject) => {
+    await BareSignatureModel.find({}, async (error, result) => {
+      if(error) {
+        console.error(error);
+        reject(error);
+        return;
+      }
+
+      resolve(result);
+    });
+  });
 }
 
 async function login(bareSignatureId: string) {

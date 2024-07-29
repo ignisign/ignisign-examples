@@ -10,9 +10,9 @@ export const BareSignatureCallback = () => {
     init();
   }, [])
   
-
   const init = async () => {
     try {
+      setIsLoading(true);
       const queryParams = new URLSearchParams(window.location.search)
       const token       = queryParams.get("code");
       const state       = JSON.parse(queryParams.get("state") || '{}');
@@ -25,11 +25,14 @@ export const BareSignatureCallback = () => {
       console.log('BareSignatureCallback : ', { token, state });  
 
       await saveAccessToken(token, bareSignatureId);
+      // TODO GO TO THE LISTING INSTED OF GETTING THE PROOF
       await getProof(bareSignatureId);
 
     } catch (e) {
       console.error(e); 
       setIsOnError(true);
+    } finally {
+      setIsLoading(true);
     }
   }
   
@@ -60,7 +63,7 @@ export const BareSignatureCallback = () => {
 
   return (
     <div>
-      BareSignatureCallback
+      BareSignatureCallback : TODO DISPLAY PROOF ? 
     </div>
   )
 }
