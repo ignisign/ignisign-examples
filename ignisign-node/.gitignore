@@ -10,3 +10,4 @@ uploads_tmp/**
 dist
 tsconfig.tsbuildinfo
 .DS_Store
+yarn.lock
