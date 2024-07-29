@@ -20,6 +20,7 @@ import { employeeController } from './controllers/employee.controller';
 import { contractController } from './controllers/contract.controller';
 import { appController } from './controllers/app.controller';
 import { sealController } from './controllers/seal.controller';
+import { bareSignatureController } from './controllers/bare-signature.controller';
 
 validateEnv()
 
@@ -50,6 +51,7 @@ const initExampleApp = async () =>{
     await customerController(router);
     await employeeController(router);
     await sealController(router);
+    await bareSignatureController(router);
 
     app.use(router);
     app.use(errorMiddleware);

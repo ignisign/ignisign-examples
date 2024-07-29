@@ -18,6 +18,7 @@ import { ContractContextProvider } from './contexts/contract.context';
 import SignAContract from './pages/sign-a-contract.page';
 import { CreateSeal } from './pages/create-seal.page';
 import { SealContextProvider } from './contexts/seal.context';
+import { BareSignature } from './pages/bare-signature';
 
 const NotFoundPage = () => {
   return (
@@ -46,6 +47,9 @@ function AppRouter() {
         </Route>
         <Route exact path={FrontUrlProvider.contractsPage()}>
           <Contracts/>
+        </Route>
+        <Route exact path={FrontUrlProvider.bareSignaturePage()}>
+          <BareSignature/>
         </Route>
         <Route>
           <NotFoundPage/>

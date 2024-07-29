@@ -43,6 +43,7 @@ const MenuContent = () => {
     <MenuItem link={FrontUrlProvider.createContract()} text='Create a contract'/>
     <MenuItem link={FrontUrlProvider.createSeal()} text='Create a seal'/>
     <MenuItem link={FrontUrlProvider.contractsPage()} text='List contracts'/>
+    <MenuItem link={FrontUrlProvider.bareSignaturePage()} text='Bare signature'/>
   </div>
 }
 

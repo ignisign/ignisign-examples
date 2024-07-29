@@ -11,8 +11,8 @@
     "clean-win": "rd /s /q dist && del /f tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@ignisign/public": "file:/Users/thibaudgrepin/Workspace/ignisign-public-models",
-    "@ignisign/sdk": "file:/Users/thibaudgrepin/Workspace/ignisign-node",
+    "@ignisign/public": "file:../../ignisign-public-models",
+    "@ignisign/sdk": "file:/Users/boardigo/Desktop/Ignisign/ignisign-node",
     "axios": "^1.6.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
