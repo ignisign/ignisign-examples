@@ -16,6 +16,8 @@ import { EmployeeContextProvider } from './contexts/employee.context';
 import Contracts from './pages/contracts.page';
 import { ContractContextProvider } from './contexts/contract.context';
 import SignAContract from './pages/sign-a-contract.page';
+import { CreateSeal } from './pages/create-seal.page';
+import { SealContextProvider } from './contexts/seal.context';
 
 const NotFoundPage = () => {
   return (
@@ -39,6 +41,9 @@ function AppRouter() {
         <Route exact path={FrontUrlProvider.createContract()}>
           <CreateContract/>
         </Route>
+        <Route exact path={FrontUrlProvider.createSeal()}>
+          <CreateSeal/>
+        </Route>
         <Route exact path={FrontUrlProvider.contractsPage()}>
           <Contracts/>
         </Route>
@@ -50,6 +55,13 @@ function AppRouter() {
   )
 }
 
+const providers = [
+  ContractContextProvider,
+  CustomerContextProvider,
+  EmployeeContextProvider,
+  SealContextProvider
+];
+
 function App() {
   const themeConfig = createTheme(muiTheme);
 
@@ -60,13 +72,11 @@ function App() {
         <IgnisignSnackbarProvider>
           <GlobalContextProvider>
             <Menu>
-              <ContractContextProvider>
-                <CustomerContextProvider>
-                  <EmployeeContextProvider>
-                    <AppRouter/>
-                  </EmployeeContextProvider>
-                </CustomerContextProvider>
-              </ContractContextProvider>
+              {
+                providers.reduce((acc, Provider) => {
+                  return <Provider>{acc}</Provider>
+                }, <AppRouter/>)
+              }
             </Menu>
           </GlobalContextProvider>
         </IgnisignSnackbarProvider>

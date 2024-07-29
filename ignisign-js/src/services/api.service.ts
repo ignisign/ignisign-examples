@@ -30,6 +30,18 @@ export const ApiService = {
 
   addCustomer,
   getCustomers,
+
+  checkSealSetup,
+  createSealSignatureRequest,
+}
+
+/** SEALS */
+async function createSealSignatureRequest(): Promise<IgnisignSignatureProfile> {
+  return http.post(`/v1/seal/sign`, {})
+}
+
+async function checkSealSetup(): Promise<boolean> {
+  return http.get(`/v1/seal/setup`)
 }
 
 

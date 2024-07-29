@@ -24,6 +24,7 @@ import { IgnisignSdk, IgnisignSdkFileContentUploadDto } from '@ignisign/sdk';
 import { Readable } from 'stream';
 import { ContractService } from './contract.service';
 import _ = require('lodash');
+import * as fs from 'fs';
 
 
 const DEBUG_LOG_ACTIVATED = true;
@@ -52,6 +53,16 @@ export const IgnisignSdkManagerService = {
   // getSignatureProfile,
   getWebhookEndpoints,
   downloadSignatureProof,
+}
+
+let ignisignSdkSealInstance: IgnisignSdk = null;
+let ignisignSdkSealInstanceInitialized = false;
+
+
+export const IgnisignSealSdkManagerService = {
+  init: initSeal,
+  ignisignSdkSealInstanceInitialized,
+  createM2mSignatureRequest,
 }
 
 const IGNISIGN_APP_ID     = process.env.IGNISIGN_APP_ID
@@ -92,6 +103,54 @@ async function init() {
   }
 }
 
+
+async function initSeal() {
+  const {
+    IGNISIGN_SEAL_APP_ID,
+    IGNISIGN_SEAL_ENV,
+    IGNISIGN_SEAL_SECRET,
+    IGNISIGN_SEAL_M2M_ID,
+  } = process.env;
+
+  _logIfDebug("IgnisignSdkManagerService: init")
+  
+  if(!IGNISIGN_SEAL_APP_ID || !IGNISIGN_SEAL_ENV || !IGNISIGN_SEAL_SECRET)
+    throw new Error(`IGNISIGN_SEAL_APP_ID, IGNISIGN_SEAL_ENV and IGNISIGN_SEAL_SECRET are mandatory to init IgnisignSdkManagerService`);
+  
+  if(!IGNISIGN_SEAL_M2M_ID)
+    throw new Error(`IGNISIGN_SEAL_M2M_ID is mandatory to init IgnisignSdkManagerService`);
+  
+  try {
+    if(ignisignSdkSealInstanceInitialized)
+      return;
+
+    ignisignSdkSealInstanceInitialized = true;
+    
+    // initialization of the Ignisign SDK
+    ignisignSdkSealInstance = new IgnisignSdk({
+      appId           : IGNISIGN_SEAL_APP_ID,
+      appEnv          : (<IGNISIGN_APPLICATION_ENV>IGNISIGN_SEAL_ENV),
+      appSecret       : IGNISIGN_SEAL_SECRET,
+      displayWarning  : true,
+    })
+
+    await ignisignSdkSealInstance.init();
+
+    console.log('init seal', IGNISIGN_SEAL_APP_ID,
+    IGNISIGN_SEAL_ENV,
+    IGNISIGN_SEAL_SECRET,
+    IGNISIGN_SEAL_M2M_ID,);
+    
+    // await ignisignSdkInstance.init();
+    // await _registerWebhookCallback();
+
+  
+  } catch (e){
+    ignisignSdkSealInstanceInitialized = false;
+    console.error("Error when initializing Ignisign Manager Service", e)
+  }
+}
+
 /******************************************************************************************** ******************************************************************************************/
 /******************************************************************************************** WEBHOOKS *********************************************************************************/
 /******************************************************************************************** ******************************************************************************************/
@@ -108,12 +167,12 @@ async function _registerWebhookCallback(): Promise<void> {
       return;
     }
 
-    const { signatureRequestExternalId, signatureRequestId, signers } = content as IgnisignWebhookDto_SignatureRequest;
+    const { signatureRequestExternalId, signatureRequestId, signersBySide, signersEmbedded } = content as IgnisignWebhookDto_SignatureRequest;
 
-    _logIfDebug("webhookHandler_LaunchSignatureRequest", {signatureRequestExternalId, signatureRequestId, signers})
+    _logIfDebug("webhookHandler_LaunchSignatureRequest", {signatureRequestExternalId, signatureRequestId})
 
-    if(signers)
-      await ContractService.handleLaunchSignatureRequestWebhook(signatureRequestExternalId, signatureRequestId, signers)
+    if(signersBySide || signersEmbedded)
+      await ContractService.handleLaunchSignatureRequestWebhook(signatureRequestExternalId, signatureRequestId, [...signersBySide, ...signersEmbedded])
   }
 
   
@@ -344,8 +403,21 @@ async function downloadSignatureProof(documentId): Promise<Readable> {
   return await ignisignSdkInstance.downloadSignatureProofDocument(documentId);
 }
 
+async function createM2mSignatureRequest(m2mId: string, documentHash: string): Promise<void> {
+  // _logIfDebug("createM2mSignatureRequest", {signatureRequestId, documentHash})
+  const {signatureRequestId} = await ignisignSdkSealInstance.createM2mSignatureRequest({
+    m2mId,
+    documentHash
+  });
+  const privateKey = fs.readFileSync('./seal-secret.pem', 'utf8')
 
-
+  const {signature} = ignisignSdkSealInstance.doSignM2MPayload(privateKey, {signatureRequestId, documentHash})
+  await ignisignSdkSealInstance.signM2mSignatureRequest({
+    signatureRequestId,
+    documentHash,
+    signature,
+  })
+}
 
 
 

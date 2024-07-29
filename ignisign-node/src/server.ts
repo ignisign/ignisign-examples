@@ -10,7 +10,7 @@ import cors = require('cors');
 import validateEnv from './utils/validate-env';
   
 import 'dotenv/config'; 
-import { IgnisignSdkManagerService } from './services/ignisign-sdk-manager.service';
+import { IgnisignSdkManagerService, IgnisignSealSdkManagerService } from './services/ignisign-sdk-manager.service';
 
 import { errorMiddleware } from './utils/error.middleware';
 import { checkBearerToken } from './utils/authorization.middleware';
@@ -19,6 +19,7 @@ import { customerController } from './controllers/customer.controller';
 import { employeeController } from './controllers/employee.controller';
 import { contractController } from './controllers/contract.controller';
 import { appController } from './controllers/app.controller';
+import { sealController } from './controllers/seal.controller';
 
 validateEnv()
 
@@ -40,6 +41,7 @@ const initExampleApp = async () =>{
     app.use('/uploads', checkBearerToken, express.static('uploads'));
     
     await IgnisignSdkManagerService.init();
+    await IgnisignSealSdkManagerService.init();
 
     router.get('/v1/healthcheck', (req, res) => jsonSuccess(res, {status: 'ok'} ));
 
@@ -47,6 +49,7 @@ const initExampleApp = async () =>{
     await contractController(router);
     await customerController(router);
     await employeeController(router);
+    await sealController(router);
 
     app.use(router);
     app.use(errorMiddleware);
