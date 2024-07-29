@@ -20,3 +20,4 @@ export type BareSignature = {
 export class RedirectUrlWrapper {
   redirectUrl: string;
 }
+

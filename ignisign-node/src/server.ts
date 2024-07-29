@@ -42,7 +42,7 @@ const initExampleApp = async () =>{
     app.use('/uploads', checkBearerToken, express.static('uploads'));
     
     await IgnisignSdkManagerService.init();
-    await IgnisignSealSdkManagerService.init();
+    // await IgnisignSealSdkManagerService.init();
 
     router.get('/v1/healthcheck', (req, res) => jsonSuccess(res, {status: 'ok'} ));
 

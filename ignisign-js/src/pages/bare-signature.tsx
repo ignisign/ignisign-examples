@@ -8,16 +8,17 @@ import { Button } from '../components-ui/button'
 import { IGNISIGN_APPLICATION_ENV } from "@ignisign/public";
 import { ApiService } from "../services/api.service";
 
-const serverUrl = 'http://localhost:3101/v4';                             // TODO
-const appId     = 'appId_18fbce98-98f5-4fc8-944c-0fe54cf8f09b';           // TODO
-const appEnv    = IGNISIGN_APPLICATION_ENV.DEVELOPMENT;                   // TODO
-const appSecret = 'sk_development_1f3426e0-7744-43f0-82f1-60bffe0edf14';  // TODO
-const baseUrl = `${serverUrl}/envs/${appEnv}/oauth2`;                     // TODO
+// const serverUrl = 'http://localhost:3101/v4';                             // TODO
+// const appId     = 'appId_18fbce98-98f5-4fc8-944c-0fe54cf8f09b';           // TODO
+// const appEnv    = IGNISIGN_APPLICATION_ENV.DEVELOPMENT;                   // TODO
+// const appSecret = 'sk_development_1f3426e0-7744-43f0-82f1-60bffe0edf14';  // TODO
+// const baseUrl = `${serverUrl}/envs/${appEnv}/oauth2`;                     // TODO
     
 export const BareSignature = () => {
   const [selectedFile, setSelectedFile] = useState<File>(null);
   // const [hashes, setHashes]               = useState<string[]>([]);
-  const [isLoading, setIsLoading]       = useState(false);
+  const [isLoading, setIsLoading]       = useState<boolean>(false);
+  const [bareSignatureId, setBareSignatureId] = useState<string>('');
 
   /* 
   const handleFileChange = async (files : File[]) => {
@@ -104,10 +105,8 @@ export const BareSignature = () => {
   const createBareSignature = async () => {
     try {
       setIsLoading(true);
-      const { data } = await axios.get(`http://localhost:4242/v1/toto`);
-      console.log('createBareSignature_0 : ', data);
-
-      const savedBareSignature = await ApiService.bareSignatureUploadFile(selectedFile[0]);
+      const savedBareSignature = await ApiService.bareSignatureUploadFile(selectedFile);
+      setBareSignatureId(savedBareSignature._id);
       console.log('createBareSignature_0 : ', savedBareSignature);
     } catch (e) {
       console.error(e);
@@ -115,7 +114,18 @@ export const BareSignature = () => {
       setIsLoading(false);
     }
   }
-  
+
+  const login = async () => {
+    try {
+      setIsLoading(true);
+      const { redirectUrl } = await ApiService.bareSignatureLogin(bareSignatureId);
+      window.location.href = redirectUrl;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div>
@@ -132,6 +142,14 @@ export const BareSignature = () => {
         loading={isLoading}
       >
         Create Bare Signature
+      </Button>
+
+      <Button 
+        onClick={login}
+        disabled={!bareSignatureId} 
+        loading={isLoading}
+      >
+        Login
       </Button>
 
       {/* <Button 

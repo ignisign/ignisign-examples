@@ -43,7 +43,7 @@ async function createNewContract(customerId: string, employeeId: string, contrac
   
       // const signatureProfile    = await IgnisignSdkManagerService.getSignatureProfile(signatureProfileId)
       const customer            = await UserService.getUser(customerId)
-      const employee              = await UserService.getUser(employeeId)
+      const employee            = await UserService.getUser(employeeId)
       const signatureRequestId  = await IgnisignSdkManagerService.initSignatureRequest();
   
       // This function is used to handle private files.
@@ -143,7 +143,6 @@ async function getAllContractToSignContexts(): Promise<ContractContext[]> {
         reject(error);
         return;
       }
-
       
       resolve(cs);
     });
@@ -184,12 +183,12 @@ async function getAllContractToSignContexts(): Promise<ContractContext[]> {
   return _.flatten(resultWrapped);
 }
 
-async function  getContractContextByUser(contractId, userId): Promise<ContractContext> {
+async function getContractContextByUser(contractId, userId): Promise<ContractContext> {
   return new Promise(async (resolve, reject) => {
 
     await ContractModel.findOne({_id: contractId}, async (error, contract) => {
         
-      if (error){ 
+      if(error){ 
         reject(error);
         return;
       }
@@ -214,7 +213,7 @@ async function  getContractContextByUser(contractId, userId): Promise<ContractCo
   });
 }
 
-async function  handleLaunchSignatureRequestWebhook(contractId, signatureRequestId, signers): Promise<void> {
+async function handleLaunchSignatureRequestWebhook(contractId, signatureRequestId, signers): Promise<void> {
   return new Promise<void>(async (resolve, reject) => { 
 
     const formatedSigners = signers.map( ({ signerId, signerExternalId, token }) => ({
@@ -241,16 +240,15 @@ async function  handleLaunchSignatureRequestWebhook(contractId, signatureRequest
         signatureRequestId,
       };
 
-       await ContractModel.update(
+      await ContractModel.update(
         {_id: contractId}, 
         contractToUpdate, 
         async (error, updated) => error ? reject(error) : resolve());
-
-    });
+      });
   });
 }
 
-async function  handleFinalizeSignatureWebhook(contractId, signatureRequestId, userId) : Promise<void> {
+async function handleFinalizeSignatureWebhook(contractId, signatureRequestId, userId) : Promise<void> {
   return new Promise<void>(async (resolve, reject) => { 
 
     await ContractModel.findOne({_id: contractId}, async (error, contract) => {

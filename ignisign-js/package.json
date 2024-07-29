@@ -18,7 +18,7 @@
     "@faker-js/faker": "^8.0.1",
     "@hookform/resolvers": "^2.8.8",
     "@ignisign/js": "file:/Users/boardigo/Desktop/Ignisign/ignisign-js",
-    "@ignisign/public": "file:../../ignisign-public-models",
+    "@ignisign/public": "file:/Users/boardigo/Desktop/Ignisign/ignisign-public-models",
     "@material-ui/core": "^4.12.4",
     "@mui/material": "^5.13.2",
     "@tailwindcss/aspect-ratio": "^0.2.1",
