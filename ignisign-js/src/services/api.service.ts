@@ -4,6 +4,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { Contract, ContractContext } from '../models/contract.front-model';
 import { AppContextType } from '../models/global.front-model';
 import { MyUser } from '../models/user.front.model';
+import { BareSignature, RedirectUrlWrapper } from '../models/bare-signature.front-model';
 
 const APP_BACKEND_ENDPOINT = process?.env?.REACT_APP_BACKEND_ENDPOINT || "http://localhost:4242"
 
@@ -30,6 +31,9 @@ export const ApiService = {
 
   addCustomer,
   getCustomers,
+
+  bareSignatureUploadFile,
+  bareSignatureLogin,
 }
 
 
@@ -39,13 +43,13 @@ async function getAppContext(): Promise<AppContextType> {
 }
 
 /** PRIVATE FILE */
-async function getPrivateFileUrl(documentHash): Promise<IgnisignDocument_PrivateFileDto>{
+async function getPrivateFileUrl(documentHash: string): Promise<IgnisignDocument_PrivateFileDto>{
   return http.get(`/v1/files/${documentHash}/private-file-info`)
 }
 
 /** CONTRACTS */
 
-async function getContractContext(contractId, userId): Promise<ContractContext> {
+async function getContractContext(contractId: string, userId: string): Promise<ContractContext> {
   return http.get(`/v1/contracts/${contractId}/user/${userId}`)
 }
 
@@ -53,11 +57,11 @@ async function getContracts(userId: string): Promise<Contract> {
   return http.get(`/v1/user/${userId}/contracts`)
 }
 
-async function downloadSignatureProof(contractId) {
+async function downloadSignatureProof(contractId: string) {
   return http.get(`/v1/contracts/${contractId}/download-signature-proof`, {responseType: 'blob'})
 }
 
-async function createContract(selectedCustomerId, selectedEmployeeId, selectedFile): Promise<any> {
+async function createContract(selectedCustomerId: string, selectedEmployeeId: string, selectedFile): Promise<any> {
   const formData = new FormData();
   formData.append('customerId', selectedCustomerId);
   formData.append('employeeId', selectedEmployeeId);
@@ -81,4 +85,16 @@ async function getEmployees(): Promise<MyUser[]> {
 
 async function addEmployee(body): Promise<MyUser> {
   return http.post(`/v1/employees`, body)
+}
+
+/** BARE SIGNATURE */
+
+async function bareSignatureUploadFile(file: File): Promise<BareSignature> {
+  const formData = new FormData();
+  formData.append('file', file);
+  return http.post(`/v1/bare-signatures/upload-file`, formData, { headers: {'Content-Type': 'multipart/form-data'} })
+}
+
+async function bareSignatureLogin(bareSignatureId: string): Promise<RedirectUrlWrapper> {
+  return http.get(`/v1/bare-signatures/${bareSignatureId}/login`)
 }

@@ -21,7 +21,11 @@ export interface MulterFile {
 
 
 export const bareSignatureController = (router: Router) => {
-  
+  router.get('/v1/bare-signatures',
+    async (req: Request, res: Response, next: NextFunction) => {
+      jsonSuccess(res, { test : "TEST" });
+    });
+
   router.post('/v1/bare-signatures/upload-file', 
     upload.single('file'), async (req: Request & { file: MulterFile }, res: Response, next: NextFunction) => { 
 
@@ -45,7 +49,7 @@ export const bareSignatureController = (router: Router) => {
           }
 
           if(!inserted || !inserted.length) {
-            reject(new Error("User not inserted"));
+            reject(new Error("BareSignature not inserted"));
             return;
           }
         });
@@ -67,7 +71,7 @@ export const bareSignatureController = (router: Router) => {
 
       try {
         // TODO
-        
+
       } catch (e) {
         next(e);
       }

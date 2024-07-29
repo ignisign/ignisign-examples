@@ -6,6 +6,7 @@ import { nanoid } from 'nanoid'
 import axios from "axios";
 import { Button } from '../components-ui/button'
 import { IGNISIGN_APPLICATION_ENV } from "@ignisign/public";
+import { ApiService } from "../services/api.service";
 
 const serverUrl = 'http://localhost:3101/v4';                             // TODO
 const appId     = 'appId_18fbce98-98f5-4fc8-944c-0fe54cf8f09b';           // TODO
@@ -14,10 +15,11 @@ const appSecret = 'sk_development_1f3426e0-7744-43f0-82f1-60bffe0edf14';  // TOD
 const baseUrl = `${serverUrl}/envs/${appEnv}/oauth2`;                     // TODO
     
 export const BareSignature = () => {
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [hashes, setHashes]               = useState<string[]>([]);
-  const [isLoading, setIsLoading]         = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File>(null);
+  // const [hashes, setHashes]               = useState<string[]>([]);
+  const [isLoading, setIsLoading]       = useState(false);
 
+  /* 
   const handleFileChange = async (files : File[]) => {
     console.log('handleFileChange_1 : ', files);
     const generatedHashes = await Promise.all(files.map(generateHashFromFile));
@@ -81,40 +83,64 @@ export const BareSignature = () => {
     //   state             : JSON.stringify(state)
     // });
 
-    // axios.get(`${baseUrl}/authorize`, {
-    //   params: {
-    //     response_type          : 'code',
-    //     client_id              : appId,
-    //     redirect_uri           : 'http://localhost:3456/callback',
-    //     state                  : JSON.stringify(state),
-    //     code_challenge         : 'code_challenge',
-    //     code_challenge_method  : 'S256'
-    //   }
-    // }).then((response) => {
-    //   console.log('goSign_1 : ', response);
-    //   // TODO
-    // }).catch((error) => {
-    //   console.log('goSign_2 : ', error);
-    // });
+    axios.get(`${baseUrl}/authorize`, {
+      params: {
+        response_type          : 'code',
+        client_id              : appId,
+        redirect_uri           : 'http://localhost:3456/callback',
+        state                  : JSON.stringify(state),
+        code_challenge         : 'code_challenge',
+        code_challenge_method  : 'S256'
+      }
+    }).then((response) => {
+      console.log('goSign_1 : ', response);
+      // TODO
+    }).catch((error) => {
+      console.log('goSign_2 : ', error);
+    });
+  } */
+
+  
+  const createBareSignature = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(`http://localhost:4242/v1/toto`);
+      console.log('createBareSignature_0 : ', data);
+
+      const savedBareSignature = await ApiService.bareSignatureUploadFile(selectedFile[0]);
+      console.log('createBareSignature_0 : ', savedBareSignature);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
   }
   
 
   return (
     <div>
       <Dropzone
-        onDrop={async files => handleFileChange(files)}
-        files={selectedFiles}
+        onDrop={async files => setSelectedFile(files[0])}
+        files={[selectedFile]}
         maxFiles={1}
         multiple={false}
       />
 
       <Button 
+        onClick={createBareSignature}
+        disabled={!selectedFile} 
+        loading={isLoading}
+      >
+        Create Bare Signature
+      </Button>
+
+      {/* <Button 
         onClick={goSign}
         disabled={!hashes?.length} 
         loading={isLoading}
       >
         Sign
-      </Button>
+      </Button> */}
     </div>
   )
 }
