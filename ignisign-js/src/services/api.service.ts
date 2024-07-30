@@ -37,6 +37,7 @@ export const ApiService = {
   bareSignatureLogin,
   bareSignatureSaveAccessToken,
   bareSignatureGetProof,
+  downloadBareSignatureDocument,
 
   checkSealSetup,
   createSealSignatureRequest,
@@ -104,10 +105,12 @@ async function addEmployee(body): Promise<MyUser> {
 
 /** BARE SIGNATURE */
 
-async function bareSignatureUploadFile(file: File): Promise<BareSignature> {
+async function bareSignatureUploadFile(title: string, file: File): Promise<BareSignature> {
   console.log('bareSignatureUploadFile : ', file);
   const formData = new FormData();
   formData.append('file', file);
+  formData.append('title', title);
+
   return http.post(`/v1/bare-signatures/upload-file`, formData, { headers: {'Content-Type': 'multipart/form-data'} })
 }
 
@@ -125,5 +128,9 @@ async function bareSignatureGetProof(bareSignatureId: string) {
 
 async function getBareSignatures(): Promise<BareSignature[]> {
   return http.get(`/v1/bare-signatures`)
+}
+
+async function downloadBareSignatureDocument(bareSignatureId: string) {
+  return http.get(`/v1/bare-signatures/${bareSignatureId}/download`, { responseType: 'blob' });
 }
 

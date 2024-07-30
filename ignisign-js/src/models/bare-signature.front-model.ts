@@ -11,10 +11,13 @@ export type BareSignatureDocument = {
 }
 
 export type BareSignature = {
-  _id          ?: string;
-  documents     : BareSignatureDocument[];
-  accessToken   : string;
-  status        : BARE_SIGNATURE_STATUS;
+  _id              ?: string;
+  title             : string;
+  documents         : BareSignatureDocument[];
+  status            : BARE_SIGNATURE_STATUS;
+  codeVerifier      : string;
+  authorizationUrl ?: string;
+  accessToken      ?: string;
 }
 
 export class RedirectUrlWrapper {

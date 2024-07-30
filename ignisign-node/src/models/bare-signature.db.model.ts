@@ -9,16 +9,20 @@ export enum BARE_SIGNATURE_STATUS {
 }
 
 export type BareSignatureDocument = {
-  documentPath: string;
-  documentHash: string;
+  fileB64      : string;
+  fileName     : string;
+  mimeType     : string;
+  documentHash : string;
 }
 
 export type BareSignature = {
-  _id          ?: string;
-  documents     : BareSignatureDocument[];
-  status        : BARE_SIGNATURE_STATUS;
-  codeVerifier  : string;
-  accessToken  ?: string;
+  _id              ?: string;
+  title             : string;
+  documents         : BareSignatureDocument[];
+  status            : BARE_SIGNATURE_STATUS;
+  codeVerifier      : string;
+  authorizationUrl ?: string;
+  accessToken      ?: string;
 }
 
 export class IgnisignOAuth2_ProofAccessTokenRequest {
