@@ -37,7 +37,7 @@ export const ApiService = {
   bareSignatureLogin,
   bareSignatureSaveAccessToken,
   bareSignatureGetProof,
-  downloadBareSignatureDocument,
+  getAuthorizationUrl,
 
   checkSealSetup,
   createSealSignatureRequest,
@@ -130,7 +130,6 @@ async function getBareSignatures(): Promise<BareSignature[]> {
   return http.get(`/v1/bare-signatures`)
 }
 
-async function downloadBareSignatureDocument(bareSignatureId: string) {
-  return http.get(`/v1/bare-signatures/${bareSignatureId}/download`, { responseType: 'blob' });
+async function getAuthorizationUrl(bareSignatureId: string): Promise<string> {
+  return http.get(`/v1/bare-signatures/${bareSignatureId}/authorize`);
 }
-

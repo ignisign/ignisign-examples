@@ -21,12 +21,11 @@ const baseUrl = `${serverUrl}/envs/${appEnv}/oauth2`;
 export const BareSignatureService = {
   createBareSignature,
   getBareSignatures,
-  // login,
+  getAuthorizationUrl,
   saveAccessToken,
   generateCodeVerifier,
   generateCodeChallenge,
   getProof,
-  // download
 }
 
 function generateCodeVerifier(length = 128) {
@@ -47,6 +46,30 @@ function generateCodeChallenge(codeVerifier) {
     .replace(/=/g, '');
 }
 
+async function getAuthorizationUrl(bareSignatureId: string) : Promise<string> {
+  const bareSignature = await _getBareSignature(bareSignatureId);
+
+  const state = {
+    hashes          : [bareSignature.document.documentHash],
+    nonce           : nanoid(),
+    bareSignatureId : bareSignature._id
+  };
+
+  const codeChallenge = generateCodeChallenge(bareSignature.codeVerifier);
+
+  const params = {
+    redirect_uri,
+    response_type          : 'code',
+    client_id              : appId,
+    state                  : JSON.stringify(state),
+    code_challenge         : codeChallenge,
+    code_challenge_method  : 'S256'
+  };
+
+  const authorizationUrl = `${baseUrl}/authorize?${Object.entries(params).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&')}`;
+  return authorizationUrl;  
+}
+
 async function createBareSignature(title: string, file: MulterFile) : Promise<BareSignature> {
   const { path, mimetype, originalname } = file;
 
@@ -54,16 +77,15 @@ async function createBareSignature(title: string, file: MulterFile) : Promise<Ba
   const fileB64       = fs.readFileSync(path).toString('base64');
   const codeVerifier  = BareSignatureService.generateCodeVerifier();
 
-  const codeChallenge = generateCodeChallenge(codeVerifier);
 
   const bareSignatureToCreate : BareSignature = {
     title,
-    documents    : [{ 
+    document : { 
       fileB64,
       fileName     : originalname,
       mimeType     : mimetype,
       documentHash : fileHash 
-    }],
+    },
     accessToken  : '',
     status       : BARE_SIGNATURE_STATUS.INIT,
     codeVerifier
@@ -86,26 +108,8 @@ async function createBareSignature(title: string, file: MulterFile) : Promise<Ba
     });
   });
 
-  const state = {
-    hashes          : [fileHash],
-    nonce           : nanoid(),
-    bareSignatureId : savedBareSignature._id
-  };
 
-  const params = {
-    redirect_uri,
-    response_type          : 'code',
-    client_id              : appId,
-    state                  : JSON.stringify(state),
-    code_challenge         : codeChallenge,
-    code_challenge_method  : 'S256'
-  };
-
-  const authorizationUrl = `${baseUrl}/authorize?${Object.entries(params).map(([key, value]) => `${key}=${value}`).join('&')}`;
-
-  const updatedBareSignature = await _updateBareSignature(savedBareSignature._id, { authorizationUrl });
-
-  return updatedBareSignature;  
+  return savedBareSignature;
 }
 
 
@@ -127,50 +131,6 @@ async function getBareSignatures() : Promise<BareSignature[]> {
   return bareSignatures;
 }
 
-// async function login(bareSignatureId: string) {
-//   const bareSignature : BareSignature = await new Promise(async (resolve, reject) => {
-//     await BareSignatureModel.findOne({ _id: bareSignatureId }, async (error, result) => {
-//       if(error) {
-//         console.error(error);
-//         reject(error);
-//         return;
-//       }
-
-//       resolve(result);
-//     });
-//   });
-
-//   const hashes = bareSignature.documents.map(doc => doc.documentHash);
-//   const codeChallenge = generateCodeChallenge(bareSignature.codeVerifier);
-
-//   const state = {
-//     hashes,
-//     nonce : nanoid(),
-//     bareSignatureId
-//   };
-
-//   const { data : redirectUrl } = await axios.get(`${baseUrl}/authorize`, {
-//     headers: {
-//       'Referer': 'http://localhost:3456',
-//     },
-//     params: {
-//       response_type          : 'code',
-//       client_id              : appId,
-//       redirect_uri,
-//       state                  : JSON.stringify(state),
-//       code_challenge         : codeChallenge,
-//       code_challenge_method  : 'S256'
-//     }
-//   });
-
-
-//   await _updateBareSignature(bareSignatureId, { 
-//     status: BARE_SIGNATURE_STATUS.IN_PROGESS
-//   });
-  
-//   return redirectUrl;
-// }
-
 async function saveAccessToken(bareSignatureId: string, token: string) : Promise<void> {
   await _updateBareSignature(bareSignatureId, { 
     accessToken: token,
@@ -181,17 +141,7 @@ async function saveAccessToken(bareSignatureId: string, token: string) : Promise
 async function getProof(bareSignatureId: string) {
   console.log('getProof_0 : ', bareSignatureId);
 
-  const bareSignature : BareSignature = await new Promise(async (resolve, reject) => {
-    await BareSignatureModel.findOne({ _id: bareSignatureId }, async (error, result) => {
-      if(error) {
-        console.error(error);
-        reject(error);
-        return;
-      }
-
-      resolve(result);
-    });
-  });
+  const bareSignature = await _getBareSignature(bareSignatureId);
 
   console.log('getProof_1 : ', bareSignature);
 
@@ -258,20 +208,16 @@ async function _updateBareSignature(bareSignatureId: string, update: Partial<Bar
   });
 }
 
-// async function download(bareSignatureId: string) {
-//   const bareSignature : BareSignature = await new Promise(async (resolve, reject) => {
-//     await BareSignatureModel.findOne({ _id: bareSignatureId }, async (error, result) => {
-//       if(error) {
-//         console.error(error);
-//         reject(error);
-//         return;
-//       }
+async function _getBareSignature(bareSignatureId: string) : Promise<BareSignature> {
+  return await new Promise<BareSignature>(async (resolve, reject) => {
+    await BareSignatureModel.findOne({ _id: bareSignatureId }, async (error, result) => {
+      if(error) {
+        console.error(error);
+        reject(error);
+        return;
+      }
 
-//       resolve(result);
-//     });
-//   });
-
-//   const file = bareSignature.documents[0];
-//   const filePath = file.documentPath;
-//   return fs.createReadStream(filePath);
-// }
+      resolve(result);
+    });
+  });
+}

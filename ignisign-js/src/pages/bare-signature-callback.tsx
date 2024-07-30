@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { ApiService } from '../services/api.service';
+import { useHistory, useLocation } from "react-router";
+import { FrontUrlProvider } from '../utils/front-url-provider';
 
 export const BareSignatureCallback = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const history                   = useHistory();
   const [isOnError, setIsOnError] = useState<boolean>(false);
 
   useEffect(() => {
@@ -12,45 +13,27 @@ export const BareSignatureCallback = () => {
   
   const init = async () => {
     try {
-      setIsLoading(true);
       const queryParams = new URLSearchParams(window.location.search)
       const token       = queryParams.get("code");
       const state       = JSON.parse(queryParams.get("state") || '{}');
 
       if(!token || !state?.bareSignatureId) {
-        throw new Error();
+        throw new Error('Token or bareSignatureId not found');
       }
 
       const { bareSignatureId } = state;
-      console.log('BareSignatureCallback : ', { token, state });  
 
       await saveAccessToken(token, bareSignatureId);
-      // TODO GO TO THE LISTING INSTED OF GETTING THE PROOF
-      await getProof(bareSignatureId);
+      history.replace(FrontUrlProvider.bareSignaturePage());
 
     } catch (e) {
-      console.error(e); 
+      console.error('BareSignatureCallback : ', e); 
       setIsOnError(true);
-    } finally {
-      setIsLoading(true);
     }
   }
   
   const saveAccessToken = async (token: string, bareSignatureId: string) => {
     await ApiService.bareSignatureSaveAccessToken(bareSignatureId, token);
-  }
-
-  const getProof = async (bareSignatureId: string) => {
-    const proof = await ApiService.bareSignatureGetProof(bareSignatureId);
-    console.log('getProof : ', proof);
-  }
-
-  if(isLoading) {
-    return (
-      <div>
-        Loading...
-      </div>
-    )
   }
 
   if(isOnError) {
@@ -60,10 +43,10 @@ export const BareSignatureCallback = () => {
       </div>
     )
   }
-
+  
   return (
     <div>
-      BareSignatureCallback : TODO DISPLAY PROOF ? 
+      Loading...
     </div>
   )
 }

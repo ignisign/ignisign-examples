@@ -18,10 +18,9 @@ export type BareSignatureDocument = {
 export type BareSignature = {
   _id              ?: string;
   title             : string;
-  documents         : BareSignatureDocument[];
+  document          : BareSignatureDocument;
   status            : BARE_SIGNATURE_STATUS;
   codeVerifier      : string;
-  authorizationUrl ?: string;
   accessToken      ?: string;
 }
 

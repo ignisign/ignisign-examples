@@ -53,20 +53,6 @@ export const bareSignatureController = (router: Router) => {
     }
   );
 
-  // router.get('/v1/bare-signatures/:bareSignatureId/login', 
-  //   async (req: Request, res: Response, next: NextFunction) => {
-
-  //     try {
-  //       const { bareSignatureId } = req.params;
-  //       const redirectUrl = await BareSignatureService.login(bareSignatureId);
-  //       jsonSuccess(res, { redirectUrl });
-  //     } catch (e) {
-  //       console.error(e);
-  //       next(e);
-  //     }
-  //   }
-  // );
-
   router.post('/v1/bare-signatures/:bareSignatureId/save-access-token', 
     async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -95,27 +81,18 @@ export const bareSignatureController = (router: Router) => {
     }
   );
 
-  // router.get('/v1/bare-signatures/:bareSignatureId/download',
-  //   async (req: Request, res: Response, next: NextFunction) => {
-  //     try {
-  //       const { bareSignatureId } = req.params;
-  //       const stream = await BareSignatureService.download(bareSignatureId);
-        
-  //       stream
-  //         .pipe(res)
-  //         .on('end', () => res.status(200).send())
-  //         .on('error', (e) => {
-  //           console.error(e);
-  //           next(e);
-  //         });
-
-  //     } catch (e) {
-  //       console.error(e);
-  //       next(e);
-  //     }
-  //   }
-  // );
-
+  router.get('/v1/bare-signatures/:bareSignatureId/authorize',
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const { bareSignatureId } = req.params;
+        const authorizationUrl = await BareSignatureService.getAuthorizationUrl(bareSignatureId);
+        jsonSuccess(res, authorizationUrl);
+      } catch (e) {
+        console.error(e);
+        next(e);
+      }
+    }
+  );
 
 }
 
