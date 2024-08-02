@@ -5,7 +5,7 @@ import { FrontUrlProvider } from '../utils/front-url-provider';
 
 export const BareSignatureCallback = () => {
   const history                   = useHistory();
-  const [isOnError, setIsOnError] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     init();
@@ -14,11 +14,18 @@ export const BareSignatureCallback = () => {
   const init = async () => {
     try {
       const queryParams = new URLSearchParams(window.location.search)
+      const error       = queryParams.get("error");
+
+      if(error) {
+        throw error;
+        return;
+      }
+
       const token       = queryParams.get("code");
       const state       = JSON.parse(queryParams.get("state") || '{}');
 
       if(!token || !state?.bareSignatureId) {
-        throw new Error('Token or bareSignatureId not found');
+        throw 'Token or bareSignatureId not found';
       }
 
       const { bareSignatureId } = state;
@@ -28,7 +35,7 @@ export const BareSignatureCallback = () => {
 
     } catch (e) {
       console.error('BareSignatureCallback : ', e); 
-      setIsOnError(true);
+      setError(e);
     }
   }
   
@@ -36,10 +43,10 @@ export const BareSignatureCallback = () => {
     await ApiService.bareSignatureSaveAccessToken(bareSignatureId, token);
   }
 
-  if(isOnError) {
+  if(!!error) {
     return (
       <div>
-        Error
+        Error : {error}
       </div>
     )
   }
