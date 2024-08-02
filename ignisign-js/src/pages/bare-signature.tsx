@@ -1,120 +1,125 @@
-import { useState } from "react";
-import { Dropzone } from "../components-ui/dropzone";
-import ClientOAuth2 from 'client-oauth2';
-import crypto from 'crypto';
-import { nanoid } from 'nanoid'
-import axios from "axios";
-import { Button } from '../components-ui/button'
-import { IGNISIGN_APPLICATION_ENV } from "@ignisign/public";
+import { useEffect, useState } from "react";
+import { Button } from '../components-ui/button';
+import { ApiService } from "../services/api.service";
+import { BARE_SIGNATURE_STATUS, BareSignature } from "../models/bare-signature.front-model";
+import { BareSignatureCreation } from "./bare-signature-creation";
+import axios from 'axios';
+import { BareSignatureDisplayDialog } from "./bare-signature-document-display";
 
-const serverUrl = 'http://localhost:3101/v4';                             // TODO
-const appId     = 'appId_18fbce98-98f5-4fc8-944c-0fe54cf8f09b';           // TODO
-const appEnv    = IGNISIGN_APPLICATION_ENV.DEVELOPMENT;                   // TODO
-const appSecret = 'sk_development_1f3426e0-7744-43f0-82f1-60bffe0edf14';  // TODO
-const baseUrl = `${serverUrl}/envs/${appEnv}/oauth2`;                     // TODO
-    
-export const BareSignature = () => {
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [hashes, setHashes]               = useState<string[]>([]);
-  const [isLoading, setIsLoading]         = useState(false);
+export const BareSignaturePage = () => {
+  const [isLoading, setIsLoading]           = useState<boolean>(true);
+  const [bareSignatures, setBareSignatures] = useState<BareSignature[]>([]);
+  const [isInCreation, setIsInCreation]     = useState<boolean>(false);
+  const [bareSignatureDisplayed, setBareSignatureDisplayed] = useState<BareSignature>(null);
 
-  const handleFileChange = async (files : File[]) => {
-    console.log('handleFileChange_1 : ', files);
-    const generatedHashes = await Promise.all(files.map(generateHashFromFile));
-    console.log('handleFileChange_2 : ', generatedHashes);
-    setHashes(generatedHashes);
-  };
+  useEffect(() => {
+    init();
+  }, [])
 
-  const generateHashFromFile = async (file: File) : Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const fileData = event.target?.result;
-        if (fileData instanceof ArrayBuffer) {
-          const buffer = Buffer.from(fileData);
-          const hash = crypto.createHash('sha256');
-          hash.update(buffer);
-          const hex = hash.digest('hex');
-          resolve(hex);
-        } else {
-          reject(new Error('File data is not an ArrayBuffer'));
-        }
-      };
-      reader.onerror = (error) => reject(error);
-      reader.readAsArrayBuffer(file);
-    });
-  };
-
-  const goSign = async () => {
+  const init = async () => {
+    setIsLoading(false);
     try {
-      const state = {
-        hashes,
-        nonce : nanoid()
-      };
-
-      const { data } = await axios.get(
-        `${baseUrl}/authorize`, 
-        { params: {
-            response_type          : 'code',
-            client_id              : appId,
-            redirect_uri           : 'http://localhost:3456/callback',
-            state                  : JSON.stringify(state),
-            code_challenge         : 'code_challenge', // TODO
-            code_challenge_method  : 'S256'
-          }
-        }
-      );
-
-      console.log('goSign_0 : ', data);
-      window.location.href = data;
+      const tmpBareSignatures = await ApiService.getBareSignatures();
+      setBareSignatures(tmpBareSignatures);
     } catch (e) {
-      console.error('goSign_Error : ', e);
+      console.error(e);
+    } finally {
+      setIsLoading(false);
     }
-    
-    // const oAuthClient = new ClientOAuth2({
-    //   clientId          :  appId,
-    //   clientSecret      :  appSecret,
-    //   accessTokenUri    : `${baseUrl}/token`,
-    //   authorizationUri  : `${baseUrl}/authorize`,
-    //   redirectUri       : 'http://localhost:3456/callback',
-    //   scopes            : [], // TODO
-    //   state             : JSON.stringify(state)
-    // });
-
-    // axios.get(`${baseUrl}/authorize`, {
-    //   params: {
-    //     response_type          : 'code',
-    //     client_id              : appId,
-    //     redirect_uri           : 'http://localhost:3456/callback',
-    //     state                  : JSON.stringify(state),
-    //     code_challenge         : 'code_challenge',
-    //     code_challenge_method  : 'S256'
-    //   }
-    // }).then((response) => {
-    //   console.log('goSign_1 : ', response);
-    //   // TODO
-    // }).catch((error) => {
-    //   console.log('goSign_2 : ', error);
-    // });
   }
-  
 
   return (
     <div>
-      <Dropzone
-        onDrop={async files => handleFileChange(files)}
-        files={selectedFiles}
-        maxFiles={1}
-        multiple={false}
+      <BareSignatureDisplayDialog 
+        bareSignature={bareSignatureDisplayed}
+        removeBareSignature={() => setBareSignatureDisplayed(null)}
       />
 
-      <Button 
-        onClick={goSign}
-        disabled={!hashes?.length} 
-        loading={isLoading}
-      >
-        Sign
-      </Button>
+      {isLoading && <div>Loading...</div>}
+      
+      {isInCreation && 
+        <BareSignatureCreation 
+          close={(bareSignature = null) => {
+            if(bareSignature) 
+              setBareSignatures([bareSignature, ...bareSignatures]);
+            
+            setIsInCreation(false);
+          }}
+        />
+      }
+
+      {!isLoading && !isInCreation && 
+        <div>
+          <div className="w-full flex justify-end mb-2">
+            <Button onClick={() => setIsInCreation(true)}>
+              Create Bare Signature
+            </Button>
+          </div>
+          
+          <div className="w-full flex flex-col gap-2">
+            {bareSignatures.map((bareSignature) => (
+              <BareSignatureItem 
+                key={bareSignature._id} 
+                bareSignature={bareSignature} 
+                display={() => setBareSignatureDisplayed(bareSignature)}
+              />
+            ))}
+          </div>
+        </div>
+      }
     </div>
   )
 }
+
+interface BareSignatureItemProps {
+  bareSignature: BareSignature;
+  display: () => void;
+}
+
+const BareSignatureItem = ({ bareSignature, display } : BareSignatureItemProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const getProof = async () => {
+    setIsLoading(true);
+    try {
+      const proof = await ApiService.bareSignatureGetProof(bareSignature._id);
+      console.log('getProof : ', proof);
+      // TODO  
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+
+  return (
+    <div className="flex w-full px-3 py-1.5 rounded border justify-between items-center">
+      <span className="font-semibold">
+        {bareSignature.title}
+      </span>
+
+      <div className="flex gap-3 items-center">
+        <Button 
+            onClick={display} 
+            loading={isLoading}
+          >
+            {bareSignature.status === BARE_SIGNATURE_STATUS.SIGNED 
+              ? 'View document'
+              : 'Sign'
+            }
+        </Button>
+
+        {bareSignature.status === BARE_SIGNATURE_STATUS.SIGNED && 
+          <Button 
+            onClick={getProof} 
+            loading={isLoading}
+          >
+            Get Proof
+          </Button>
+        }
+      </div>
+    </div>
+  )
+}
+

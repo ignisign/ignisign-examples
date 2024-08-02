@@ -1,6 +1,3 @@
-import { getDb } from "../utils/db.util";
-
-const db = getDb()
 
 export enum BARE_SIGNATURE_STATUS {
   INIT       = 'INIT',
@@ -24,21 +21,7 @@ export type BareSignature = {
   accessToken      ?: string;
 }
 
-export class IgnisignOAuth2_ProofAccessTokenRequest {
-  client_id      : string;
-  client_secret  : string;
-  code_verifier  : string;
-  redirect_uri   : string;
-  grant_type     : string;
-  code           : string;
+export class RedirectUrlWrapper {
+  redirectUrl: string;
 }
 
-export class IgnisignOAuth2_ProofAccessToken {
-  access_token : string;
-  token_type   : string;
-  expires_in   : number;
-  scope        : string;
-}
-
-
-export const BareSignatureModel = db.collection("baresignatures");

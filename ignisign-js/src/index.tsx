@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CssBaseline, MuiThemeProvider } from "@material-ui/core";
@@ -18,7 +17,8 @@ import { ContractContextProvider } from './contexts/contract.context';
 import SignAContract from './pages/sign-a-contract.page';
 import { CreateSeal } from './pages/create-seal.page';
 import { SealContextProvider } from './contexts/seal.context';
-import { BareSignature } from './pages/bare-signature';
+import { BareSignaturePage } from './pages/bare-signature';
+import { BareSignatureCallback } from './pages/bare-signature-callback';
 
 const NotFoundPage = () => {
   return (
@@ -49,7 +49,10 @@ function AppRouter() {
           <Contracts/>
         </Route>
         <Route exact path={FrontUrlProvider.bareSignaturePage()}>
-          <BareSignature/>
+          <BareSignaturePage/>
+        </Route>
+        <Route exact path={FrontUrlProvider.bareSignatureCallbackPage()}>
+          <BareSignatureCallback/>
         </Route>
         <Route>
           <NotFoundPage/>

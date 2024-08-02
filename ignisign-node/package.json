@@ -11,7 +11,7 @@
     "clean-win": "rd /s /q dist && del /f tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@ignisign/public": "file:../../ignisign-public-models",
+    "@ignisign/public": "file:/Users/boardigo/Desktop/Ignisign/ignisign-public-models",
     "@ignisign/sdk": "file:/Users/boardigo/Desktop/Ignisign/ignisign-node",
     "axios": "^1.6.2",
     "class-transformer": "^0.5.1",
@@ -30,6 +30,7 @@
     "lodash": "^4.17.20",
     "moment": "^2.29.4",
     "multer": "1.4.5-lts.1",
+    "nanoid": "^3.2.0",
     "tingodb": "^0.6.1",
     "typescript": "^4.1.3",
     "winston": "^3.3.3"

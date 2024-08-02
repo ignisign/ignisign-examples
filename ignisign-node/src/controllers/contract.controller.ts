@@ -21,8 +21,6 @@ export interface MulterFile {
 
 // Example Controller to Manage contracts
 export const contractController = (router: Router) => {
-
-
   // This endpoint is used to retrieve about a contract for a specific user.  
   router.get('/v1/contracts/:contractId/user/:userId', async (req: Request, res: Response, next: NextFunction) => {
     try {
