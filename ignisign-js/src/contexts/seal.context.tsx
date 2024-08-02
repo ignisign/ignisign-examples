@@ -13,7 +13,7 @@ export const SealContextProvider = ({ children }) => {
   const [seals, setSeals] = useState([]);
 
   const checkSetup = async () => {
-    const isEnabled = await ApiService.checkSealSetup();
+    const {isEnabled} = await ApiService.checkSealSetup();
     setIsEnabled(!!isEnabled);
   }
 

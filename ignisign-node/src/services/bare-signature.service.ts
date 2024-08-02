@@ -13,7 +13,9 @@ const {
   IGNISIGN_BARE_SIGNATURE_APP_ENV     : appEnv
 } = process.env;
 
-const redirect_uri = 'http://localhost:3456/bare-signature-callback';
+const EXAMPLE_FRONTEND_URL = process.env.MY_FRONTEND_URL || 'http://localhost:3456';
+
+const redirect_uri = EXAMPLE_FRONTEND_URL+ '/bare-signature-callback';
 
 const serverUrl = `${IGNISIGN_SERVER_URL}/v4`
 const baseUrl = `${serverUrl}/envs/${appEnv}/oauth2`;   
@@ -28,7 +30,21 @@ export const BareSignatureService = {
   getProof,
 }
 
-function generateCodeVerifier(length = 128) {
+const _checkEnv = () => {
+  if(!IGNISIGN_SERVER_URL)
+    throw new Error('IGNISIGN_SERVER_URL not set');
+
+  if(!appId)
+    throw new Error('IGNISIGN_BARE_SIGNATURE_APP_ID not set');
+
+  if(!appSecret)
+    throw new Error('IGNISIGN_BARE_SIGNATURE_APP_SECRET not set');
+
+  if(!appEnv)
+    throw new Error('IGNISIGN_BARE_SIGNATURE_APP_ENV not set');
+}
+
+function generateCodeVerifier(length = 128) : string{
   const codeVerifier = crypto.randomBytes(length)
     .toString('base64')
     .replace(/\+/g, '-')
@@ -37,7 +53,7 @@ function generateCodeVerifier(length = 128) {
   return codeVerifier;
 }
 
-function generateCodeChallenge(codeVerifier) {
+function generateCodeChallenge(codeVerifier: string) : string{
   return crypto.createHash('sha256')
     .update(codeVerifier)
     .digest('base64')
@@ -47,6 +63,9 @@ function generateCodeChallenge(codeVerifier) {
 }
 
 async function getAuthorizationUrl(bareSignatureId: string) : Promise<string> {
+  
+  _checkEnv();
+
   const bareSignature = await _getBareSignature(bareSignatureId);
 
   const state = {
@@ -159,6 +178,9 @@ async function getProof(bareSignatureId: string) {
 }
 
 async function getProofToken(bareSignature : BareSignature) : Promise<string> {
+
+  _checkEnv();
+
   console.log('getProofToken_1 : ', bareSignature);
 
   const dto : IgnisignOAuth2_ProofAccessTokenRequest = {
@@ -175,11 +197,11 @@ async function getProofToken(bareSignature : BareSignature) : Promise<string> {
   const response : IgnisignOAuth2_ProofAccessToken = (
     await axios.post(
       `${baseUrl}/sign-oauth2-proof-token`, 
-      dto,
-      { headers: { 'Referer': 'http://localhost:3456' } })
+      dto)
     )?.data;
   
   return response.access_token;
+
 }
 
 async function _updateBareSignature(bareSignatureId: string, update: Partial<BareSignature>) : Promise<BareSignature> {

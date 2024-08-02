@@ -25,6 +25,7 @@ import { Readable } from 'stream';
 import { ContractService } from './contract.service';
 import _ = require('lodash');
 import * as fs from 'fs';
+import { IgnisignSdkManagerCommonsService } from './ignisign-sdk-manager-commons.service';
 
 
 const DEBUG_LOG_ACTIVATED = true;
@@ -34,7 +35,7 @@ const _logIfDebug = (...message) => {
 }
 
 let ignisignSdkInstance: IgnisignSdk = null;
-let ignisignSdkInstanceInitialized = false;
+let isIgnisignSdkInstanceInitialized = false;
 
 export const IgnisignSdkManagerService = {
   init,
@@ -43,27 +44,16 @@ export const IgnisignSdkManagerService = {
   consumeWebhook,
   updateSignatureRequest,
   publishSignatureRequest,
-  // getSignatureProfiles,
   getSignerProfile,
   initSignatureRequest,
   uploadHashDocument,
   uploadDocument,
   getSignerInputsConstraintsFromSignerProfileId,
   getSignatureRequestContext,
-  // getSignatureProfile,
   getWebhookEndpoints,
   downloadSignatureProof,
 }
 
-let ignisignSdkSealInstance: IgnisignSdk = null;
-let ignisignSdkSealInstanceInitialized = false;
-
-
-export const IgnisignSealSdkManagerService = {
-  init: initSeal,
-  ignisignSdkSealInstanceInitialized,
-  createM2mSignatureRequest,
-}
 
 const IGNISIGN_APP_ID     = process.env.IGNISIGN_APP_ID
 const IGNISIGN_APP_ENV: IGNISIGN_APPLICATION_ENV = IGNISIGN_APPLICATION_ENV[process.env.IGNISIGN_APP_ENV]
@@ -80,10 +70,10 @@ async function init() {
     throw new Error(`IGNISIGN_APP_ID, IGNISIGN_APP_ENV and IGNISIGN_APP_SECRET are mandatory to init IgnisignSdkManagerService`);
     
   try {
-    if(ignisignSdkInstanceInitialized)
+    if(isIgnisignSdkInstanceInitialized)
       return;
 
-    ignisignSdkInstanceInitialized = true;
+    isIgnisignSdkInstanceInitialized = true;
     
     // initialization of the Ignisign SDK
     ignisignSdkInstance = new IgnisignSdk({
@@ -98,58 +88,12 @@ async function init() {
 
   
   } catch (e){
-    ignisignSdkInstanceInitialized = false;
+    isIgnisignSdkInstanceInitialized = false;
     console.error("Error when initializing Ignisign Manager Service", e)
   }
 }
 
 
-async function initSeal() {
-  const {
-    IGNISIGN_SEAL_APP_ID,
-    IGNISIGN_SEAL_ENV,
-    IGNISIGN_SEAL_SECRET,
-    IGNISIGN_SEAL_M2M_ID,
-  } = process.env;
-
-  _logIfDebug("IgnisignSdkManagerService: init")
-  
-  if(!IGNISIGN_SEAL_APP_ID || !IGNISIGN_SEAL_ENV || !IGNISIGN_SEAL_SECRET)
-    throw new Error(`IGNISIGN_SEAL_APP_ID, IGNISIGN_SEAL_ENV and IGNISIGN_SEAL_SECRET are mandatory to init IgnisignSdkManagerService`);
-  
-  if(!IGNISIGN_SEAL_M2M_ID)
-    throw new Error(`IGNISIGN_SEAL_M2M_ID is mandatory to init IgnisignSdkManagerService`);
-  
-  try {
-    if(ignisignSdkSealInstanceInitialized)
-      return;
-
-    ignisignSdkSealInstanceInitialized = true;
-    
-    // initialization of the Ignisign SDK
-    ignisignSdkSealInstance = new IgnisignSdk({
-      appId           : IGNISIGN_SEAL_APP_ID,
-      appEnv          : (<IGNISIGN_APPLICATION_ENV>IGNISIGN_SEAL_ENV),
-      appSecret       : IGNISIGN_SEAL_SECRET,
-      displayWarning  : true,
-    })
-
-    await ignisignSdkSealInstance.init();
-
-    console.log('init seal', IGNISIGN_SEAL_APP_ID,
-    IGNISIGN_SEAL_ENV,
-    IGNISIGN_SEAL_SECRET,
-    IGNISIGN_SEAL_M2M_ID,);
-    
-    // await ignisignSdkInstance.init();
-    // await _registerWebhookCallback();
-
-  
-  } catch (e){
-    ignisignSdkSealInstanceInitialized = false;
-    console.error("Error when initializing Ignisign Manager Service", e)
-  }
-}
 
 /******************************************************************************************** ******************************************************************************************/
 /******************************************************************************************** WEBHOOKS *********************************************************************************/
@@ -228,49 +172,26 @@ async function _registerWebhookCallback(): Promise<void> {
 
 // This function is used to check if a webhook endpoint is registered in the Ignisign Console.
 async function checkWebhookEndpoint() : Promise<void>{
-  
-  try {
-    const webhookEndpoints : IgnisignWebhook[] = await ignisignSdkInstance.getWebhookEndpoints();
-    if(webhookEndpoints.length === 0)
-      console.warn("WARN: No webhook endpoints found, please create one in the Ignisign Console - In dev mode, you can use ngrok to expose your localhost to the internet")
-
-  } catch(e) {
-    console.error("IgnisignSdkManagerService: Error when checking webhook endpoint", e)
-    throw e
-  }
+  return IgnisignSdkManagerCommonsService.checkWebhookEndpoint(ignisignSdkInstance);
 }
 
 // This function is used to retrieve all webhook endpoints registered in the Ignisign Console.
 // This function retrieve only the webhook endpoints created for the IGNISIGN_APP_ID && IGNISIGN_APP_ENV.
 async function getWebhookEndpoints() : Promise<IgnisignWebhook[]>{
-  try {
-    const webhookEndpoints : IgnisignWebhook[] = await ignisignSdkInstance.getWebhookEndpoints();
-
-    _logIfDebug("getWebhookEndpoints", webhookEndpoints)
-
-    return webhookEndpoints;
-  } catch(e) {
-    console.error("IgnisignSdkManagerService: Error when checking webhook endpoint", e)
-    throw e
-  } 
+  return IgnisignSdkManagerCommonsService.getWebhookEndpoints(ignisignSdkInstance);
+    
 }
 
 
 // The function to call when a webhook is received.
 // This function have to be called in a route of your application that is registered into the Ignisign Console as an webhook endpoint.
 async function consumeWebhook(actionDto: IgnisignWebhook_ActionDto) {
-  _logIfDebug("consumeWebhook", actionDto)
-  return await ignisignSdkInstance.consumeWebhook(actionDto);
+  return IgnisignSdkManagerCommonsService.consumeWebhook(ignisignSdkInstance, actionDto);
 }
 
 /******************************************************************************************** ******************************************************************************************/
-/******************************************************************************************** SIGNATURE PROFILES ***********************************************************************/
+/******************************************************************************************** SIGNER PROFILES ***********************************************************************/
 /******************************************************************************************** ******************************************************************************************/
-
-// async function getSignatureProfiles(): Promise<IgnisignSignatureProfile[]> {  
-//   return await ignisignSdkInstance.getSignatureProfiles()
-// }
-
 
 async function getSignerProfile(signerProfileId: string): Promise<IgnisignSignerProfile> {
   try {
@@ -281,24 +202,8 @@ async function getSignerProfile(signerProfileId: string): Promise<IgnisignSigner
   }
 }
 
-// async function getSignatureProfile(signatureProfileId): Promise<IgnisignSignatureProfile> {
-//   try {
-//     const profiles = await ignisignSdkInstance.getSignatureProfiles()
-//     const profile  = profiles?.find(p => p._id === signatureProfileId)
-    
-//     if(!profile)
-//       throw new Error("Cannot find signature profile with id : " + signatureProfileId)
-//     return profile;
-
-//   } catch (e){
-//     console.error("IgnisignSdkManagerService: Error when retieveing signature profile", e)
-//     throw e
-//   }
-// }
-
 
 async function getSignerInputsConstraintsFromSignerProfileId(signatureProfileId: string): Promise<IGNISIGN_SIGNER_CREATION_INPUT_REF[]> {
-  console.log(ignisignSdkInstance);
   
   const result = await ignisignSdkInstance.getSignerInputsConstraintsFromSignerProfileId(signatureProfileId);
   return result.inputsNeeded;
@@ -346,8 +251,8 @@ async function updateSignatureRequest(signatureRequestId : string, dto: Ignisign
   try {
     _logIfDebug("updateSignatureRequest", {signatureRequestId, dto})
     const data = await ignisignSdkInstance.updateSignatureRequest(signatureRequestId, dto);
-  //TODO:
-
+    
+    // TODO
     return null //data
   } catch (error) {
     throw error;
@@ -403,21 +308,7 @@ async function downloadSignatureProof(documentId): Promise<Readable> {
   return await ignisignSdkInstance.downloadSignatureProofDocument(documentId);
 }
 
-async function createM2mSignatureRequest(m2mId: string, documentHash: string): Promise<void> {
-  // _logIfDebug("createM2mSignatureRequest", {signatureRequestId, documentHash})
-  const {signatureRequestId} = await ignisignSdkSealInstance.createM2mSignatureRequest({
-    m2mId,
-    documentHash
-  });
-  const privateKey = fs.readFileSync('./seal-secret.pem', 'utf8')
 
-  const {signature} = ignisignSdkSealInstance.doSignM2MPayload(privateKey, {signatureRequestId, documentHash})
-  await ignisignSdkSealInstance.signM2mSignatureRequest({
-    signatureRequestId,
-    documentHash,
-    signature,
-  })
-}
 
 
 

@@ -5,7 +5,8 @@ import { jsonSuccess } from "../utils/controller.util";
 import { NextFunction, Request, Response } from 'express';
 import { UserService } from "../services/user.service";
 import { MY_USER_TYPES, MyUser } from "../models/user.db.model";
-import { IgnisignSdkManagerService, IgnisignSealSdkManagerService } from "../services/ignisign-sdk-manager.service";
+import { IgnisignSdkManagerService } from "../services/ignisign-sdk-manager.service";
+import { IgnisignM2MSdkManagerService } from "../services/ignisign-m2m-manager.service";
 const crypto = require('crypto');
 const fs = require('fs');
   
@@ -26,22 +27,21 @@ export const sealController = (router: Router) => {
   // retrieve all customers
   router.post('/v1/seal/sign', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!IgnisignSealSdkManagerService.ignisignSdkSealInstanceInitialized) {
-        const filePath = './dummy.pdf';
+      
+        const filePath = global['appRoot'] + '/dummy.pdf';
         const fileHash: any = await getFileHash(filePath);
         const m2mId = process.env.IGNISIGN_SEAL_M2M_ID;
-        await IgnisignSealSdkManagerService.createM2mSignatureRequest(m2mId, fileHash);
-      }
+        await IgnisignM2MSdkManagerService.createM2mSignatureRequest(m2mId, fileHash);
+      
       return jsonSuccess(res, true)
     } catch(e) { next(e) }
   })
 
-  router.get('/v1/seal/setup', async (req: Request, res: Response, next: NextFunction) => {
+  router.get('/v1/seal/get-app-m2m-status', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!IgnisignSealSdkManagerService.ignisignSdkSealInstanceInitialized) {
-        await IgnisignSealSdkManagerService.init()
-      }
-      return jsonSuccess(res, true)
+    
+      console.log('IgnisignM2MSdkManagerService.isEnabled', IgnisignM2MSdkManagerService.isEnabled())
+      return jsonSuccess(res, {isEnabled : IgnisignM2MSdkManagerService.isEnabled() })
     } catch(e) { next(e) }
   })
   

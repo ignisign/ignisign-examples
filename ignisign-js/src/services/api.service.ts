@@ -48,8 +48,8 @@ async function createSealSignatureRequest(): Promise<IgnisignSignatureProfile> {
   return http.post(`/v1/seal/sign`, {})
 }
 
-async function checkSealSetup(): Promise<boolean> {
-  return http.get(`/v1/seal/setup`)
+async function checkSealSetup(): Promise<{isEnabled: boolean}> {
+  return http.get(`/v1/seal/get-app-m2m-status`)
 }
 
 
