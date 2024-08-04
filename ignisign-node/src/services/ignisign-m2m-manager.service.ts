@@ -1,4 +1,4 @@
-import { IGNISIGN_APPLICATION_ENV, IGNISIGN_WEBHOOK_ACTION_SIGNATURE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IgnisignWebhook, IgnisignWebhookDto_Signature, IgnisignWebhookDto_SignatureProof_Success, IgnisignWebhookDto_SignatureRequest, IgnisignWebhook_ActionDto, IgnisignWebhook_CallbackParams } from "@ignisign/public";
+import { IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IgnisignWebhook, IgnisignWebhookDto_Signature, IgnisignWebhookDto_SignatureProof_Success, IgnisignWebhookDto_SignatureRequest, IgnisignWebhook_ActionDto, IgnisignWebhook_CallbackParams } from "@ignisign/public";
 import { IgnisignSdk } from "@ignisign/sdk";
 import { IgnisignSdkManagerCommonsService } from "./ignisign-sdk-manager-commons.service";
 
@@ -85,18 +85,18 @@ async function init() {
 async function createM2mSignatureRequest(m2mId: string, documentHash: string): Promise<void> {
   
   const privateKey = process.env.IGNISIGN_SEAL_M2M_PRIVATE_KEY
-    .replace(/\|/g, '\n')
-    .replace(
-      /\\n/gm,
-      '\n'
-    );
+    .replace(/\|/g    ,'\n')
+    .replace(/\\n/gm  ,'\n');
 
   const {signature} = ignisignSdkM2MInstance.doSignM2MPayload(privateKey, documentHash)
 
-  const {signatureRequestId, documentId } = await ignisignSdkM2MInstance.createM2mSignatureRequest({
+  const {signatureRequestId, documentId } = await ignisignSdkM2MInstance.signM2M({
     m2mId,
-    documentHash,
-    documentHashSignedByM2MSecret: signature,
+    document : {
+      documentType: IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE, // 'PRIVATE_FILE' | 'FILE' | 'DATA_XML' | 'DATA_JSON'
+      documentHash,
+    },
+    documentHashSignedByM2MPrivateKey: signature,
   });
 
 }
