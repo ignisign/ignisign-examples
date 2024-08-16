@@ -1,26 +1,21 @@
 import { Router } from "express";
 import { NextFunction, Request, Response } from 'express';
 import { ContractService } from "../services/example/contract.service";
-import { jsonError, jsonSuccess } from "../utils/controller.util";
+import { jsonError, jsonSuccess, MulterFile } from "../utils/controller.util";
 import { deleteFile } from "../utils/files.util";
 import {Readable} from 'stream'
 import { Contract, ContractContext } from "../models/contract.db.model";
 
-const UPLOAD_TMP = 'uploads_tmp/'
 const multer    = require('multer');
+
+const UPLOAD_TMP = 'uploads_tmp/'
 const upload    = multer({ dest: UPLOAD_TMP });
 
 
-// https://github.com/expressjs/multer/issues/343
-export interface MulterFile {
-  path          : string 
-  mimetype      : string
-  originalname  : string
-  size          : number
-}
+
 
 // Example Controller to Manage contracts
-export const contractController = (router: Router) => {
+export const ContractController = (router: Router) => {
   // This endpoint is used to retrieve about a contract for a specific user.  
   router.get('/v1/contracts/:contractId/user/:userId', async (req: Request, res: Response, next: NextFunction) => {
     try {

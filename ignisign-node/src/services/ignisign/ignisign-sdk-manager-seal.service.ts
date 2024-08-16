@@ -1,6 +1,8 @@
 import { IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IgnisignWebhook, IgnisignWebhookDto_Signature, IgnisignWebhookDto_SignatureProof_Success, IgnisignWebhookDto_SignatureRequest, IgnisignWebhook_ActionDto, IgnisignWebhook_CallbackParams } from "@ignisign/public";
 import { IgnisignSdk, IgnisignSdkUtilsService } from "@ignisign/sdk";
 import { IgnisignSdkManagerCommonsService } from "./ignisign-sdk-manager-commons.service";
+const crypto = require('crypto');
+const fs = require('fs');
 
 
 let isIgnisignSdkInstanceInitialized : boolean = false;
@@ -66,17 +68,21 @@ async function init(appId: string, appEnv: IGNISIGN_APPLICATION_ENV, appSecret: 
   }
 }
 
-async function createM2mSignatureRequest(documentHash: string): Promise<void> {
+async function createM2mSignatureRequest(fileBuffer : Buffer, asPrivateFile : boolean, mimeType : string ): Promise<void> {
   
-  
+  const documentType  = asPrivateFile ? IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE : IGNISIGN_DOCUMENT_TYPE.FILE;
+  const documentHash  = crypto.createHash('sha256').update(fileBuffer).digest('hex');
+  const documentBase64 = fileBuffer.toString('base64');
 
   const { signature :documentHashSignedByM2MPrivateKey } = IgnisignSdkUtilsService.sealM2M_doSignPayload(m2mPrivateKey, documentHash)
 
   const {signatureRequestId, documentId } = await ignisignSdkInstance.signM2M({
     m2mId,
     document : {
-      documentType: IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE, // 'PRIVATE_FILE' | 'FILE' | 'DATA_XML' | 'DATA_JSON'
+      documentType,
+      contentB64 : documentBase64,
       documentHash,
+      mimeType,
     },
     documentHashSignedByM2MPrivateKey,
   });

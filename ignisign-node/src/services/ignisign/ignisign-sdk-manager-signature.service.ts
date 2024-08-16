@@ -46,6 +46,7 @@ export const IgnisignSdkManagerSigantureService = {
   updateSignatureRequest,
   publishSignatureRequest,
   getSignerProfile,
+  getSignerProfiles,
   initSignatureRequest,
   uploadHashDocument,
   uploadDocument,
@@ -193,6 +194,15 @@ async function consumeWebhook(actionDto: IgnisignWebhook_ActionDto) {
 async function getSignerProfile(signerProfileId: string): Promise<IgnisignSignerProfile> {
   try {
     return await ignisignSdkInstance.getSignerProfile(signerProfileId);
+  } catch (error) {
+    console.error(error.toString());
+    throw error
+  }
+}
+
+async function getSignerProfiles(): Promise<IgnisignSignerProfile[]> {
+  try {
+    return await ignisignSdkInstance.getSignerProfiles();
   } catch (error) {
     console.error(error.toString());
     throw error

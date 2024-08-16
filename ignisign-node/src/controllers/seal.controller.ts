@@ -1,14 +1,16 @@
 
 
 import { Router } from "express";
-import { jsonSuccess } from "../utils/controller.util";
+import { jsonSuccess, MulterFile } from "../utils/controller.util";
 import { NextFunction, Request, Response } from 'express';
 import { UserService } from "../services/example/user.service";
 import { MY_USER_TYPES, MyUser } from "../models/user.db.model";
 import { IgnisignSdkManagerSigantureService } from "../services/ignisign/ignisign-sdk-manager-signature.service";
 import { IgnisignSdkManagerSealService } from "../services/ignisign/ignisign-sdk-manager-seal.service";
+import { SealService } from "../services/example/seal.service";
 const crypto = require('crypto');
 const fs = require('fs');
+const multer    = require('multer');
   
 function getFileHash(filePath, algorithm = 'sha256') {
   return new Promise((resolve, reject) => {
@@ -21,25 +23,29 @@ function getFileHash(filePath, algorithm = 'sha256') {
   });
 }
 
-// Example Controller used to manage customers
-export const sealController = (router: Router) => {
+const UPLOAD_TMP = 'uploads_tmp/'
 
-  // retrieve all customers
-  router.post('/v1/seal/sign', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      
-        const filePath = global['appRoot'] + '/dummy.pdf';
-        const fileHash: any = await getFileHash(filePath);
-        await IgnisignSdkManagerSealService.createM2mSignatureRequest(fileHash);
-      
-      return jsonSuccess(res, true)
-    } catch(e) { next(e) }
-  })
+const upload    = multer({ dest: UPLOAD_TMP });
+
+
+export const SealController = (router: Router) => {
+
+  
+  router.post('/v1/seal-m2m-sign', upload.single('file'),
+    async (req: Request & { file: MulterFile }, res: Response, next: NextFunction) => { 
+      try {
+
+        const { asPrivateFile } = req.body;
+        const file = req.file;
+        
+        const result = await SealService.createM2MSeal(file, Boolean(asPrivateFile));
+        
+        return jsonSuccess(res, true)
+      } catch(e) { next(e) }
+    })
 
   router.get('/v1/seal/get-app-m2m-status', async (req: Request, res: Response, next: NextFunction) => {
     try {
-    
-      console.log('IgnisignSdkManagerSealService.isEnabled', IgnisignSdkManagerSealService.isEnabled())
       return jsonSuccess(res, {isEnabled : IgnisignSdkManagerSealService.isEnabled() })
     } catch(e) { next(e) }
   })

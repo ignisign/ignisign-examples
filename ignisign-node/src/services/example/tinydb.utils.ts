@@ -1,6 +1,6 @@
 
 
-export const findOneCallback = async (resolve, reject, rejectIfNotFound = false) => async (err, result) => {
+export const findOneCallback = (resolve, reject, rejectIfNotFound = false) => async (err, result) => {
   if (err) {
     console.error(err);
     reject(err);
@@ -15,7 +15,7 @@ export const findOneCallback = async (resolve, reject, rejectIfNotFound = false)
   resolve(result);
 }
 
-export const findCallback = async (resolve, reject) => async (err, results) => {
+export const findCallback = (resolve, reject) => async (err, results) => {
   if (err) {
     console.error(err);
     reject(err);
@@ -25,7 +25,7 @@ export const findCallback = async (resolve, reject) => async (err, results) => {
   resolve(results);
 }
 
-export const insertCallback = async (resolve, reject) => async (err, inserted) => {
+export const insertCallback = (resolve, reject) => async (err, inserted) => {
   if (err) {
     console.error(err);
     reject(err);

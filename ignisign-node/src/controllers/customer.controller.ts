@@ -5,7 +5,7 @@ import { UserService } from "../services/example/user.service";
 import { MY_USER_TYPES, MyUser } from "../models/user.db.model";
   
 // Example Controller used to manage customers
-export const customerController = (router: Router) => {
+export const CustomerController = (router: Router) => {
 
   // retrieve all customers
   router.get('/v1/customers', async (req: Request, res: Response, next: NextFunction) => {

@@ -16,14 +16,15 @@ import { IgnisignSdkManagerSigantureService } from './services/ignisign/ignisign
 import { errorMiddleware } from './utils/error.middleware';
 import { checkBearerToken } from './utils/authorization.middleware';
 import { jsonError, jsonSuccess } from './utils/controller.util';
-import { customerController } from './controllers/customer.controller';
-import { employeeController } from './controllers/employee.controller';
-import { contractController } from './controllers/contract.controller';
-import { appController } from './controllers/app.controller';
-import { sealController } from './controllers/seal.controller';
-import { bareSignatureController } from './controllers/bare-signature.controller';
+import { CustomerController } from './controllers/customer.controller';
+import { EmployeeController } from './controllers/employee.controller';
+import { ContractController } from './controllers/contract.controller';
+import { AppController } from './controllers/app.controller';
+import { SealController } from './controllers/seal.controller';
+import { BareSignatureController } from './controllers/bare-signature.controller';
 import { IgnisignSdkManagerSealService } from './services/ignisign/ignisign-sdk-manager-seal.service';
 import { IgnisignInitializerService } from './services/ignisign/ignisign-sdk-initializer.service';
+import { LogCapsuleController } from './controllers/log-capsule.controller';
 
 validateEnv()
 
@@ -49,12 +50,14 @@ const initExampleApp = async () =>{
 
     router.get('/v1/healthcheck', (req, res) => jsonSuccess(res, {status: 'ok'} ));
 
-    await appController(router)
-    await contractController(router);
-    await customerController(router);
-    await employeeController(router);
-    await sealController(router);
-    await bareSignatureController(router);
+    await AppController(router)
+    await ContractController(router);
+    await CustomerController(router);
+    await EmployeeController(router);
+    await SealController(router);
+    await BareSignatureController(router);
+    await LogCapsuleController(router);
+    
 
     app.use(router);
     app.use(errorMiddleware);

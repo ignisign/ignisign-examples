@@ -4,6 +4,7 @@ import { IgnisignSdkManagerSigantureService } from "./ignisign-sdk-manager-signa
 import { IgnisignSdkManagerBareSignatureService } from "./ignisign-sdk-manager-bare-signature.service"
 import { IgnisignSdkManagerSealService } from "./ignisign-sdk-manager-seal.service"
 import { IgnisignSdkManagerLogCapsuleService } from "./ignisign-sdk-manager-logs-capsule.service"
+import { Example_IgniSign_AppContext } from "../../models/example-app.models"
 
 const IGNISIGN_APP_ID     : string = process.env.IGNISIGN_APP_ID
 const IGNISIGN_APP_ENV    : IGNISIGN_APPLICATION_ENV = IGNISIGN_APPLICATION_ENV[process.env.IGNISIGN_APP_ENV]
@@ -19,13 +20,9 @@ export const IgnisignInitializerService = {
 }
 
 
-type IgniSignAppContext = {
-  ignisignAppId : string,
-  ignisignAppEnv : IGNISIGN_APPLICATION_ENV,
-  appType? : IGNISIGN_APPLICATION_TYPE
-}
 
-async function getAppContext( withAppType: boolean = false) : Promise<IgniSignAppContext>{
+
+async function getAppContext( withAppType: boolean = false) : Promise<Example_IgniSign_AppContext>{
  return {
     ignisignAppId : IGNISIGN_APP_ID,
     ignisignAppEnv : IGNISIGN_APP_ENV,

@@ -16,12 +16,12 @@ export interface MulterFile {
   size          : number
 }
 
-export const bareSignatureController = (router: Router) => {
+export const BareSignatureController = (router: Router) => {
 
   router.post('/v1/bare-signatures/upload-file', 
     upload.single('file'), async (req: Request & { file: MulterFile }, res: Response, next: NextFunction) => { 
     try {
-      console.log('bareSignatureController : ', req.file);
+      console.log('BareSignatureController : ', req.file);
 
       const title = req.body.title;
       const file  = req.file;
