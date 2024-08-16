@@ -16,12 +16,16 @@ const drawerWidth = 240;
 const MenuItem = ({link, text, disabled = false}) => {
   const history                   = useHistory();
   const location                  = useLocation();
+  
+
   const [isSelected, setSelected] = useState(false);
+
 
   useEffect(() => {
     setSelected(location.pathname === link);
   }, [location.pathname, link]);
 
+  
   const goTo = () => {
     if(!disabled){
       history.push(link)
@@ -38,12 +42,21 @@ const MenuItem = ({link, text, disabled = false}) => {
 const MenuContent = () => {
   // const {signatureProfile} = useGlobal()
 
+  const { 
+    isAppSeal,
+    isAppSignature,
+    isAppBareSignature,
+    isAppLogCapsule }            = useGlobal();
+
   return <div className='mt-2'>
     <MenuItem link={FrontUrlProvider.homePage()} text='Home Page'/>
-    <MenuItem link={FrontUrlProvider.createContract()} text='Create a contract'/>
-    <MenuItem link={FrontUrlProvider.createSeal()} text='Create a seal'/>
-    <MenuItem link={FrontUrlProvider.contractsPage()} text='List contracts'/>
-    <MenuItem link={FrontUrlProvider.bareSignaturePage()} text='Bare signature'/>
+    { isAppSignature      && <MenuItem link={FrontUrlProvider.createContract()} text='Create a contract'/> }
+    { isAppSignature      && <MenuItem link={FrontUrlProvider.contractsPage()} text='List contracts'/>}
+    
+    { isAppSeal           && <MenuItem link={FrontUrlProvider.createSeal()} text='Create a M2M seal'/>}
+    { isAppSeal           && <MenuItem link={FrontUrlProvider.createSealApproved()} text='Create a Approved Seal'/>}
+    { isAppBareSignature  && <MenuItem link={FrontUrlProvider.bareSignaturePage()} text='Create a bare signature'/>}
+    { isAppLogCapsule     && <MenuItem link={FrontUrlProvider.createLogCapsule()} text='Create a log capsule'/>}
   </div>
 }
 

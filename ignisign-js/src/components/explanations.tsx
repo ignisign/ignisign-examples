@@ -2,7 +2,8 @@
 import React, {useEffect, useState} from "react";
 import { useGlobal } from "../contexts/global.context";
 import Card from "../components-ui/card";
-import { IGNISIGN_INTEGRATION_MODE } from "@ignisign/public";
+import { IGNISIGN_APPLICATION_TYPE, IGNISIGN_INTEGRATION_MODE, IgnisignWebhook } from "@ignisign/public";
+import { Example_AC_Seal, Example_AC_Signature } from "../models/global.front-model";
 
 
 export function ExplanationHome1() {
@@ -34,11 +35,33 @@ export function ExplanationHome1() {
 
 
 export function Explanation_Embedded_BySide(){
-  const {appContext} = useGlobal();
+  const {isAppSeal, isAppSignature, appContext} = useGlobal();
 
-  const {webhooks, CUSTOMER, EMPLOYEE} = appContext;
-  const isEmbedded = CUSTOMER.signerProfile.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED 
-                    || EMPLOYEE.signerProfile.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED;
+  const [isEmbedded, setIsEmbedded] = useState(false);
+  const [ webhooks, setWebhooks] = useState<IgnisignWebhook[]>([]);
+  
+  useEffect(() => {
+    if (!isAppSeal && isAppSignature)
+      return
+     
+    if(isAppSeal){
+      const appSealContext = appContext as Example_AC_Seal;
+      setWebhooks(appSealContext?.webhooks)
+      setIsEmbedded(appSealContext?.signerProfileInfos?.signerProfile.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED)
+    }
+
+    if(isAppSignature){
+      const appSignatureContext = appContext as Example_AC_Signature;
+      setWebhooks(appSignatureContext?.webhooks)
+      setIsEmbedded(appSignatureContext?.CUSTOMER?.signerProfile.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED 
+                 || appSignatureContext?.EMPLOYEE?.signerProfile.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED)
+    }
+
+  }, [isAppSeal, isAppSignature, appContext])
+
+
+  if(!isAppSeal && !isAppSignature)
+    return <></>
 
   return (<div>
     <div className="flex-col">

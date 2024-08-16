@@ -19,6 +19,8 @@ import { CreateSeal } from './pages/create-seal.page';
 import { SealContextProvider } from './contexts/seal.context';
 import { BareSignaturePage } from './pages/bare-signature';
 import { BareSignatureCallback } from './pages/bare-signature-callback';
+import { CreateALogCapsulePage } from './pages/create-a-log-capsule';
+import { SealApprovedPage } from './pages/create-a-seal-approved';
 
 const NotFoundPage = () => {
   return (
@@ -42,17 +44,23 @@ function AppRouter() {
         <Route exact path={FrontUrlProvider.createContract()}>
           <CreateContract/>
         </Route>
+        <Route exact path={FrontUrlProvider.contractsPage()}>
+          <Contracts/>
+        </Route>
         <Route exact path={FrontUrlProvider.createSeal()}>
           <CreateSeal/>
         </Route>
-        <Route exact path={FrontUrlProvider.contractsPage()}>
-          <Contracts/>
+        <Route exact path={FrontUrlProvider.createSealApproved()}>
+          <SealApprovedPage/>
         </Route>
         <Route exact path={FrontUrlProvider.bareSignaturePage()}>
           <BareSignaturePage/>
         </Route>
         <Route exact path={FrontUrlProvider.bareSignatureCallbackPage()}>
           <BareSignatureCallback/>
+        </Route>
+        <Route exact path={FrontUrlProvider.createLogCapsule()}>
+          <CreateALogCapsulePage/>
         </Route>
         <Route>
           <NotFoundPage/>

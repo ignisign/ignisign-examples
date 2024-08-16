@@ -11,6 +11,7 @@ import { useHistory } from "react-router";
 import { ApiService } from '../services/api.service'
 import FileSaver from 'file-saver'
 import { IGNISIGN_INTEGRATION_MODE } from '@ignisign/public'
+import { Example_AC_Signature } from '../models/global.front-model'
 
 const Explanation_Contract_Header = () => {
   return ( <div>
@@ -43,9 +44,9 @@ const Contracts = () => {
   const [selectedUserId, setSelectedUserId] = useState()
 
   const isEmployee = employees?.find(e=>e._id == selectedUserId)
-  const currentAppContext = isEmployee ? appContext?.EMPLOYEE : appContext?.CUSTOMER
-  const isEmbedded = currentAppContext?.signerProfile?.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED
-  console.log('isEmbedded', {isEmbedded, isEmployee, currentAppContext, employees, customers, selectedUserId});
+  const currentSignerInfo = isEmployee ? (appContext as Example_AC_Signature)?.EMPLOYEE : (appContext as Example_AC_Signature)?.CUSTOMER
+  const isEmbedded = currentSignerInfo?.signerProfile?.integrationMode === IGNISIGN_INTEGRATION_MODE.EMBEDDED
+  console.log('isEmbedded', {isEmbedded, isEmployee, currentSignerInfo, employees, customers, selectedUserId});
   
 
   const doSelectUser = (e) => {

@@ -1,8 +1,8 @@
-import { IgnisignDocument_PrivateFileDto, IgnisignSignatureProfile, IgnisignWebhook } from '@ignisign/public';
+import { IgnisignDocument_PrivateFileDto, IgnisignLogCapsule_ResponseDto, IgnisignSignatureProfile, IgnisignWebhook } from '@ignisign/public';
 
 import axios, { AxiosRequestConfig } from "axios";
 import { Contract, ContractContext } from '../models/contract.front-model';
-import { AppContextType } from '../models/global.front-model';
+import { ExampleFront_Full_AppContextType } from '../models/global.front-model';
 import { MyUser } from '../models/user.front.model';
 import { BareSignature, RedirectUrlWrapper } from '../models/bare-signature.front-model';
 
@@ -41,20 +41,34 @@ export const ApiService = {
 
   checkSealSetup,
   createSealSignatureRequest,
+
+  createLogCapsule,
 }
 
 /** SEALS */
-async function createSealSignatureRequest(): Promise<IgnisignSignatureProfile> {
-  return http.post(`/v1/seal/sign`, {})
+async function createSealSignatureRequest(selectedFile, asPrivateFile : boolean): Promise<IgnisignSignatureProfile> {
+  const formData = new FormData();
+  formData.append(`file`, selectedFile.file);
+  formData.append('asPrivateFile', asPrivateFile.toString());
+
+  return http.post(`/v1/seal-m2m-sign`, formData, { headers: {'Content-Type': 'multipart/form-data'} })
 }
 
 async function checkSealSetup(): Promise<{isEnabled: boolean}> {
   return http.get(`/v1/seal/get-app-m2m-status`)
 }
 
+/** Log Capsule */
+
+async function createLogCapsule(): Promise<IgnisignLogCapsule_ResponseDto> {
+  return http.post(`/v1/log-capsule`, {})
+}
+
+
+
 
 /** DEMO APP CONTEXT */
-async function getAppContext(): Promise<AppContextType> {
+async function getAppContext(): Promise<ExampleFront_Full_AppContextType> {
   return http.get(`/v1/app-context`)
 }
 

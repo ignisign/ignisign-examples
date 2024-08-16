@@ -10,6 +10,7 @@ export const CreateSeal = () => {
   const {checkSetup, isEnabled, seals} = useSeal()
 
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [asPrivateFile, setAsPrivateFile] = useState(false);
 
   const handleFileChange = (files : File[], fullPrivacy : boolean = false) => {
     const keepFiles = selectedFiles.filter(e=>e.fullPrivacy !== fullPrivacy)
@@ -26,7 +27,7 @@ export const CreateSeal = () => {
 
   const doSeal = async () => {
     // await ApiService.createSeal(selectedFiles[0])
-    await ApiService.createSealSignatureRequest()
+    await ApiService.createSealSignatureRequest(selectedFiles[0], asPrivateFile)
   }
 
   return (
