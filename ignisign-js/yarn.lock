@@ -1458,26 +1458,17 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@ignisign/js@4.0.0-beta.9":
-  version "4.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@ignisign/js/-/js-4.0.0-beta.2.tgz#5079c50a3eeea7ac5b7fafc1a6c791f12e172a67"
-  integrity sha512-Oq+1qZjV/O5q6CzlIEN7+jDqg2FiIN8ViwvC+yQ4H6BsAY0EzMoCDS4XmYjWfJFe4EtHLcKRAeHZRRf4XF6uHA==
+"@ignisign/js@4.0.0-beta.10":
+  version "4.0.0-beta.10"
+  resolved "https://registry.yarnpkg.com/@ignisign/js/-/js-4.0.0-beta.10.tgz#58ef7a3fe40635422b3c5c24ace7bf2f6d23b8f0"
+  integrity sha512-lly+PFIQ/OvkuiGSRyRQhjGwKOCGdhDI5fXBHZlA2kSTqIuxvnCav3/hc7WGQbzh8EeD44Lij9urYKywoHrKjg==
   dependencies:
-    "@ignisign/public" "4.0.0-beta.2"
+    "@ignisign/public" "4.0.0-beta.10"
 
-"@ignisign/public@4.0.0-beta.2":
-  version "4.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@ignisign/public/-/public-4.0.0-beta.2.tgz#3d0e60203615f6508733c0da31c4e561a6975593"
-  integrity sha512-7n/Dnwg4S4kM3y9Xqwini/u2A2gaifK7nuuwm6O6ctSOuVLpbdWZSxz033w6Cy+bsqrDyVfwyKB5TKqp1dgTKw==
-  dependencies:
-    class-transformer "^0.5.1"
-    class-validator "^0.14.0"
-    reflect-metadata "^0.1.13"
-
-"@ignisign/public@4.0.0-beta.9":
-  version "4.0.0-beta.9"
-  resolved "https://registry.yarnpkg.com/@ignisign/public/-/public-4.0.0-beta.9.tgz#5b6d10e8cb620bb9ed3efceda163c07ae5b8e94a"
-  integrity sha512-t67VbFFpOuJp9npjFEE8h2KQePLwDNjHYDZkjLmWvJ6cd+2098eGAAtGC2+77mGqMc08Xk7omeTJUNvARe+3OQ==
+"@ignisign/public@4.0.0-beta.10":
+  version "4.0.0-beta.10"
+  resolved "https://registry.yarnpkg.com/@ignisign/public/-/public-4.0.0-beta.10.tgz#e7f3a0678dda63447d17ae1d4a06827c44d46cb4"
+  integrity sha512-GRaXB0QhsA/kdnLP5460ws27YveE4i/9pndpNcLlEtbpGktZc5GIYxzp5fZHdL5feFGadZy50DK9oYliSNpppA==
   dependencies:
     class-transformer "^0.5.1"
     class-validator "^0.14.0"
