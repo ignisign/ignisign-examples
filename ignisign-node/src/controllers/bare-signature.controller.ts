@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { NextFunction, Request, Response } from 'express';
 import { jsonError, jsonSuccess } from "../utils/controller.util";
-import { BareSignatureService } from "../services/bare-signature.service";
+import { BareSignatureService } from "../services/example/bare-signature.service";
 import { deleteFile } from "../utils/files.util";
 
 const UPLOAD_TMP = 'uploads_tmp/';
@@ -72,7 +72,7 @@ export const bareSignatureController = (router: Router) => {
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const { bareSignatureId } = req.params;
-        const proof = await BareSignatureService.getProof(bareSignatureId);
+        const proof = await BareSignatureService.getProofs(bareSignatureId);
         jsonSuccess(res, proof);
       } catch (e) {
         console.error(e);

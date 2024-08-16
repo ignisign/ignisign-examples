@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { jsonSuccess } from "../utils/controller.util";
 import { NextFunction, Request, Response } from 'express';
-import { UserService } from "../services/user.service";
+import { UserService } from "../services/example/user.service";
 import { MY_USER_TYPES, MyUser } from "../models/user.db.model";
   
 // Example Controller used to manage customers

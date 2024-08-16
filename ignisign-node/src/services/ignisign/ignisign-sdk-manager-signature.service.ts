@@ -1,6 +1,7 @@
 
 import {
   IGNISIGN_APPLICATION_ENV,
+  IGNISIGN_APPLICATION_TYPE,
   IGNISIGN_SIGNER_CREATION_INPUT_REF,
   IGNISIGN_WEBHOOK_ACTION_SIGNATURE,
   IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF,
@@ -22,7 +23,7 @@ import {
 } from '@ignisign/public';
 import { IgnisignSdk, IgnisignSdkFileContentUploadDto } from '@ignisign/sdk';
 import { Readable } from 'stream';
-import { ContractService } from './contract.service';
+import { ContractService } from '../example/contract.service';
 import _ = require('lodash');
 import * as fs from 'fs';
 import { IgnisignSdkManagerCommonsService } from './ignisign-sdk-manager-commons.service';
@@ -37,7 +38,7 @@ const _logIfDebug = (...message) => {
 let ignisignSdkInstance: IgnisignSdk = null;
 let isIgnisignSdkInstanceInitialized = false;
 
-export const IgnisignSdkManagerService = {
+export const IgnisignSdkManagerSigantureService = {
   init,
   createNewSigner,
   revokeSigner,
@@ -52,22 +53,18 @@ export const IgnisignSdkManagerService = {
   getSignatureRequestContext,
   getWebhookEndpoints,
   downloadSignatureProof,
+  
 }
-
-
-const IGNISIGN_APP_ID     = process.env.IGNISIGN_APP_ID
-const IGNISIGN_APP_ENV: IGNISIGN_APPLICATION_ENV = IGNISIGN_APPLICATION_ENV[process.env.IGNISIGN_APP_ENV]
-const IGNISIGN_APP_SECRET = process.env.IGNISIGN_APP_SECRET
 
 /******************************************************************************************** ***************************************************************************************/
 /******************************************************************************************** INIT **********************************************************************************/
 /******************************************************************************************** ***************************************************************************************/
 
-async function init() {
-  _logIfDebug("IgnisignSdkManagerService: init")
+async function init(appId: string, appEnv: IGNISIGN_APPLICATION_ENV, appSecret: string) {
+  _logIfDebug("IgnisignSdkManagerSigantureService: init")
   
-  if(!IGNISIGN_APP_ID || !IGNISIGN_APP_ENV || !IGNISIGN_APP_SECRET)
-    throw new Error(`IGNISIGN_APP_ID, IGNISIGN_APP_ENV and IGNISIGN_APP_SECRET are mandatory to init IgnisignSdkManagerService`);
+  if(!appId || !appEnv || !appSecret)
+    throw new Error(`IGNISIGN_APP_ID, IGNISIGN_APP_ENV and IGNISIGN_APP_SECRET are mandatory to init IgnisignSdkManagerSigantureService`);
     
   try {
     if(isIgnisignSdkInstanceInitialized)
@@ -77,9 +74,9 @@ async function init() {
     
     // initialization of the Ignisign SDK
     ignisignSdkInstance = new IgnisignSdk({
-      appId           : IGNISIGN_APP_ID,
-      appEnv          : (<IGNISIGN_APPLICATION_ENV>IGNISIGN_APP_ENV),
-      appSecret       : IGNISIGN_APP_SECRET,
+      appId,
+      appEnv,
+      appSecret,
       displayWarning  : true,
     })
 

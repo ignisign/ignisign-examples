@@ -10,6 +10,8 @@ export type Contract = {
   documentId            ?: string;
   isSignatureProofReady ?: boolean;
   signatureProofUrl     ?: string;
+  ignisignAppId         ?: string;
+  ignisignAppEnv        ?: IGNISIGN_APPLICATION_ENV;
   signers?: {
     ignisignSignerId        ?: string;
     userId                  ?: string;

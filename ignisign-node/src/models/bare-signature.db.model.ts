@@ -22,23 +22,11 @@ export type BareSignature = {
   status            : BARE_SIGNATURE_STATUS;
   codeVerifier      : string;
   accessToken      ?: string;
+  ignisignAppId     : string;
+  ignisignAppEnv    : string;
 }
 
-export class IgnisignOAuth2_ProofAccessTokenRequest {
-  client_id      : string;
-  client_secret  : string;
-  code_verifier  : string;
-  redirect_uri   : string;
-  grant_type     : string;
-  code           : string;
-}
 
-export class IgnisignOAuth2_ProofAccessToken {
-  access_token : string;
-  token_type   : string;
-  expires_in   : number;
-  scope        : string;
-}
 
 
 export const BareSignatureModel = db.collection("baresignatures");

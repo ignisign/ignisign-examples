@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { NextFunction, Request, Response } from 'express';
-import { ContractService } from "../services/contract.service";
+import { ContractService } from "../services/example/contract.service";
 import { jsonError, jsonSuccess } from "../utils/controller.util";
 import { deleteFile } from "../utils/files.util";
 import {Readable} from 'stream'

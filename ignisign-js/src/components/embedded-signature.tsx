@@ -42,7 +42,7 @@ const EmbeddedSignature = ({signatureRequestId, signerId, signatureSessionToken,
         signerAuthSecret,                             // The signer auth secret - required to initialize a signature session in embedded mode
         sessionCallbacks: {
           handlePrivateFileInfoProvisioning,           // The function to handle private file info provisioning
-          // handleSignatureSessionError,                 // The function to handle signature session errors
+          handleSignatureSessionError,                 // The function to handle signature session errors
           handleSignatureSessionFinalized              // The function to handle signature session finalization
         },
         closeOnFinish: true,                          // Close the signature session when the signature request is signed 

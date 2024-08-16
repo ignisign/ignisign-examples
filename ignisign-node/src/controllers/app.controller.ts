@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { NextFunction, Request, Response } from 'express';
-import { FileService } from "../services/files.service";
-import { IgnisignSdkManagerService } from "../services/ignisign-sdk-manager.service";
+import { FileService } from "../services/example/files.service";
+import { IgnisignSdkManagerSigantureService } from "../services/ignisign/ignisign-sdk-manager-signature.service";
 import { jsonSuccess } from "../utils/controller.util";
 import { IgnisignDocument_PrivateFileDto } from "@ignisign/public";
 import { MY_USER_TYPES } from "../models/user.db.model";
@@ -29,18 +29,18 @@ export const appController = (router: Router) => {
   router.get('/v1/app-context', async (req: Request, res: Response, next: NextFunction) => {
     try {
       
-      const webhooks         = await IgnisignSdkManagerService.getWebhookEndpoints();
+      const webhooks         = await IgnisignSdkManagerSigantureService.getWebhookEndpoints();
 
       const employeeSignerProfileId = process.env.IGNISIGN_EMPLOYEE_SIGNER_PROFILE_ID;
       const customerSignerProfileId = process.env.IGNISIGN_CUSTOMER_SIGNER_PROFILE_ID;
       return jsonSuccess(res, { 
         [MY_USER_TYPES.EMPLOYEE]: {
-          requiredInputs: await IgnisignSdkManagerService.getSignerInputsConstraintsFromSignerProfileId(employeeSignerProfileId),
-          signerProfile: await IgnisignSdkManagerService.getSignerProfile(employeeSignerProfileId),
+          requiredInputs: await IgnisignSdkManagerSigantureService.getSignerInputsConstraintsFromSignerProfileId(employeeSignerProfileId),
+          signerProfile: await IgnisignSdkManagerSigantureService.getSignerProfile(employeeSignerProfileId),
         },
         [MY_USER_TYPES.CUSTOMER]: {
-          requiredInputs: await IgnisignSdkManagerService.getSignerInputsConstraintsFromSignerProfileId(customerSignerProfileId),
-          signerProfile: await IgnisignSdkManagerService.getSignerProfile(customerSignerProfileId),
+          requiredInputs: await IgnisignSdkManagerSigantureService.getSignerInputsConstraintsFromSignerProfileId(customerSignerProfileId),
+          signerProfile: await IgnisignSdkManagerSigantureService.getSignerProfile(customerSignerProfileId),
         },
         webhooks
       });
@@ -52,7 +52,7 @@ export const appController = (router: Router) => {
   // You have to configurate it into the Ignisign Console.
   router.post('/v1/ignisign-webhook', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await IgnisignSdkManagerService.consumeWebhook(req.body);
+      const result = await IgnisignSdkManagerSigantureService.consumeWebhook(req.body);
       jsonSuccess(res, result);
     } catch(e) { next(e) }
   })
