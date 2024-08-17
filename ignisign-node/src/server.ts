@@ -10,7 +10,7 @@ import cors = require('cors');
 import validateEnv from './utils/validate-env';
   
 import 'dotenv/config'; 
-import { IgnisignSdkManagerSigantureService } from './services/ignisign/ignisign-sdk-manager-signature.service';
+import { IgnisignSdkManagerSignatureService } from './services/ignisign/ignisign-sdk-manager-signature.service';
 
 
 import { errorMiddleware } from './utils/error.middleware';

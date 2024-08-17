@@ -1,12 +1,13 @@
 import { Router } from "express"
 import { NextFunction, Request, Response } from 'express';
 import { FileService } from "../services/example/files.service";
-import { IgnisignSdkManagerSigantureService } from "../services/ignisign/ignisign-sdk-manager-signature.service";
+import { IgnisignSdkManagerSignatureService } from "../services/ignisign/ignisign-sdk-manager-signature.service";
 import { jsonSuccess } from "../utils/controller.util";
 import { IGNISIGN_APPLICATION_TYPE, IgnisignDocument_PrivateFileDto } from "@ignisign/public";
 import { MY_USER_TYPES } from "../models/user.db.model";
 import { UserService } from "../services/example/user.service";
 import { IgnisignInitializerService } from "../services/ignisign/ignisign-sdk-initializer.service";
+import { IgnisignSdkManagerSealService } from "../services/ignisign/ignisign-sdk-manager-seal.service";
 
 
 // const signatureProfileId = process.env.IGNISIGN_SIGNATURE_PROFILE_ID
@@ -31,28 +32,31 @@ export const AppController = (router: Router) => {
   router.get('/v1/app-context', async (req: Request, res: Response, next: NextFunction) => {
     try {
       
-      const webhooks = await IgnisignSdkManagerSigantureService.getWebhookEndpoints();
+     
 
-      const appContext = await IgnisignInitializerService.getAppContext();
+      const appContext = await IgnisignInitializerService.getAppContext(true);
+      console.log("appContext", appContext)
 
       if(appContext.appType === IGNISIGN_APPLICATION_TYPE.SIGNATURE){
         const { employeeSignerProfileId, customerSignerProfileId } = await UserService.getSignerProfileIds(appContext.appType);
+        const webhooks = await IgnisignSdkManagerSignatureService.getWebhookEndpoints();
 
         return jsonSuccess(res, { 
           [MY_USER_TYPES.EMPLOYEE]: await UserService.getConstraintsAndSignerProfileIds(employeeSignerProfileId),
           [MY_USER_TYPES.CUSTOMER]: await UserService.getConstraintsAndSignerProfileIds(customerSignerProfileId),
           webhooks,
-          appContext : await IgnisignInitializerService.getAppContext()
+          appContext
         });
 
       } else if (appContext.appType === IGNISIGN_APPLICATION_TYPE.SEAL){
 
         const { signerProfileId } = await UserService.getSignerProfileIds(appContext.appType);
+        const webhooks = await IgnisignSdkManagerSealService.getWebhookEndpoints();
 
         return jsonSuccess(res, { 
           signerProfileInfos : await UserService.getConstraintsAndSignerProfileIds(signerProfileId),
           webhooks,
-          appContext : await IgnisignInitializerService.getAppContext()
+          appContext
         });
 
       } else if (appContext.appType === IGNISIGN_APPLICATION_TYPE.BARE_SIGNATURE){
@@ -60,14 +64,14 @@ export const AppController = (router: Router) => {
         const { signerProfileId } = await UserService.getSignerProfileIds(appContext.appType);
 
         return jsonSuccess(res, { 
-          signerProfileInfos : await UserService.getConstraintsAndSignerProfileIds(signerProfileId),
-          appContext : await IgnisignInitializerService.getAppContext()
+          // signerProfileInfos : await UserService.getConstraintsAndSignerProfileIds(signerProfileId),
+          appContext
         });
 
       } else if (appContext.appType === IGNISIGN_APPLICATION_TYPE.LOG_CAPSULE){
 
         return jsonSuccess(res, { 
-          appContext : await IgnisignInitializerService.getAppContext()
+          appContext
         });
 
       } else {
@@ -87,7 +91,7 @@ export const AppController = (router: Router) => {
   // You have to configurate it into the Ignisign Console.
   router.post('/v1/ignisign-webhook', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await IgnisignSdkManagerSigantureService.consumeWebhook(req.body);
+      const result = await IgnisignSdkManagerSignatureService.consumeWebhook(req.body);
       jsonSuccess(res, result);
     } catch(e) { next(e) }
   })

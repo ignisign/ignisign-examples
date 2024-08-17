@@ -24,13 +24,13 @@ export const BareSignatureCallback = () => {
       const token       = queryParams.get("code");
       const state       = JSON.parse(queryParams.get("state") || '{}');
 
-      if(!token || !state?.bareSignatureId) {
+      if(!token || !state?.externalId) {
         throw 'Token or bareSignatureId not found';
       }
 
-      const { bareSignatureId } = state;
+      const { externalId } = state;
 
-      await saveAccessToken(token, bareSignatureId);
+      await saveAccessToken(token, externalId);
       history.replace(FrontUrlProvider.bareSignaturePage());
 
     } catch (e) {

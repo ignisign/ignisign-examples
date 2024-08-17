@@ -10,7 +10,7 @@ interface BareSignatureCreationProps {
 }
 
 export const BareSignatureCreation = ({ close } : BareSignatureCreationProps) => {
-  const [title, setTitle]                     = useState<string>('');
+  const [title, setTitle]                     = useState<string>('A test bare signature');
   const [selectedFile, setSelectedFile]       = useState<File>(null);
   const [isLoading, setIsLoading]             = useState<boolean>(false);
   
@@ -29,7 +29,7 @@ export const BareSignatureCreation = ({ close } : BareSignatureCreationProps) =>
 
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-10 mt-12">
       <TextField
         label="Title"
         value={title}

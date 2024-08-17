@@ -9,6 +9,7 @@ import { IgnisignSdkUtilsService , Ignisign_BareSignature_SdkProofAccessTokenReq
 import { IgnisignSdkManagerBareSignatureService } from '../ignisign/ignisign-sdk-manager-bare-signature.service';
 import { findOneCallback, insertCallback } from './tinydb.utils';
 import { Ignisign_BareSignature_ProofAccessToken } from '@ignisign/public';
+import _ = require('lodash');
 const crypto = require('crypto');
 
 const DEBUG_LOG_ACTIVATED = true;
@@ -40,6 +41,8 @@ async function getAuthorizationUrl(bareSignatureId: string) : Promise<string> {
     nonce         : nanoid(),
     codeChallenge : codeChallenge
   });
+
+  _logIfDebug('getAuthorizationUrl : ', authorizationUrl);
 
   return authorizationUrl;
 }
@@ -168,7 +171,7 @@ async function getBareSignatures() : Promise<BareSignature[]> {
     });
   });
 
-  console.log('getBareSignatures : ', bareSignatures);
+  // _logIfDebug('getBareSignatures : ', bareSignatures);
   return bareSignatures;
 }
 

@@ -1,8 +1,10 @@
 import { IGNISIGN_APPLICATION_TYPE, IGNISIGN_SIGNER_CREATION_INPUT_REF, IgnisignSigner_CreationRequestDto, IgnisignSignerProfile } from "@ignisign/public";
 import { MyUser, MyUserModel, MY_USER_TYPES } from "../../models/user.db.model";
-import { IgnisignSdkManagerSigantureService } from "../ignisign/ignisign-sdk-manager-signature.service";
+import { IgnisignSdkManagerSignatureService } from "../ignisign/ignisign-sdk-manager-signature.service";
 import { IgnisignInitializerService } from "../ignisign/ignisign-sdk-initializer.service";
 import { findCallback, findOneCallback, insertCallback } from "./tinydb.utils";
+import { IgnisignSdkManagerBareSignatureService } from "../ignisign/ignisign-sdk-manager-bare-signature.service";
+import { IgnisignSdkManagerSealService } from "../ignisign/ignisign-sdk-manager-seal.service";
 
 
 /** Promise Related Complexity WARNING : 
@@ -24,19 +26,26 @@ export const UserService = {
 
 async function getSignerProfileIds(appType : IGNISIGN_APPLICATION_TYPE) : Promise<{ employeeSignerProfileId?: string, customerSignerProfileId?: string, signerProfileId? : string }>{
 
-  if(appType === IGNISIGN_APPLICATION_TYPE.LOG_CAPSULE){
-    return {};
-  } 
+  if(appType === IGNISIGN_APPLICATION_TYPE.LOG_CAPSULE)
+    return {}; 
 
-  let signerProfiles = await IgnisignSdkManagerSigantureService.getSignerProfiles();
+  const sdkInstance     = await IgnisignInitializerService.getSDkManagerSignatureService();
+  const signerProfiles  = await sdkInstance.getSignerProfiles();
 
   if(signerProfiles.length === 0)
     throw new Error("No Signer Profile found in the Ignisign App");
+  
 
-  if(appType === IGNISIGN_APPLICATION_TYPE.BARE_SIGNATURE || appType === IGNISIGN_APPLICATION_TYPE.SEAL){
+  if(appType === IGNISIGN_APPLICATION_TYPE.BARE_SIGNATURE){
+
+    return { signerProfileId: signerProfiles[0]._id };
+
+  } else if(appType === IGNISIGN_APPLICATION_TYPE.SEAL){
+
     return { signerProfileId: signerProfiles[0]._id };
 
   } else if(appType === IGNISIGN_APPLICATION_TYPE.SIGNATURE){
+
     const maybeSPCustomers = signerProfiles.find(sp => sp.name === "Customers");
     const maybeSPEmployees = signerProfiles.find(sp => sp.name === "Employees");
     
@@ -49,9 +58,12 @@ async function getSignerProfileIds(appType : IGNISIGN_APPLICATION_TYPE) : Promis
 }
 
 async function getConstraintsAndSignerProfileIds(signerProfileId : string) : Promise<{ requiredInputs: IGNISIGN_SIGNER_CREATION_INPUT_REF[], signerProfile: IgnisignSignerProfile }>{
+  
+  const sdkInstance = await IgnisignInitializerService.getSDkManagerSignatureService();
+  
   return {
-    requiredInputs: await IgnisignSdkManagerSigantureService.getSignerInputsConstraintsFromSignerProfileId(signerProfileId),
-    signerProfile: await IgnisignSdkManagerSigantureService.getSignerProfile(signerProfileId),
+    requiredInputs  : await sdkInstance.getSignerInputsConstraintsFromSignerProfileId(signerProfileId),
+    signerProfile   : await sdkInstance.getSignerProfile(signerProfileId),
   }
 
 }
@@ -127,7 +139,7 @@ async function addUser(
 
     _logIfDebug("inputToCreate");
     
-    const signer = await IgnisignSdkManagerSigantureService.createNewSigner(signerProfileId, inputToCreate, userId);
+    const signer = await IgnisignSdkManagerSignatureService.createNewSigner(signerProfileId, inputToCreate, userId);
 
     const { signerId, authSecret } = signer;
 

@@ -24,7 +24,7 @@ async function checkWebhookEndpoint(ignisignSdkInstance : IgnisignSdk) : Promise
       console.warn("WARN: No webhook endpoints found, please create one in the Ignisign Console - In dev mode, you can use ngrok to expose your localhost to the internet")
 
   } catch(e) {
-    console.error("IgnisignSdkManagerSigantureService: Error when checking webhook endpoint", e)
+    console.error("IgnisignSdkManagerSignatureService: Error when checking webhook endpoint", e)
     throw e
   }
 }
@@ -39,7 +39,7 @@ async function getWebhookEndpoints(ignisignSdkInstance : IgnisignSdk, ) : Promis
 
     return webhookEndpoints;
   } catch(e) {
-    console.error("IgnisignSdkManagerSigantureService: Error when checking webhook endpoint", e)
+    console.error("IgnisignSdkManagerSignatureService: Error when checking webhook endpoint", e)
     throw e
   } 
 }

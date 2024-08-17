@@ -1,4 +1,4 @@
-import { IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IgnisignWebhook, IgnisignWebhookDto_Signature, IgnisignWebhookDto_SignatureProof_Success, IgnisignWebhookDto_SignatureRequest, IgnisignWebhook_ActionDto, IgnisignWebhook_CallbackParams } from "@ignisign/public";
+import { IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_SIGNER_CREATION_INPUT_REF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IgnisignSignerProfile, IgnisignWebhook, IgnisignWebhookDto_Signature, IgnisignWebhookDto_SignatureProof_Success, IgnisignWebhookDto_SignatureRequest, IgnisignWebhook_ActionDto, IgnisignWebhook_CallbackParams } from "@ignisign/public";
 import { IgnisignSdk, IgnisignSdkUtilsService } from "@ignisign/sdk";
 import { IgnisignSdkManagerCommonsService } from "./ignisign-sdk-manager-commons.service";
 const crypto = require('crypto');
@@ -25,6 +25,10 @@ export const IgnisignSdkManagerSealService = {
   checkWebhookEndpoint,
   getWebhookEndpoints,
   consumeWebhook,
+  getSignerProfiles,
+  getSignerProfile,
+  getSignerInputsConstraintsFromSignerProfileId,
+  
 }
 
 
@@ -37,10 +41,10 @@ function isEnabled(): boolean {
 }
 
 async function init(appId: string, appEnv: IGNISIGN_APPLICATION_ENV, appSecret: string, m2mIdParam : string, m2mPrivateKeyParam: string) {
-  _logIfDebug("IgnisignSdkManagerSigantureService: init")
+  _logIfDebug("IgnisignSdkManagerSignatureService: init")
   
   if(!appId || !appEnv || !appSecret)
-    throw new Error(`IGNISIGN_APP_ID, IGNISIGN_APP_ENV and IGNISIGN_APP_SECRET are mandatory to init IgnisignSdkManagerSigantureService`);
+    throw new Error(`IGNISIGN_APP_ID, IGNISIGN_APP_ENV and IGNISIGN_APP_SECRET are mandatory to init IgnisignSdkManagerSignatureService`);
   
   m2mId         = m2mIdParam;
   m2mPrivateKey = m2mPrivateKeyParam
@@ -88,6 +92,32 @@ async function createM2mSignatureRequest(fileBuffer : Buffer, asPrivateFile : bo
   });
 
 }
+
+
+async function getSignerProfile(signerProfileId: string): Promise<IgnisignSignerProfile> {
+  try {
+    return await ignisignSdkInstance.getSignerProfile(signerProfileId);
+  } catch (error) {
+    console.error(error.toString());
+    throw error
+  }
+}
+
+async function getSignerProfiles(): Promise<IgnisignSignerProfile[]> {
+  try {
+    return await ignisignSdkInstance.getSignerProfiles();
+  } catch (error) {
+    console.error(error.toString());
+    throw error
+  }
+}
+
+async function getSignerInputsConstraintsFromSignerProfileId(signatureProfileId: string): Promise<IGNISIGN_SIGNER_CREATION_INPUT_REF[]> {
+  
+  const result = await ignisignSdkInstance.getSignerInputsConstraintsFromSignerProfileId(signatureProfileId);
+  return result.inputsNeeded;
+}
+
 
 
 /******************************************************************************************** ******************************************************************************************/

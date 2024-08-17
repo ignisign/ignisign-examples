@@ -5,7 +5,7 @@ import { jsonSuccess, MulterFile } from "../utils/controller.util";
 import { NextFunction, Request, Response } from 'express';
 import { UserService } from "../services/example/user.service";
 import { MY_USER_TYPES, MyUser } from "../models/user.db.model";
-import { IgnisignSdkManagerSigantureService } from "../services/ignisign/ignisign-sdk-manager-signature.service";
+import { IgnisignSdkManagerSignatureService } from "../services/ignisign/ignisign-sdk-manager-signature.service";
 import { IgnisignSdkManagerSealService } from "../services/ignisign/ignisign-sdk-manager-seal.service";
 import { SealService } from "../services/example/seal.service";
 const crypto = require('crypto');

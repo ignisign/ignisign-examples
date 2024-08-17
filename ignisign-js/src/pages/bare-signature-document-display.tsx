@@ -73,6 +73,31 @@ const BareSignatureDocumentViewer = ({ doc } : { doc : BareSignatureDocument }) 
     setNumPages(numPages);
   }
 
+  const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+  
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+  
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+  
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+      
+    const blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+  }
+
+  const docDataUrl = () => {
+    const blob = b64toBlob(doc.fileB64, doc.mimeType);
+    return URL.createObjectURL(blob);
+  
+  }
   enum DOC_TYPE {
     IMAGE   = 'IMAGE',
     PDF     = 'PDF',
@@ -99,6 +124,7 @@ const BareSignatureDocumentViewer = ({ doc } : { doc : BareSignatureDocument }) 
       {docType === DOC_TYPE.PDF &&
           <iframe
           src={`data:application/pdf;base64,${doc.fileB64}`}
+          // src={docDataUrl()}
           title="PDF Viewer"
           width="100%"
           height="600px"

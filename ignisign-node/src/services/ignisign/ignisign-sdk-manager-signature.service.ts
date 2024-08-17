@@ -38,7 +38,7 @@ const _logIfDebug = (...message) => {
 let ignisignSdkInstance: IgnisignSdk = null;
 let isIgnisignSdkInstanceInitialized = false;
 
-export const IgnisignSdkManagerSigantureService = {
+export const IgnisignSdkManagerSignatureService = {
   init,
   createNewSigner,
   revokeSigner,
@@ -62,10 +62,10 @@ export const IgnisignSdkManagerSigantureService = {
 /******************************************************************************************** ***************************************************************************************/
 
 async function init(appId: string, appEnv: IGNISIGN_APPLICATION_ENV, appSecret: string) {
-  _logIfDebug("IgnisignSdkManagerSigantureService: init")
+  _logIfDebug("IgnisignSdkManagerSignatureService: init")
   
   if(!appId || !appEnv || !appSecret)
-    throw new Error(`IGNISIGN_APP_ID, IGNISIGN_APP_ENV and IGNISIGN_APP_SECRET are mandatory to init IgnisignSdkManagerSigantureService`);
+    throw new Error(`IGNISIGN_APP_ID, IGNISIGN_APP_ENV and IGNISIGN_APP_SECRET are mandatory to init IgnisignSdkManagerSignatureService`);
     
   try {
     if(isIgnisignSdkInstanceInitialized)
@@ -164,9 +164,6 @@ async function _registerWebhookCallback(): Promise<void> {
 
   await checkWebhookEndpoint();
 }
-
-
-
 
 // This function is used to check if a webhook endpoint is registered in the Ignisign Console.
 async function checkWebhookEndpoint() : Promise<void>{

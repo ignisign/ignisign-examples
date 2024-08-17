@@ -20,7 +20,7 @@ export interface IGlobalContext {
 export const GlobalContextProvider = ({ children }) => {
   const [isLoading,         setIsLoading]         = useState<boolean>(false)
 
-  const [isFilesPrivates,   setIsFilesPrivates]   = useState<boolean>(null)
+  const [isFilesPrivates,  setIsFilesPrivates]   = useState<boolean>(null)
   const [appContext,       setAppContext]        = useState<ExampleFront_Full_AppContextType>(null)
   const [disabled,         setDisabled]          = useState<boolean>(true)
 
@@ -35,7 +35,7 @@ export const GlobalContextProvider = ({ children }) => {
       const appContext = await ApiService.getAppContext()
       setAppContext(appContext)
 
-      
+      console.log("appContext", appContext)
       switch (appContext?.appContext?.appType) {
         case IGNISIGN_APPLICATION_TYPE.SIGNATURE:
           const appContextSign = appContext as Example_AC_Signature;
@@ -44,7 +44,7 @@ export const GlobalContextProvider = ({ children }) => {
           break;
         case IGNISIGN_APPLICATION_TYPE.BARE_SIGNATURE:
           const appContextBareSign = appContext as Example_AC_BareSignature;
-          setDisabled(!appContextBareSign?.signerProfileInfos)
+          setDisabled(!appContextBareSign)
           break;
         case IGNISIGN_APPLICATION_TYPE.SEAL:
           const appContextSeal = appContext as Example_AC_Seal;

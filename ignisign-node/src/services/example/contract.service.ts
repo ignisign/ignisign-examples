@@ -1,5 +1,5 @@
 import { getFileHash } from "../../utils/files.util";
-import { IgnisignSdkManagerSigantureService } from "../ignisign/ignisign-sdk-manager-signature.service";
+import { IgnisignSdkManagerSignatureService } from "../ignisign/ignisign-sdk-manager-signature.service";
 import * as FormData from "form-data";
 import * as fs from 'fs';
 import { FileService } from "./files.service";
@@ -48,7 +48,7 @@ async function createNewContract(customerId: string, employeeId: string, contrac
   const __handlePrivateFile = async (signatureRequestId, contractFile: any): Promise<string> => {
         
     const fileHash      = await getFileHash(fs.createReadStream(contractFile.path)) // calculate the hash of the file
-    const documentId    = await IgnisignSdkManagerSigantureService.uploadHashDocument(signatureRequestId, fileHash, contractFile.originalname); // upload the hash to Ignisign
+    const documentId    = await IgnisignSdkManagerSignatureService.uploadHashDocument(signatureRequestId, fileHash, contractFile.originalname); // upload the hash to Ignisign
     await FileService.saveFile(fileHash, contractFile, documentId) // save the file in the database
   
     return documentId;
@@ -63,13 +63,13 @@ async function createNewContract(customerId: string, employeeId: string, contrac
       contentType : contractFile.mimetype,
     }
     
-    return await IgnisignSdkManagerSigantureService.uploadDocument(signatureRequestId, uploadDto) // upload the file to Ignisign
+    return await IgnisignSdkManagerSignatureService.uploadDocument(signatureRequestId, uploadDto) // upload the file to Ignisign
   }
 
   try {
     const customer            = await UserService.getUser(customerId);
     const employee            = await UserService.getUser(employeeId);
-    const signatureRequestId  = await IgnisignSdkManagerSigantureService.initSignatureRequest();
+    const signatureRequestId  = await IgnisignSdkManagerSignatureService.initSignatureRequest();
 
     //TODO
     const documentId  = await __handleStandardFile(signatureRequestId, contractFile);
@@ -99,8 +99,8 @@ async function createNewContract(customerId: string, employeeId: string, contrac
 
     console.log(dto);
 
-    await IgnisignSdkManagerSigantureService.updateSignatureRequest(signatureRequestId, dto);
-    await IgnisignSdkManagerSigantureService.publishSignatureRequest(signatureRequestId);
+    await IgnisignSdkManagerSignatureService.updateSignatureRequest(signatureRequestId, dto);
+    await IgnisignSdkManagerSignatureService.publishSignatureRequest(signatureRequestId);
        
 
   } catch  (error){
@@ -289,7 +289,7 @@ async function  downloadSignatureProof(contractId): Promise<Readable> {
     
   _logIfDebug('contract', contract);
   
-  const signatureRequestContext = await IgnisignSdkManagerSigantureService.getSignatureRequestContext(contract.signatureRequestId);
+  const signatureRequestContext = await IgnisignSdkManagerSignatureService.getSignatureRequestContext(contract.signatureRequestId);
 
   if(!signatureRequestContext)
     throw new Error("Cannot find signature request context with id : " + contract.signatureRequestId)
@@ -300,10 +300,10 @@ async function  downloadSignatureProof(contractId): Promise<Readable> {
     throw new Error("Cannot find document with id : " + contract.documentId)
 
   if(maybeDocument.documentNature !== IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE)
-    return await IgnisignSdkManagerSigantureService.downloadSignatureProof(contract.documentId);
+    return await IgnisignSdkManagerSignatureService.downloadSignatureProof(contract.documentId);
 
   if (!process.env.IGNISIGN_PRIVATE_PROOF_GENERATOR_URL)
-    return await IgnisignSdkManagerSigantureService.downloadSignatureProof(contract.documentId);
+    return await IgnisignSdkManagerSignatureService.downloadSignatureProof(contract.documentId);
 
   // This is the URL of the private proof generator module
   // This is a module that is used to generate the proof of signature of a private file

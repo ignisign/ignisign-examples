@@ -21,7 +21,6 @@ export type Example_AC_Signature = {
 }
 
 export type Example_AC_BareSignature = {
-  signerProfileInfos : Example_IgniSign_AppContext
   appContext : Example_IgniSign_AppContext
 }
 

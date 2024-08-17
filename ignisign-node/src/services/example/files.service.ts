@@ -3,7 +3,7 @@ import { generateBearerToken } from "../../utils/authorization.middleware";
 import { saveFileToFolder } from "../../utils/files.util";
 import { MyFile, MyFileModel } from "../../models/file.db.model";
 import { MyUser } from "../../models/user.db.model";
-import { IgnisignSdkManagerSigantureService } from "../ignisign/ignisign-sdk-manager-signature.service";
+import { IgnisignSdkManagerSignatureService } from "../ignisign/ignisign-sdk-manager-signature.service";
 import { IgnisignInitializerService } from "../ignisign/ignisign-sdk-initializer.service";
 import { findOneCallback, insertCallback } from "./tinydb.utils";
 
@@ -52,7 +52,7 @@ async function getPrivateFileUrl(documentId) : Promise<IgnisignDocument_PrivateF
 
 async function saveFile(fileHash, file, documentId) : Promise<MyFile>{
   const { ignisignAppId, ignisignAppEnv} = await IgnisignInitializerService.getAppContext();
-  
+
   return new Promise(async (resolve, reject) => {
 
     const path = await saveFileToFolder(file.path, 'uploads', documentId)
