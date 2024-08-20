@@ -31,9 +31,6 @@ export const AppController = (router: Router) => {
   // The other information are more to help you to understand how to use the IgnisignJS SDK and are not transmitted to the front end in a real life application.
   router.get('/v1/app-context', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      
-     
-
       const appContext = await IgnisignInitializerService.getAppContext(true);
       console.log("appContext", appContext)
 
@@ -60,8 +57,7 @@ export const AppController = (router: Router) => {
         });
 
       } else if (appContext.appType === IGNISIGN_APPLICATION_TYPE.BARE_SIGNATURE){
-
-        const { signerProfileId } = await UserService.getSignerProfileIds(appContext.appType);
+        // const { signerProfileId } = await UserService.getSignerProfileIds(appContext.appType);
 
         return jsonSuccess(res, { 
           // signerProfileInfos : await UserService.getConstraintsAndSignerProfileIds(signerProfileId),

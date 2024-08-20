@@ -26,6 +26,7 @@ export const BareSignatureDisplayDialog = ({ bareSignature, removeBareSignature 
     setIsLoading(true);
     try {
       const authorizationUrl = await ApiService.getAuthorizationUrl(bareSignature._id);
+      console.log('BareSignatureDisplayDialog : ', { authorizationUrl });
       const redirectUrl = (await axios.get(authorizationUrl))?.data
       window.location.href = redirectUrl;
     } catch (e) {

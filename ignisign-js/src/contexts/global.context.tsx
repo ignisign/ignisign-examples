@@ -32,7 +32,7 @@ export const GlobalContextProvider = ({ children }) => {
   const getAppContext = async () => {
     setIsLoading(true)
     try {
-      const appContext = await ApiService.getAppContext()
+      const appContext = await ApiService.getAppContext();
       setAppContext(appContext)
 
       console.log("appContext", appContext)
