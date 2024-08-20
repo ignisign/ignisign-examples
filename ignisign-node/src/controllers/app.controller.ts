@@ -57,13 +57,10 @@ export const AppController = (router: Router) => {
         });
 
       } else if (appContext.appType === IGNISIGN_APPLICATION_TYPE.BARE_SIGNATURE){
-        // const { signerProfileId } = await UserService.getSignerProfileIds(appContext.appType);
 
         return jsonSuccess(res, { 
-          // signerProfileInfos : await UserService.getConstraintsAndSignerProfileIds(signerProfileId),
           appContext
         });
-
       } else if (appContext.appType === IGNISIGN_APPLICATION_TYPE.LOG_CAPSULE){
 
         return jsonSuccess(res, { 
