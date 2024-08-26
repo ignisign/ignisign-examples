@@ -41,7 +41,6 @@ export const ContractService = {
 }
 
 async function createNewContract(customerId: string, employeeId: string, contractFile: any): Promise<void> { 
-  
   const { ignisignAppId, ignisignAppEnv} = await IgnisignInitializerService.getAppContext();
   
   // This function is used to handle private files.
@@ -56,7 +55,6 @@ async function createNewContract(customerId: string, employeeId: string, contrac
 
   // This function is used to handle standard files.
   const __handleStandardFile = async (signatureRequestId, contractFile: any): Promise<string> => {
-        
     const uploadDto : IgnisignSdkFileContentUploadDto = { // create the DTO to upload the file to Ignisign
       fileStream  : await fs.createReadStream(contractFile.path),
       fileName    : contractFile.originalname,
@@ -70,12 +68,12 @@ async function createNewContract(customerId: string, employeeId: string, contrac
     const customer            = await UserService.getUser(customerId);
     const employee            = await UserService.getUser(employeeId);
     const signatureRequestId  = await IgnisignSdkManagerSignatureService.initSignatureRequest();
-
     //TODO
     const documentId  = await __handleStandardFile(signatureRequestId, contractFile);
     // signatureProfile.documentTypes.includes(IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE) 
     //     ? await __handlePrivateFile(signatureRequestId, contractFile) 
     //     : await __handleStandardFile(signatureRequestId, contractFile);
+
 
     const signers = [
       { userId: customerId, ignisignSignerId: customer.signerId },
@@ -101,7 +99,9 @@ async function createNewContract(customerId: string, employeeId: string, contrac
 
     await IgnisignSdkManagerSignatureService.updateSignatureRequest(signatureRequestId, dto);
     await IgnisignSdkManagerSignatureService.publishSignatureRequest(signatureRequestId);
-       
+
+    // console.log('createNewContract_6');
+
 
   } catch  (error){
     console.error(error);
