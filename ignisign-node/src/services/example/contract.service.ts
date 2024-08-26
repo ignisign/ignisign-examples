@@ -109,11 +109,11 @@ async function createNewContract(customerId: string, employeeId: string, contrac
   }
 }
 
-async function  getContracts(userId): Promise<Contract[]> {
+async function getContracts(userId): Promise<Contract[]> {
   const { ignisignAppId, ignisignAppEnv} = await IgnisignInitializerService.getAppContext();
 
   const contracts  : Contract[] = await new Promise(async (resolve, reject) => {
-     ContractModel.find({ ignisignAppId, ignisignAppEnv}).toArray(findCallback(resolve, reject));
+    ContractModel.find({ ignisignAppId, ignisignAppEnv}).toArray(findCallback(resolve, reject));
   });
 
   return contracts?.filter(c => c?.signers?.find(s => s.userId === userId.toString()))
@@ -123,7 +123,7 @@ async function getAllContractToSignContexts(): Promise<ContractContext[]> {
   const { ignisignAppId, ignisignAppEnv} = await IgnisignInitializerService.getAppContext();
 
   const contracts : Contract[] = await new Promise(async (resolve, reject) => {
-     ContractModel.find({ignisignAppId, ignisignAppEnv}).toArray(findCallback(resolve, reject));
+    ContractModel.find({ignisignAppId, ignisignAppEnv}).toArray(findCallback(resolve, reject));
   });
 
   const allUsers : MyUser[] = await UserService.getAllUsers();
@@ -161,12 +161,10 @@ async function getAllContractToSignContexts(): Promise<ContractContext[]> {
 }
 
 async function getContractContextByUser(contractId, userId): Promise<ContractContext> {
-
   const { ignisignAppId, ignisignAppEnv} = await IgnisignInitializerService.getAppContext();
 
-
   const contract : Contract = await new Promise(async (resolve, reject) => {
-     ContractModel.findOne({_id: contractId, ignisignAppId, ignisignAppEnv}, findOneCallback(resolve, reject, true))
+    ContractModel.findOne({_id: contractId, ignisignAppId, ignisignAppEnv}, findOneCallback(resolve, reject, true))
   });
 
   const signer  = contract.signers.find(s => s.userId === userId.toString());
@@ -183,7 +181,6 @@ async function getContractContextByUser(contractId, userId): Promise<ContractCon
 }
 
 async function handleLaunchSignatureRequestWebhook(contractId, signatureRequestId, signers): Promise<void> {
-
   const { ignisignAppId, ignisignAppEnv} = await IgnisignInitializerService.getAppContext();
 
   const formatedSigners = signers.map( ({ signerId, signerExternalId, token }) => ({
@@ -193,19 +190,19 @@ async function handleLaunchSignatureRequestWebhook(contractId, signatureRequestI
     status                  : 'INIT'
   }))
 
-  const contract : Contract = await new Promise(async (resolve, reject) => { 
+  const contract : Contract = await new Promise(async (resolve, reject) => {
     ContractModel.findOne(
       {_id: contractId, ignisignAppId, ignisignAppEnv}, 
       findOneCallback(resolve, reject, true));
   });
 
   const contractToUpdate = {
-    documentId  : contract.documentId,
+    ...contract,
     signers     : formatedSigners,
     signatureRequestId,
   };
 
-  return new Promise<void>(async (resolve, reject) => {
+  return await new Promise<void>(async (resolve, reject) => {
     ContractModel.update(
       {_id: contractId, ignisignAppId, ignisignAppEnv}, 
       contractToUpdate, 
