@@ -32,6 +32,8 @@ async function getSignerProfileIds(appType : IGNISIGN_APPLICATION_TYPE) : Promis
   const sdkInstance     = await IgnisignInitializerService.getSDkManagerSignatureService();
   const signerProfiles  = await sdkInstance.getSignerProfiles();
 
+  // console.log(`getSignerProfileIds ${appType} : `, signerProfiles);
+
   if(signerProfiles.length === 0)
     throw new Error("No Signer Profile found in the Ignisign App");
   
@@ -47,7 +49,7 @@ async function getSignerProfileIds(appType : IGNISIGN_APPLICATION_TYPE) : Promis
   } else if(appType === IGNISIGN_APPLICATION_TYPE.SIGNATURE){
 
     const maybeSPCustomers = signerProfiles.find(sp => sp.name === "Customers");
-    const maybeSPEmployees = signerProfiles.find(sp => sp.name === "Employees");
+    const maybeSPEmployees = signerProfiles.find(sp => sp.name === "Employee");
     
     const employeeSignerProfileId = maybeSPEmployees ? maybeSPEmployees._id : signerProfiles[0]._id;
     const customerSignerProfileId = maybeSPCustomers ? maybeSPCustomers._id : signerProfiles[0]._id;
@@ -71,9 +73,8 @@ async function getConstraintsAndSignerProfileIds(signerProfileId : string) : Pro
 async function getAllUsers(): Promise<MyUser[]> {
   const { ignisignAppId, ignisignAppEnv} = await IgnisignInitializerService.getAppContext();
 
-  return new Promise(async (resolve, reject) => {
-
-    await MyUserModel.find({
+  return await new Promise(async (resolve, reject) => {
+    MyUserModel.find({
       ignisignAppId,
       ignisignAppEnv,
     }).toArray(findCallback(resolve, reject));
@@ -83,22 +84,23 @@ async function getAllUsers(): Promise<MyUser[]> {
 async function getUsers(type: MY_USER_TYPES): Promise<MyUser[]> {
   const { ignisignAppId, ignisignAppEnv} = await IgnisignInitializerService.getAppContext();
 
-  return new Promise(async (resolve, reject) => {
-
-    await MyUserModel.find({ 
+  const users : MyUser[] = await new Promise(async (resolve, reject) => {
+    MyUserModel.find({ 
       type,
       ignisignAppId,
       ignisignAppEnv,
-     }).toArray(findCallback(resolve, reject));
+    }).toArray(findCallback(resolve, reject));
   });
+
+  return users;
 }
 
 async function getUser(userId): Promise<MyUser> {
   const { ignisignAppId, ignisignAppEnv} = await IgnisignInitializerService.getAppContext();
 
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     MyUserModel.findOne({
-      _id           : userId,
+      _id  : userId,
       ignisignAppId,
       ignisignAppEnv,
     }, findOneCallback(resolve, reject, true));
@@ -110,16 +112,17 @@ async function addUser(
   inputs: IgnisignSigner_CreationRequestDto
 ): Promise<MyUser> {
 
-  const { ignisignAppId, ignisignAppEnv, appType} = await IgnisignInitializerService.getAppContext();
+  const { ignisignAppId, ignisignAppEnv, appType } = await IgnisignInitializerService.getAppContext(true);
 
   const { employeeSignerProfileId, customerSignerProfileId } = await getSignerProfileIds(appType);
 
-  const signerProfileId = (type === MY_USER_TYPES.CUSTOMER) 
-    ? customerSignerProfileId 
+  console.log("addUser", { employeeSignerProfileId, customerSignerProfileId });
+
+  const signerProfileId = (type === MY_USER_TYPES.CUSTOMER)
+    ? customerSignerProfileId
     : employeeSignerProfileId;
 
   try {
-   
     const user : MyUser =  await new Promise<MyUser>((resolve, reject) => {
       MyUserModel.insert( {
         ...inputs, 
@@ -143,9 +146,9 @@ async function addUser(
 
     const { signerId, authSecret } = signer;
 
-    const toUpdate = { ...inputs, type, signerProfileId , signerId, ignisignAuthSecret: authSecret};
+    const toUpdate = { ...user, signerId, ignisignAuthSecret: authSecret};
 
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       MyUserModel.update(
         {_id: userId,  ignisignAppId, ignisignAppEnv}, 
         toUpdate, 
