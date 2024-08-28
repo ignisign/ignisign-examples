@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@signpdf/placeholder-pdf-lib": "^3.2.4",
+    "@signpdf/signpdf": "^3.2.4",
+    "@signpdf/utils": "^3.2.4",
+    "pdf-lib": "^1.17.1"
+  }
+}
