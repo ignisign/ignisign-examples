@@ -4,13 +4,14 @@ import { Button } from '../components-ui/button';
 import { ApiService } from "../services/api.service";
 import { BareSignature } from "../models/bare-signature.front-model";
 import { TextField } from "@material-ui/core";
+import * as uuid from "uuid";
 
 interface BareSignatureCreationProps {
   close: ( bareSignature ?: BareSignature) => void;
 }
 
 export const BareSignatureCreation = ({ close } : BareSignatureCreationProps) => {
-  const [title, setTitle]                     = useState<string>('A test bare signature');
+  const [title, setTitle]                     = useState<string>('A test bare signature ' + uuid.v4());
   const [selectedFile, setSelectedFile]       = useState<File>(null);
   const [isLoading, setIsLoading]             = useState<boolean>(false);
   
