@@ -29,13 +29,10 @@ export const BareSignatureService = {
 
 
 async function getAuthorizationUrl(bareSignatureId: string) : Promise<string> {
-  // _logIfDebug('getAuthorizationUrl_1');
+  
   const bareSignature = await _getBareSignature(bareSignatureId);
-  // _logIfDebug('getAuthorizationUrl_2 : ', { bareSignature });
-
-  const codeChallenge = IgnisignSdkUtilsService.bareSiganture_GenerateCodeChallenge(bareSignature.codeVerifier) // generateCodeChallenge(bareSignature.codeVerifier);
-
-  // _logIfDebug('getAuthorizationUrl_3 : ', { bareSignature });
+  
+  const codeChallenge = IgnisignSdkUtilsService.bareSiganture_GenerateCodeChallenge(bareSignature.codeVerifier);
 
   const { authorizationUrl } = await IgnisignSdkManagerBareSignatureService.getAuthorizationUrl({
     redirectUri   : redirect_uri,
