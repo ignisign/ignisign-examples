@@ -1,4 +1,4 @@
-import { IgnisignDocument_PrivateFileDto, IgnisignLogCapsule_ResponseDto, IgnisignSignatureProfile, IgnisignWebhook } from '@ignisign/public';
+import { IgnisignDocument_PrivateFileDto, IgnisignLogCapsule_ResponseDto, IgnisignSignatureProfile, IgnisignSignatureRequest_WithDocName, IgnisignWebhook } from '@ignisign/public';
 
 import axios, { AxiosRequestConfig } from "axios";
 import { Contract, ContractContext } from '../models/contract.front-model';
@@ -41,18 +41,32 @@ export const ApiService = {
 
   checkSealSetup,
   createSealSignatureRequest,
+  doM2MSeal,
 
   createLogCapsule,
+  getSeals,
+}
+
+async function getSeals(): Promise<IgnisignSignatureRequest_WithDocName[]> {
+  return http.get(`/v1/seals`)
 }
 
 /** SEALS */
-async function createSealSignatureRequest(selectedFile, asPrivateFile : boolean): Promise<IgnisignSignatureProfile> {
+async function createSealSignatureRequest(signerId, selectedFile): Promise<IgnisignSignatureProfile> {
+  const formData = new FormData();
+  formData.append(`file`, selectedFile.file);
+  
+  return http.post(`/v1/seal-creation`, formData, { headers: {'Content-Type': 'multipart/form-data'} })
+}
+
+async function doM2MSeal(selectedFile, asPrivateFile : boolean): Promise<IgnisignSignatureProfile> {
   const formData = new FormData();
   formData.append(`file`, selectedFile.file);
   formData.append('asPrivateFile', asPrivateFile.toString());
 
   return http.post(`/v1/seal-m2m-sign`, formData, { headers: {'Content-Type': 'multipart/form-data'} })
 }
+
 
 async function checkSealSetup(): Promise<{isEnabled: boolean}> {
   return http.get(`/v1/seal/get-app-m2m-status`)

@@ -15,12 +15,13 @@ import { EmployeeContextProvider } from './contexts/employee.context';
 import Contracts from './pages/contracts.page';
 import { ContractContextProvider } from './contexts/contract.context';
 import SignAContract from './pages/sign-a-contract.page';
-import { CreateSeal } from './pages/create-seal.page';
 import { SealContextProvider } from './contexts/seal.context';
 import { BareSignaturePage } from './pages/bare-signature';
 import { BareSignatureCallback } from './pages/bare-signature-callback';
 import { CreateALogCapsulePage } from './pages/create-a-log-capsule';
 import { SealApprovedPage } from './pages/create-a-seal-approved';
+import { CreateM2mSeal } from './pages/create-m2m-seal.page';
+import { Seals } from './pages/seals.page';
 
 const NotFoundPage = () => {
   return (
@@ -47,8 +48,11 @@ function AppRouter() {
         <Route exact path={FrontUrlProvider.contractsPage()}>
           <Contracts/>
         </Route>
-        <Route exact path={FrontUrlProvider.createSeal()}>
-          <CreateSeal/>
+        <Route exact path={FrontUrlProvider.createM2MSeal()}>
+          <CreateM2mSeal/>
+        </Route>
+        <Route exact path={FrontUrlProvider.sealsPage()}>
+          <Seals/>
         </Route>
         <Route exact path={FrontUrlProvider.createSealApproved()}>
           <SealApprovedPage/>

@@ -64,7 +64,7 @@ async function initSdks(){
       case IGNISIGN_APPLICATION_TYPE.SEAL:
   
         if(!process.env.IGNISIGN_M2M_ID || !process.env.IGNISIGN_M2M_PRIVATE_KEY)
-          throw new Error(`IGNISIGN_SEAL_M2M_ID and IGNISIGN_SEAL_M2M_PRIVATE_KEY are mandatory to init IgnisignSdkManagerSealManager`);
+          throw new Error(`IGNISIGN_M2M_ID and IGNISIGN_M2M_PRIVATE_KEY are mandatory to init IgnisignSdkManagerSealManager`);
   
         const privateKey = IgnisignSdkUtilsService.parsePrivateKeyFromEnv(process.env.IGNISIGN_M2M_PRIVATE_KEY)
         await IgnisignSdkManagerSealService.init(appContext.ignisignAppId, appContext.ignisignAppEnv, IGNISIGN_APP_SECRET, process.env.IGNISIGN_M2M_ID, privateKey)

@@ -20,7 +20,7 @@ const EmbeddedSignature = ({signatureRequestId, signerId, signatureSessionToken,
     return privateFileDto;
   }
 
-  const handleSignatureSessionError = async (errorCode: IGNISIGN_ERROR_CODES, errorContext: any, signerId: string, signatureRequestId: string) : Promise<void> => {
+  const handleSignatureSessionError = async (errorCode: any, errorContext: any, signerId: string, signatureRequestId: string) : Promise<void> => {
     console.debug('handleSignatureSessionError', errorCode, errorContext, signerId, signatureRequestId);
     console.error("Ignisign Signature Session Error: " + errorCode, {errorContext, signerId, signatureRequestId});
   }
