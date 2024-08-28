@@ -53,8 +53,10 @@ const MenuContent = () => {
     { isAppSignature      && <MenuItem link={FrontUrlProvider.createContract()} text='Create a contract'/> }
     { isAppSignature      && <MenuItem link={FrontUrlProvider.contractsPage()} text='List contracts'/>}
     
-    { isAppSeal           && <MenuItem link={FrontUrlProvider.createSeal()} text='Create a M2M seal'/>}
+    { isAppSeal           && <MenuItem link={FrontUrlProvider.sealsPage()} text='All Seals'/>}
+    { isAppSeal           && <MenuItem link={FrontUrlProvider.createM2MSeal()} text='Create a M2M seal'/>}
     { isAppSeal           && <MenuItem link={FrontUrlProvider.createSealApproved()} text='Create a Approved Seal'/>}
+
     { isAppBareSignature  && <MenuItem link={FrontUrlProvider.bareSignaturePage()} text='Create a bare signature'/>}
     { isAppLogCapsule     && <MenuItem link={FrontUrlProvider.createLogCapsule()} text='Create a log capsule'/>}
   </div>

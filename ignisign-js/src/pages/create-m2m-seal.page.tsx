@@ -5,7 +5,7 @@ import { Dropzone } from "../components-ui/dropzone"
 import { Button } from "../components-ui/button"
 import { ApiService } from "../services/api.service"
 
-export const CreateSeal = () => {
+export const CreateM2mSeal = () => {
 
   const {checkSetup, isEnabled, seals} = useSeal()
 
@@ -27,8 +27,19 @@ export const CreateSeal = () => {
 
   const doSeal = async () => {
     // await ApiService.createSeal(selectedFiles[0])
-    await ApiService.createSealSignatureRequest(selectedFiles[0], asPrivateFile)
+    await ApiService.doM2MSeal(selectedFiles[0], asPrivateFile)
   }
+
+  const useTestFile = async () => {
+    const filePath = '/dummy.pdf'
+    
+    const response = await fetch(filePath);
+    const blob = await response.blob();
+    
+    const file = new File([blob], 'dummy.pdf', {type: 'application/pdf'});
+    handleFileChange([file]);
+  }
+
 
   return (
     <div>
@@ -55,43 +66,29 @@ export const CreateSeal = () => {
 
       {
         isEnabled && <div>
-                <div className='mt-4'>
-        <Card className='flex-col'>
-          <div className='font-medium'>Upload Contract</div>
-          <div className='mt-2'>
-            <Dropzone
-              onDrop={async files => handleFileChange(files)}
-              files={selectedFiles}
-              maxFiles={1}
-              multiple={false}
-            />
-          </div>
+          <div className='mt-4'>
+            <Card className='flex-col'>
+              <div className='font-medium'>Upload file to seal</div>
+              <div className='mt-2 flex gap-2'>
+                <Dropzone
+                  onDrop={async files => handleFileChange(files)}
+                  files={selectedFiles}
+                  maxFiles={1}
+                  multiple={false}
+                />
 
-          <div className="flex justify-end mt-4">
-            <Button onClick={doSeal}>
-              Create seal
-            </Button>
-          </div>
-        </Card>
-      </div>
+                <Button onClick={useTestFile}>
+                  Use a test file
+                </Button>
+              </div>
 
-      <div>
-            My seals
+              <div className="flex justify-end mt-4">
+                <Button onClick={doSeal}>
+                  Create seal
+                </Button>
+              </div>
+            </Card>
           </div>
-          
-          {
-            seals.length === 0 ? <div>
-              You don't have any seals yet
-            </div> : <>
-              {seals.map(e => (
-                <div key={e.id}>
-                  {e.id}
-                </div>
-              ))}
-
-              
-            </>
-          }
         </div>
       }
     </div>
