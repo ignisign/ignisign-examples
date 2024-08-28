@@ -70,12 +70,6 @@ export const AppController = (router: Router) => {
       } else {
         throw new Error(`appType ${appContext.appType} not supported`);
       }
-     
-      
-
-
-
-      
 
     } catch(e) { next(e) }
   })

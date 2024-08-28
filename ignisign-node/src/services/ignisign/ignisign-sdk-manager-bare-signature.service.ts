@@ -1,4 +1,4 @@
-import { Ignisign_BareSignature_ProofAccessToken, IGNISIGN_APPLICATION_ENV, Ignisign_BareSignature_GetAuthrozationUrlRequest, Ignisign_BareSignature_GetAuthrozationUrlResponse, IgnisignSignerProfile, IGNISIGN_SIGNER_CREATION_INPUT_REF, IgnisignApplication_BareSignatureEnvSettings } from "@ignisign/public";
+import { Ignisign_BareSignature_ProofAccessToken, IGNISIGN_APPLICATION_ENV, Ignisign_BareSignature_GetAuthrozationUrlRequest, Ignisign_BareSignature_GetAuthrozationUrlResponse, IgnisignSignerProfile, IGNISIGN_SIGNER_CREATION_INPUT_REF, IgnisignApplication_BareSignatureEnvSettings, Ignisign_BareSignature_Proof } from "@ignisign/public";
 import { IgnisignSdk, Ignisign_BareSignature_SdkProofAccessTokenRequest } from "@ignisign/sdk";
 
 const DEBUG_LOG_ACTIVATED = true;
@@ -69,7 +69,7 @@ async function getBareSignatureProofToken(dto: Ignisign_BareSignature_SdkProofAc
   }
 }
 
-async function getBareSignatureProofs(headerToken : string) : Promise<Ignisign_BareSignature_ProofAccessToken> {
+async function getBareSignatureProofs(headerToken : string) : Promise<Ignisign_BareSignature_Proof> {
   try {
     return await ignisignSdkInstance.getBareSignatureProofs(headerToken);
   } catch (error) {

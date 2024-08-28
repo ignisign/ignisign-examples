@@ -175,7 +175,7 @@ async function _registerWebhookCallback(): Promise<void> {
       return;
     }
 
-    const { signatureRequestExternalId, signatureRequestId, signersBySide, signersEmbedded } = content as IgnisignWebhookDto_SignatureRequest;
+    const { signatureRequestExternalId, signatureRequestId, signers } = content as IgnisignWebhookDto_SignatureRequest;
 
     _logIfDebug("webhookHandler_LaunchSignatureRequest", {signatureRequestExternalId, signatureRequestId})
 

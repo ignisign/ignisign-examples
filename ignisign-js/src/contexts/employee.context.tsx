@@ -34,6 +34,7 @@ export const EmployeeContextProvider = ({ children }) => {
     setIsLoading(true)
     try {
       const employees = await ApiService.getEmployees()
+
       if(employees && employees.length > 0){
         setSelectedEmployeeId(employees[0]._id)
       }
