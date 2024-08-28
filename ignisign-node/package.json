@@ -1,6 +1,6 @@
 {
   "name": "@ignisign/example-backend",
-  "version": "4.0.0-beta.14",
+  "version": "4.0.0-beta.15",
   "license": "MIT",
   "node": ">=18",
   "scripts": {
@@ -12,8 +12,8 @@
     "clean-win": "rd /s /q dist && del /f tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@ignisign/public": "4.0.0-beta.14",
-    "@ignisign/sdk": "4.0.0-beta.14",
+    "@ignisign/public": "4.0.0-beta.15",
+    "@ignisign/sdk": "4.0.0-beta.15",
     "axios": "^1.6.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
