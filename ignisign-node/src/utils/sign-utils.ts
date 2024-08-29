@@ -6,6 +6,8 @@ import { Signer} from '@signpdf/utils';
 import * as uuid from "uuid";
 import { saveBufferAsFile } from './files.util';
 
+import { SUBFILTER_ETSI_CADES_DETACHED } from '@signpdf/utils';
+
 
 
 const  PDF_SEAL_CONTACT_INFO = "example contact info";
@@ -27,12 +29,19 @@ async function prepareToSign(
 
   const pdf    = await PDFDocument.load(file);
 
+  const currentDate = new Date();
+
+  // Ajouter 15 minutes
+  currentDate.setMinutes(currentDate.getMinutes() + 15);
+
   pdflibAddPlaceholder({
     pdfDoc      : pdf,
     reason      : PDF_SEAL_REASON,
     contactInfo : PDF_SEAL_CONTACT_INFO,
     name        : PDF_SEAL_NAME,
     location    : PDF_SEAL_LOCATION,
+    // signingTime : currentDate
+   // subFilter: SUBFILTER_ETSI_CADES_DETACHED,
   });
 
   const fileWithPlaceholder = await pdf.save();
@@ -44,14 +53,22 @@ async function prepareToSign(
 
 async function signFromBase64(
   file: string,
-  pkcs7File: string
-): Promise<string> {
+  pkcs7File: string,
+  signingTime: Date
+): Promise<Buffer> {
   const fileBuffer    = Buffer.from(file, 'base64');
   const pkcs7Buffer   = Buffer.from(pkcs7File, 'base64');
-  const sealed        = await sealPDF(fileBuffer, pkcs7Buffer);
-  const name          = uuid.v4() + '.pdf';
-  return saveBufferAsFile(sealed, 'uploads', name);
 
+  // const pkcs7BufferLength = pkcs7Buffer.length;
+  // console.log('pkcs7BufferLength : ', pkcs7BufferLength);
+
+  // const arrayBuffer = pkcs7Buffer.buffer.slice(pkcs7Buffer.byteOffset, pkcs7Buffer.byteOffset + pkcs7BufferLength);
+  // const arrayBufferLength = arrayBuffer.byteLength;
+  // console.log('arrayBufferLength : ', arrayBufferLength);
+
+  const sealed        = await sealPDF(fileBuffer, pkcs7Buffer, signingTime);
+
+  return sealed;
 
 }
 
@@ -70,26 +87,28 @@ export class PKCS7Signer extends Signer {
 
 async function sealPDF(
   file: Buffer,
-  pkcs7File: Buffer
+  pkcs7File: Buffer,
+  signingTime: Date
 
 ): Promise<Buffer> {
   
   const signer = new PKCS7Signer(pkcs7File);
-  // const pdf    = await PDFDocument.load(file);
+  const pdf    = await PDFDocument.load(file);
 
-  // pdflibAddPlaceholder({
-  //   pdfDoc      : pdf,
-  //   reason      : PDF_SEAL_REASON,
-  //   contactInfo : PDF_SEAL_CONTACT_INFO,
-  //   name        : PDF_SEAL_NAME,
-  //   location    : PDF_SEAL_LOCATION,
-  // });
 
-  // const fileWithPlaceholder = await pdf.save();
+  // const signed = await signpdf.sign(file, signer, signingTime);
+
+  pdflibAddPlaceholder({
+    pdfDoc      : pdf,
+    reason      : PDF_SEAL_REASON,
+    contactInfo : PDF_SEAL_CONTACT_INFO,
+    name        : PDF_SEAL_NAME,
+    location    : PDF_SEAL_LOCATION,
+    signingTime : new Date(signingTime)
+  });
+
+  const fileWithPlaceholder = await pdf.save();
+  const signed = await signpdf.sign(fileWithPlaceholder, signer, signingTime);
   
-  const signed = await signpdf.sign(file, signer, new Date());
-
-  
-
   return Buffer.from(signed);
 }

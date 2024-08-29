@@ -11,7 +11,7 @@ interface BareSignatureCreationProps {
 }
 
 export const BareSignatureCreation = ({ close } : BareSignatureCreationProps) => {
-  const [title, setTitle]                     = useState<string>('A test bare signature ' + uuid.v4());
+  const [title, setTitle]                     = useState<string>('BareSignature-' + uuid.v4());
   const [selectedFile, setSelectedFile]       = useState<File>(null);
   const [isLoading, setIsLoading]             = useState<boolean>(false);
   

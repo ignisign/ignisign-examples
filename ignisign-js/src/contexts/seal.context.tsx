@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { ApiService } from "../services/api.service";
 import { IgnisignSignatureRequest_WithDocName } from "@ignisign/public";
+import { useGlobal } from "./global.context";
 
 export interface ISealContext {
   isEnabled: boolean;
@@ -19,6 +20,7 @@ export const SealContextProvider = ({ children }) => {
   const [isSealLoading, setIsSealLoading] = useState(false);
   const [isSealInit, setIsSealInit]       = useState(false);
   const [seals, setSeals]                 = useState([]);
+  const { isAppSeal, appContext}          = useGlobal();
 
   const checkSetup = async () => {
     const {isEnabled} = await ApiService.checkSealSetup();
@@ -39,9 +41,11 @@ export const SealContextProvider = ({ children }) => {
   }
 
   useEffect(() => {
+    if(!appContext || !isAppSeal) 
+      return;
     checkSetup();
     getSeals();
-  }, []);
+  }, [isAppSeal, appContext ]);
 
   const context = {
     checkSetup,

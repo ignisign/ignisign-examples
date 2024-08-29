@@ -2,7 +2,7 @@ import axios from 'axios';
 import { BARE_SIGNATURE_STATUS, BareSignature, BareSignatureModel } from '../../models/bare-signature.db.model';
 import { nanoid } from 'nanoid';
 import * as fs from 'fs';
-import { getFileHash, streamToBuffer } from '../../utils/files.util';
+import { getFileHash, saveBufferAsFile, streamToBuffer } from '../../utils/files.util';
 import { MulterFile } from '../../controllers/bare-signature.controller';
 import { IgnisignInitializerService } from '../ignisign/ignisign-sdk-initializer.service';
 import { IgnisignSdkUtilsService , Ignisign_BareSignature_SdkProofAccessTokenRequest } from '@ignisign/sdk';
@@ -12,14 +12,15 @@ import { Ignisign_BareSignature_ProofAccessToken } from '@ignisign/public';
 import _ = require('lodash');
 import { SignPdfService } from '../../utils/sign-utils';
 import { PKCS7_Utils } from '../../utils/pkcs7.utils';
-const crypto = require('crypto');
+import { sign } from 'crypto';
+import * as uuid from "uuid";
+
 
 const DEBUG_LOG_ACTIVATED = true;
 const _logIfDebug = (...message) => { if(DEBUG_LOG_ACTIVATED) console.log(...message) }
 
-const EXAMPLE_FRONTEND_URL = process.env.MY_FRONTEND_URL || 'http://localhost:3456';
-
-const redirect_uri = EXAMPLE_FRONTEND_URL+ '/bare-signature-callback';
+const EXAMPLE_FRONTEND_URL  = process.env.MY_FRONTEND_URL || 'http://localhost:3456';
+const redirect_uri          = EXAMPLE_FRONTEND_URL+ '/bare-signature-callback';
                   
 export const BareSignatureService = {
   createBareSignature,
@@ -28,7 +29,6 @@ export const BareSignatureService = {
   saveAccessToken,
   getProofs,
 }
-
 
 async function getAuthorizationUrl(bareSignatureId: string) : Promise<string> {
   
@@ -75,14 +75,29 @@ async function getProofs(bareSignatureId: string, signPdfLocally = true) {
   const proofToken    = await getProofToken(bareSignature); 
   const proof         = await IgnisignSdkManagerBareSignatureService.getBareSignatureProofs(proofToken)
 
-  // _logIfDebug('getProofs : ', proof);
+  _logIfDebug('getProofs : ', proof);
 
   // const contentPKCS7 = await PKCS7_Utils.getPKCS7contentFromBase64(proof?.proofs[0]?.proofB64);
 
   // console.log('contentPKCS7 : ', contentPKCS7);
 
+
+  const signatureProof = proof?.proofs[0];
+  if(!signatureProof){
+    throw new Error('No proof found');
+  }
+
+  console.log('signatureProof : ', signatureProof);
+
+
+
   if(signPdfLocally){
-    const path = await SignPdfService.signFromBase64(bareSignature.document.fileB64, proof?.proofs[0]?.proofB64)
+    const signed = await SignPdfService.signFromBase64(bareSignature.document.fileB64, signatureProof.proofB64, signatureProof.signingTime);
+
+    const uuidValue = uuid.v4();
+
+    const name = bareSignature.title + "-signed-" + uuidValue + '.pdf';
+    const path = await saveBufferAsFile(signed, 'uploads', name);
     console.log('path : ', path);
   }
 
@@ -94,19 +109,35 @@ async function getProofs(bareSignatureId: string, signPdfLocally = true) {
 /********************* REPOSITORY PART  ***************************/
 
 
+  // console.log('fileHash from buffer Prepared: ', fileHash, fileHash.length);
+
+  // const fileHashFromStream = await getFileHash(fs.createReadStream(file.path));
+  // console.log('fileHash (original) FromStream : ', fileHashFromStream, fileHashFromStream.length);
+
+  // const fileHashBufferOriginal = await getFileHash(fileBuffer);
+  // console.log('fileHash (original) From Buffer : ', fileHashBufferOriginal, fileHashBufferOriginal.length);
+
 
 async function createBareSignature(title: string, file: MulterFile) : Promise<BareSignature> {
   const { ignisignAppId, ignisignAppEnv} = await IgnisignInitializerService.getAppContext();
   const { path, mimetype, originalname } = file;
 
-  const input = fs.createReadStream(file.path);
-  const fileBuffer = await streamToBuffer(input);
-  const fileBufferToSign  =await  SignPdfService.prepareToSign(fileBuffer);
-  
-  const fileHash      = await getFileHash(fileBufferToSign);
-  const fileB64       = fileBufferToSign.toString('base64');
-  const codeVerifier  = IgnisignSdkUtilsService.bareSignature_GenerateCodeVerifier();
+  const codeVerifier      = IgnisignSdkUtilsService.bareSignature_GenerateCodeVerifier();
 
+  const input             = fs.createReadStream(file.path);
+  const fileBuffer        = await streamToBuffer(input);
+  const fileBufferToSign  = await SignPdfService.prepareToSign(fileBuffer);
+
+  const fileBufferSelected = fileBuffer; // fileBufferToSign;
+  
+  const fileHash      = await getFileHash(fileBufferSelected);  
+  const fileB64       = fileBufferSelected.toString('base64');
+  
+  const uuidValue = uuid.v4();
+  const namePrepared = title + "-prepared-" + uuidValue + '.pdf';
+  const nameOriginal = title + "-original-" + uuidValue + '.pdf';
+  await saveBufferAsFile(fileBuffer,        'uploads', nameOriginal);
+  await saveBufferAsFile(fileBufferToSign,  'uploads', namePrepared);
 
   const bareSignatureToCreate : BareSignature = {
     title,
@@ -127,11 +158,8 @@ async function createBareSignature(title: string, file: MulterFile) : Promise<Ba
     BareSignatureModel.insert(bareSignatureToCreate,  insertCallback(resolve, reject));
   });
 
-
   return savedBareSignature;
 }
-
-
 
 async function _updateBareSignature(bareSignatureId: string, update: Partial<BareSignature>) : Promise<BareSignature> {
 
