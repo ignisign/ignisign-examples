@@ -2,6 +2,7 @@
 import {
   IGNISIGN_APPLICATION_ENV,
   IGNISIGN_APPLICATION_TYPE,
+  IGNISIGN_SIGNATURE_PROOF_TYPE,
   IGNISIGN_SIGNER_CREATION_INPUT_REF,
   IGNISIGN_WEBHOOK_ACTION_SIGNATURE,
   IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF,
@@ -311,7 +312,7 @@ async function uploadDocument(signatureRequestId, uploadDto : IgnisignSdkFileCon
 // Retrieve the signature proof of a signature
 async function downloadSignatureProof(documentId): Promise<Readable> {
   _logIfDebug("downloadSignatureProof", documentId)
-  return await ignisignSdkInstance.downloadSignatureProofDocument(documentId);
+  return await ignisignSdkInstance.downloadSignatureByType(documentId, IGNISIGN_SIGNATURE_PROOF_TYPE.PDF_WITH_SIGNATURES);
 }
 
 
