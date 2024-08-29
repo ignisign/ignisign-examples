@@ -109,13 +109,7 @@ async function getProofs(bareSignatureId: string, signPdfLocally = true) {
 /********************* REPOSITORY PART  ***************************/
 
 
-  // console.log('fileHash from buffer Prepared: ', fileHash, fileHash.length);
 
-  // const fileHashFromStream = await getFileHash(fs.createReadStream(file.path));
-  // console.log('fileHash (original) FromStream : ', fileHashFromStream, fileHashFromStream.length);
-
-  // const fileHashBufferOriginal = await getFileHash(fileBuffer);
-  // console.log('fileHash (original) From Buffer : ', fileHashBufferOriginal, fileHashBufferOriginal.length);
 
 
 async function createBareSignature(title: string, file: MulterFile) : Promise<BareSignature> {
@@ -126,18 +120,25 @@ async function createBareSignature(title: string, file: MulterFile) : Promise<Ba
 
   const input             = fs.createReadStream(file.path);
   const fileBuffer        = await streamToBuffer(input);
-  const fileBufferToSign  = await SignPdfService.prepareToSign(fileBuffer);
-
-  const fileBufferSelected = fileBuffer; // fileBufferToSign;
+  const { signablePartBuffer,  fileWithPlaceholder }  = await SignPdfService.getSignablePartOfThePDF(fileBuffer);
   
-  const fileHash      = await getFileHash(fileBufferSelected);  
-  const fileB64       = fileBufferSelected.toString('base64');
+  const fileHash      = await getFileHash(signablePartBuffer);  
+  
+  const fileB64       = fileWithPlaceholder.toString('base64'); // pdfWithoutPlaceholder.toString('base64'); // fileBufferSelected.toString('base64');
+
+  console.log('fileHash from buffer Prepared: ', fileHash, fileHash.length);
+
+  const fileHashFromStream = await getFileHash(fs.createReadStream(file.path));
+  console.log('fileHash (original) FromStream : ', fileHashFromStream, fileHashFromStream.length);
+
+  const fileHashBufferOriginal = await getFileHash(fileBuffer);
+  console.log('fileHash (original) From Buffer : ', fileHashBufferOriginal, fileHashBufferOriginal.length);
   
   const uuidValue = uuid.v4();
   const namePrepared = title + "-prepared-" + uuidValue + '.pdf';
   const nameOriginal = title + "-original-" + uuidValue + '.pdf';
-  await saveBufferAsFile(fileBuffer,        'uploads', nameOriginal);
-  await saveBufferAsFile(fileBufferToSign,  'uploads', namePrepared);
+  await saveBufferAsFile(fileBuffer,             'uploads', nameOriginal);
+  await saveBufferAsFile(fileWithPlaceholder,  'uploads', namePrepared);
 
   const bareSignatureToCreate : BareSignature = {
     title,
