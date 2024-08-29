@@ -1458,17 +1458,17 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@ignisign/js@4.0.0-beta.12":
-  version "4.0.0-beta.12"
-  resolved "https://registry.yarnpkg.com/@ignisign/js/-/js-4.0.0-beta.12.tgz#e3b7adc0e21102df19726f5e94a2a3e90b0dda88"
-  integrity sha512-zvArCHXCILb7hxPVNnb8jnoD1K4N04V23/7P4a7iRJgnBLxergcxWnggjDYiTjUAzqx+yvLI+PRboapCiTK/XA==
+"@ignisign/js@4.0.0-beta.16":
+  version "4.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@ignisign/js/-/js-4.0.0-beta.16.tgz#ac3fe114e69ff410f51baf3b4950f3611d09ab4d"
+  integrity sha512-yEFsYvp5/2jY0RoLkuTCqMv30S3THVIxPTLrMpsL5d2mopIj8BRKx5CLRWBRTaDYFT1g9ftvOGG5YjDWYhowxQ==
   dependencies:
-    "@ignisign/public" "4.0.0-beta.12"
+    "@ignisign/public" "4.0.0-beta.16"
 
-"@ignisign/public@4.0.0-beta.12":
-  version "4.0.0-beta.12"
-  resolved "https://registry.yarnpkg.com/@ignisign/public/-/public-4.0.0-beta.12.tgz#73cabc4d334beb8c9b971714b9484d9f20717400"
-  integrity sha512-d0vDEJ8LnGmJ2Gd3ff4CUrudcQH5CKpW5/QUKcMc79LCE/RdEJ0nnwoNnMMH+rwFloxX1GlL1UtAsuyXbOnS0Q==
+"@ignisign/public@4.0.0-beta.16":
+  version "4.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@ignisign/public/-/public-4.0.0-beta.16.tgz#1b36b1f85bdb61f429c485a2e984776344976a3e"
+  integrity sha512-AyPVSzgbgwu7mJ6GAhzpH23VsvRrKzXUbvJjgnz027CCPsovQXz1+yXeqK2Qb6dP5kHb8vdyQ7AuRNa7MWZzgA==
   dependencies:
     class-transformer "^0.5.1"
     class-validator "^0.14.0"

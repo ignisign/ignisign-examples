@@ -37,9 +37,20 @@ export const SealController = (router: Router) => {
 
         const { asPrivateFile } = req.body;
         const file = req.file;
+        console.log("file", file, asPrivateFile)
         
-        const result = await SealService.createM2MSeal(file, Boolean(asPrivateFile));
+      await SealService.createM2MSeal(file, Boolean(asPrivateFile));
         
+        return jsonSuccess(res, true)
+      } catch(e) { next(e) }
+    })
+
+    router.post('/v1/seal-creation/:signerId', upload.single('file'),
+    async (req: Request & { file: MulterFile }, res: Response, next: NextFunction) => { 
+      try {
+        const file = req.file;
+        const signerId = req.params
+        await SealService.createSealSignatureRequest(signerId, file);
         return jsonSuccess(res, true)
       } catch(e) { next(e) }
     })
@@ -47,6 +58,13 @@ export const SealController = (router: Router) => {
   router.get('/v1/seal/get-app-m2m-status', async (req: Request, res: Response, next: NextFunction) => {
     try {
       return jsonSuccess(res, {isEnabled : IgnisignSdkManagerSealService.isEnabled() })
+    } catch(e) { next(e) }
+  })
+
+  router.get('/v1/seals', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const seals = await SealService.getSeals();
+      return jsonSuccess(res, seals)
     } catch(e) { next(e) }
   })
   

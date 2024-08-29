@@ -1,4 +1,4 @@
-import { IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_SIGNER_CREATION_INPUT_REF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IgnisignSignerProfile, IgnisignWebhook, IgnisignWebhookDto_Signature, IgnisignWebhookDto_SignatureProof_Success, IgnisignWebhookDto_SignatureRequest, IgnisignWebhook_ActionDto, IgnisignWebhook_CallbackParams } from "@ignisign/public";
+import { IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_SIGNATURE_METHOD_REF, IGNISIGN_SIGNATURE_REQUEST_TYPE, IGNISIGN_SIGNER_CREATION_INPUT_REF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IgniSign_SignM2MDocumentContentRequestDto, IgniSign_SignM2MDocumentHashRequestDto, IgniSign_SignM2MDocumentXMLRequestDto, IgnisignSignatureRequest_WithDocName, IgnisignSignerProfile, IgnisignWebhook, IgnisignWebhookDto_Signature, IgnisignWebhookDto_SignatureProof_Success, IgnisignWebhookDto_SignatureRequest, IgnisignWebhook_ActionDto, IgnisignWebhook_CallbackParams } from "@ignisign/public";
 import { IgnisignSdk, IgnisignSdkUtilsService } from "@ignisign/sdk";
 import { IgnisignSdkManagerCommonsService } from "./ignisign-sdk-manager-commons.service";
 const crypto = require('crypto');
@@ -21,14 +21,16 @@ const _logIfDebug = (...message) => {
 export const IgnisignSdkManagerSealService = {
   init,
   isEnabled,
-  createM2mSignatureRequest,
   checkWebhookEndpoint,
   getWebhookEndpoints,
   consumeWebhook,
   getSignerProfiles,
   getSignerProfile,
   getSignerInputsConstraintsFromSignerProfileId,
-  
+
+  createM2mSignatureRequest,
+  createSealSignatureRequest,
+  getSeals,
 }
 
 
@@ -73,26 +75,72 @@ async function init(appId: string, appEnv: IGNISIGN_APPLICATION_ENV, appSecret: 
 }
 
 async function createM2mSignatureRequest(fileBuffer : Buffer, asPrivateFile : boolean, mimeType : string ): Promise<void> {
-  
-  const documentType  = asPrivateFile ? IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE : IGNISIGN_DOCUMENT_TYPE.FILE;
   const documentHash  = crypto.createHash('sha256').update(fileBuffer).digest('hex');
+
   const documentBase64 = fileBuffer.toString('base64');
 
   const { signature :documentHashSignedByM2MPrivateKey } = IgnisignSdkUtilsService.sealM2M_doSignPayload(m2mPrivateKey, documentHash)
 
+  let document = null;
+  asPrivateFile = false;
+  if(asPrivateFile ) {
+    const doc: IgniSign_SignM2MDocumentHashRequestDto = {
+      documentHash,
+      documentType: IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE,
+    }
+    document = doc;
+  }
+  else{
+    const doc: IgniSign_SignM2MDocumentContentRequestDto = {
+      contentB64: documentBase64,
+      mimeType,
+      // fileName,
+      documentHash,
+      documentType: IGNISIGN_DOCUMENT_TYPE.FILE,
+    }
+    document = doc;
+  }
+
   const {signatureRequestId, documentId } = await ignisignSdkInstance.signM2M({
     m2mId,
-    document : {
-      documentType,
-      contentB64 : documentBase64,
-      documentHash,
-      mimeType,
-    },
+    document,
     documentHashSignedByM2MPrivateKey,
   });
 
 }
 
+async function getSeals(): Promise<IgnisignSignatureRequest_WithDocName[]> {
+  const result = await ignisignSdkInstance.getSignatureRequestsByAppIdAndAppEnv();
+  const signatureRequests = result.signatureRequests;
+  return signatureRequests;
+}
+
+async function createSealSignatureRequest(signerId, fileStream, mimeType : string ): Promise<void> {  
+  const {signatureRequestId} = await ignisignSdkInstance.initSignatureRequest();
+
+  const {documentId} = await ignisignSdkInstance.initializeDocument({signatureRequestId})
+
+  await ignisignSdkInstance.provideDocumentContent_File(documentId, {
+    contentType: mimeType,
+    fileStream,
+    fileName: "test.pdf"
+  })
+  console.log(4);
+
+  // const signerId = "66c6ec75097bac1c1859dd36"; 
+  console.log(5);
+
+  await ignisignSdkInstance.updateSignatureRequest(signatureRequestId, {
+    // signatureRequestType: IGNISIGN_SIGNATURE_REQUEST_TYPE.SEAL,
+    title: "Test Seal Signature Request",
+    signerIds: [signerId],
+    documentIds: [documentId],
+    defaultSignatureMethod: IGNISIGN_SIGNATURE_METHOD_REF.SIMPLE_STD, // TODO REMOVE WHEN PUBLIC IS UPDATED 
+  })
+  console.log(6);
+
+  await ignisignSdkInstance.publishSignatureRequest(signatureRequestId);
+}
 
 async function getSignerProfile(signerProfileId: string): Promise<IgnisignSignerProfile> {
   try {

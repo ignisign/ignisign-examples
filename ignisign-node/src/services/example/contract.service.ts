@@ -3,7 +3,7 @@ import { IgnisignSdkManagerSignatureService } from "../ignisign/ignisign-sdk-man
 import * as FormData from "form-data";
 import * as fs from 'fs';
 import { FileService } from "./files.service";
-import { IgnisignSignatureRequest_UpdateDto, IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE } from "@ignisign/public";
+import { IgnisignSignatureRequest_UpdateDto, IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_SIGNATURE_METHOD_REF } from "@ignisign/public";
 import { IgnisignSdkFileContentUploadDto } from "@ignisign/sdk";
 import { Contract, ContractContext, ContractModel } from "../../models/contract.db.model";
 import { UserService } from "./user.service";
@@ -92,7 +92,8 @@ async function createNewContract(customerId: string, employeeId: string, contrac
       documentIds : [documentId],
       signerIds   : [customer.signerId, employee.signerId],
       externalId  : contractId,
-      title       : 'Contract'
+      title       : 'Contract',
+      defaultSignatureMethod: IGNISIGN_SIGNATURE_METHOD_REF.SIMPLE_STD, // inject from the UI
     };
 
     console.log(dto);
