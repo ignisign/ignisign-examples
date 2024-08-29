@@ -270,7 +270,7 @@ async function  handleSignatureProofWebhook(contractId, signatureProofUrl) : Pro
   });
 }
 
-async function  downloadSignatureProof(contractId): Promise<Readable> {
+async function downloadSignatureProof(contractId): Promise<Readable> {
 
   const { ignisignAppId, ignisignAppEnv} = await IgnisignInitializerService.getAppContext();
 
