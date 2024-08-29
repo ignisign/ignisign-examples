@@ -137,7 +137,7 @@ async function createBareSignature(title: string, file: MulterFile) : Promise<Ba
   const uuidValue = uuid.v4();
   const namePrepared = title + "-prepared-" + uuidValue + '.pdf';
   const nameOriginal = title + "-original-" + uuidValue + '.pdf';
-  await saveBufferAsFile(fileBuffer,             'uploads', nameOriginal);
+  await saveBufferAsFile(signablePartBuffer,   'uploads', nameOriginal);
   await saveBufferAsFile(fileWithPlaceholder,  'uploads', namePrepared);
 
   const bareSignatureToCreate : BareSignature = {

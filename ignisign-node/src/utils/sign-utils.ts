@@ -135,8 +135,8 @@ async function _removePlaceHolder(bufferWithPlaceHolder: Buffer, doByteRange = t
   _logIfDebug('placeholderLengthWithBrackets : ', placeholderLengthWithBrackets);
   _logIfDebug('placeholderLength : ', placeholderLength);
 
-  byteRange[1] = placeholderPos;
-  byteRange[2] = byteRange[1] + placeholderLengthWithBrackets;
+  byteRange[1] = placeholderPos -1; //(- 1 added)
+  byteRange[2] = byteRange[1] + placeholderLengthWithBrackets + 1; // (+ 1 added)
   byteRange[3] = pdfWithoutPlaceholder.length - byteRange[2];
 
   if(doByteRange) {
@@ -158,8 +158,8 @@ async function _removePlaceHolder(bufferWithPlaceHolder: Buffer, doByteRange = t
 
   // Remove the placeholder signature
   pdfWithoutPlaceholder = Buffer.concat([
-    pdfWithoutPlaceholder.slice(0, byteRange[1]),
-    pdfWithoutPlaceholder.slice(byteRange[2], byteRange[2] + byteRange[3]),
+    pdfWithoutPlaceholder.slice(0, byteRange[1] + 1), // (+ 1 added)
+    pdfWithoutPlaceholder.slice(byteRange[2] + 1, byteRange[2] +1 + byteRange[3]), // (+ 1 added) // (+ 1 added)
   ]);
 
 
@@ -248,9 +248,6 @@ async function sealPDF(
 
 ): Promise<Buffer> {
   
-  
- 
-
   let { pdfWithoutPlaceholder, placeholderLength, byteRange } = await _removePlaceHolder(file, false);
 
   const fileHash      = await getFileHash(pdfWithoutPlaceholder); 
