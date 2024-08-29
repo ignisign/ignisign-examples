@@ -4,13 +4,23 @@ import { ApiService } from "../services/api.service";
 import { IgnisignSignatureRequest_WithDocName } from "@ignisign/public";
 import { useGlobal } from "./global.context";
 
+export type Seal = {
+  _id                     ?: string;
+  signatureRequestId      ?: string;
+  type                   ?: 'M2M' | 'MANUAL';
+  status                 ?: 'INIT' | 'DONE';
+  title                  ?: string;
+  ignisignSignerId        ?: string;
+  ignisignSignatureToken  ?: string;
+}
+
 export interface ISealContext {
   isEnabled: boolean;
   checkSetup: () => Promise<void>;
 
   isSealLoading: boolean;
   isSealInit: boolean;
-  seals: IgnisignSignatureRequest_WithDocName[];
+  seals: Seal[];
   getSeals: () => Promise<void>;
 }
 

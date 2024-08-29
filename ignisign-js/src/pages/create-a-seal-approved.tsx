@@ -5,13 +5,17 @@ import { ApiService } from "../services/api.service";
 import { useHistory } from "react-router";
 import { FrontUrlProvider } from "../utils/front-url-provider";
 import Card from "../components-ui/card";
-import { Snackbar } from "@material-ui/core";
+import { Snackbar, Switch } from "@material-ui/core";
+import { useSeal } from "../contexts/seal.context";
 
 
 export const SealApprovedPage = () => {
   const history = useHistory();
+  const {getSeals} = useSeal()
 
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [asPrivateFile, setAsPrivateFile] = useState(false);
+  const [loading, setLoading] = useState(false);
   const signerId = '66c6ec75097bac1c1859dd36'
 
   const handleFileChange = (files : File[], fullPrivacy : boolean = false) => {
@@ -25,12 +29,32 @@ export const SealApprovedPage = () => {
 
   const doSeal = async () => {
     try {
-      await ApiService.createSealSignatureRequest(signerId, selectedFiles[0])
+      setLoading(true)
+      await ApiService.createSealSignatureRequest(signerId, selectedFiles[0], asPrivateFile)
+      await getSeals()
       history.push(FrontUrlProvider.sealsPage())
     } catch (error) {
       
     }
+    setLoading(false)
   }
+
+  return (
+    <div>
+      <UploadRequest
+        doSeal={doSeal}
+        handleFileChange={handleFileChange}
+        selectedFiles={selectedFiles}
+        disabled={!selectedFiles.length}
+        setAsPrivateFile={setAsPrivateFile}
+        asPrivateFile={asPrivateFile}
+        loading={loading}
+      />
+    </div>
+  )
+}
+
+export const UploadRequest = ({handleFileChange, selectedFiles, doSeal, disabled, asPrivateFile, setAsPrivateFile, loading}) => {
 
   const useTestFile = async () => {
     const filePath = '/dummy.pdf'
@@ -42,51 +66,46 @@ export const SealApprovedPage = () => {
     handleFileChange([file]);
   }
 
-  return (
-    <div>
+  return <>
+    <div className='mt-4'>
+      <Card className='flex-col'>
+        <div className='font-medium'>
+          Upload file to seal
+        </div>
 
-          <div className='mt-4'>
-            <Card className='flex-col'>
-              <div className='font-medium'>Upload file to seal</div>
-              <div className='mt-2 flex gap-2'>
-                <Dropzone
-                  onDrop={async files => handleFileChange(files)}
-                  files={selectedFiles}
-                  maxFiles={1}
-                  multiple={false}
-                />
+        <div className='mt-2 flex gap-2'>
+          <Dropzone
+            onDrop={async files => handleFileChange(files)}
+            files={selectedFiles}
+            maxFiles={1}
+            multiple={false}
+          />
 
-                <Button onClick={useTestFile}>
-                  Use a test file
-                </Button>
-              </div>
-
-              <div className="flex justify-end mt-4">
-                <Button onClick={doSeal}>
-                  Create seal
-                </Button>
-              </div>
-            </Card>
+          <div style={{alignContent: "center"}}>
+            <Button onClick={useTestFile}>
+              Use a test file
+            </Button>
           </div>
+        </div>
 
-      {/* <div className="flex gap-2 item-center">
-        <Dropzone
-          onDrop={async files => handleFileChange(files)}
-          files={selectedFiles}
-          maxFiles={1}
-          multiple={false}
-        />
+        <div className="mt-3">
+          <div className='font-medium'>
+            Make file private
+          </div>
+          <Switch
+            checked={asPrivateFile}
+            onChange={() => setAsPrivateFile(!asPrivateFile)}
+            name="checkedA"
+          />
+        </div>
 
-        <Button onClick={useTestFile}>
-          Use a test file
-        </Button>
-      </div>
+      </Card>
 
       <div className="flex justify-end mt-4">
-        <Button onClick={doSeal} disabled={!selectedFiles.length}>
+        <Button onClick={doSeal} disabled={disabled || loading} loading={loading}>
           Create seal
         </Button>
-      </div> */}
+      </div>
     </div>
-  )
+  </>
 }

@@ -4,6 +4,7 @@ import Card from "../components-ui/card"
 import { Dropzone } from "../components-ui/dropzone"
 import { Button } from "../components-ui/button"
 import { ApiService } from "../services/api.service"
+import { UploadRequest } from "./create-a-seal-approved"
 
 export const CreateM2mSeal = () => {
 
@@ -11,6 +12,7 @@ export const CreateM2mSeal = () => {
 
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [asPrivateFile, setAsPrivateFile] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (files : File[], fullPrivacy : boolean = false) => {
     const keepFiles = selectedFiles.filter(e=>e.fullPrivacy !== fullPrivacy)
@@ -26,20 +28,14 @@ export const CreateM2mSeal = () => {
   }
 
   const doSeal = async () => {
-    // await ApiService.createSeal(selectedFiles[0])
-    await ApiService.doM2MSeal(selectedFiles[0], asPrivateFile)
+    setLoading(true)
+    try {
+      await ApiService.doM2MSeal(selectedFiles[0], asPrivateFile)
+    } catch (error) {
+      
+    }
+    setLoading(false)
   }
-
-  const useTestFile = async () => {
-    const filePath = '/dummy.pdf'
-    
-    const response = await fetch(filePath);
-    const blob = await response.blob();
-    
-    const file = new File([blob], 'dummy.pdf', {type: 'application/pdf'});
-    handleFileChange([file]);
-  }
-
 
   return (
     <div>
@@ -66,29 +62,15 @@ export const CreateM2mSeal = () => {
 
       {
         isEnabled && <div>
-          <div className='mt-4'>
-            <Card className='flex-col'>
-              <div className='font-medium'>Upload file to seal</div>
-              <div className='mt-2 flex gap-2'>
-                <Dropzone
-                  onDrop={async files => handleFileChange(files)}
-                  files={selectedFiles}
-                  maxFiles={1}
-                  multiple={false}
-                />
-
-                <Button onClick={useTestFile}>
-                  Use a test file
-                </Button>
-              </div>
-
-              <div className="flex justify-end mt-4">
-                <Button onClick={doSeal}>
-                  Create seal
-                </Button>
-              </div>
-            </Card>
-          </div>
+          <UploadRequest
+            doSeal={doSeal}
+            handleFileChange={handleFileChange}
+            selectedFiles={selectedFiles}
+            disabled={!selectedFiles.length}
+            setAsPrivateFile={setAsPrivateFile}
+            asPrivateFile={asPrivateFile}
+            loading={loading}
+          />
         </div>
       }
     </div>

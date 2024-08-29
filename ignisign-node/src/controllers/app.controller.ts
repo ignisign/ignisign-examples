@@ -8,6 +8,7 @@ import { MY_USER_TYPES } from "../models/user.db.model";
 import { UserService } from "../services/example/user.service";
 import { IgnisignInitializerService } from "../services/ignisign/ignisign-sdk-initializer.service";
 import { IgnisignSdkManagerSealService } from "../services/ignisign/ignisign-sdk-manager-seal.service";
+import { IgnisignSdkManagerBareSignatureService } from "../services/ignisign/ignisign-sdk-manager-bare-signature.service";
 
 
 // const signatureProfileId = process.env.IGNISIGN_SIGNATURE_PROFILE_ID
@@ -78,7 +79,14 @@ export const AppController = (router: Router) => {
   // You have to configurate it into the Ignisign Console.
   router.post('/v1/ignisign-webhook', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await IgnisignSdkManagerSignatureService.consumeWebhook(req.body);
+      const appContext = await IgnisignInitializerService.getAppContext(true);
+      const services = {
+        [IGNISIGN_APPLICATION_TYPE.SIGNATURE]: IgnisignSdkManagerSignatureService,
+        [IGNISIGN_APPLICATION_TYPE.SEAL]: IgnisignSdkManagerSealService,
+        [IGNISIGN_APPLICATION_TYPE.BARE_SIGNATURE]: IgnisignSdkManagerBareSignatureService,
+        [IGNISIGN_APPLICATION_TYPE.LOG_CAPSULE]: IgnisignSdkManagerSealService,
+      }
+      const result = services[appContext.appType].consumeWebhook(req.body);
       jsonSuccess(res, result);
     } catch(e) { next(e) }
   })
