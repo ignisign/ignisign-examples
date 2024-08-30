@@ -45,6 +45,11 @@ export const ApiService = {
 
   createLogCapsule,
   getSeals,
+  getNewSignerAuthSecret,
+}
+
+async function getNewSignerAuthSecret(ignisignSignerId): Promise<string> {
+  return http.get(`/v1/seals/${ignisignSignerId}/new-auth-secret`)
 }
 
 async function getSeals(): Promise<IgnisignSignatureRequest_WithDocName[]> {

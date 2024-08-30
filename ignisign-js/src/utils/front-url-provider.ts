@@ -7,9 +7,10 @@ export const  FrontUrlProvider = {
   contractsPage             : () => '/contracts',
   bareSignaturePage         : () => '/bare-signature',
   bareSignatureCallbackPage : () => '/bare-signature-callback',
-  createM2MSeal                : () => '/create-m2m-seal',
+  createM2MSeal             : () => '/create-m2m-seal',
   sealsPage                 : () => '/seals',
   createLogCapsule          : () => '/create-log-capsule',
   createSealApproved        : () => '/create-seal-approved',
+  signSealDoc               : (contractId = null) => `/seal/${contractId || ':contractId'}/sign`,
 }
 

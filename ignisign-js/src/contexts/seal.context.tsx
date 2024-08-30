@@ -1,17 +1,19 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { ApiService } from "../services/api.service";
-import { IgnisignSignatureRequest_WithDocName } from "@ignisign/public";
+import { IGNISIGN_APPLICATION_ENV, IgnisignSignatureRequest_WithDocName } from "@ignisign/public";
 import { useGlobal } from "./global.context";
 
 export type Seal = {
   _id                     ?: string;
   signatureRequestId      ?: string;
   type                   ?: 'M2M' | 'MANUAL';
-  status                 ?: 'INIT' | 'DONE';
+  status                 ?: 'INIT' | 'DONE' | 'CREATED';
   title                  ?: string;
   ignisignSignerId        ?: string;
   ignisignSignatureToken  ?: string;
+  ignisignAppId           ?: string;
+  ignisignAppEnv          ?: IGNISIGN_APPLICATION_ENV;
 }
 
 export interface ISealContext {
@@ -41,7 +43,7 @@ export const SealContextProvider = ({ children }) => {
     try {
       setIsSealLoading(true);
       const seals = await ApiService.getSeals();
-      setSeals(seals);
+      setSeals(seals.sort(() => -1));
     } catch (e) {
       console.error(e);
     } finally {

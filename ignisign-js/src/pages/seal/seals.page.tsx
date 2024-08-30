@@ -1,14 +1,11 @@
-import { useEffect, useState } from "react"
-import { useSeal } from "../contexts/seal.context"
-import Card from "../components-ui/card"
-import { Dropzone } from "../components-ui/dropzone"
-import { Button } from "../components-ui/button"
-import { ApiService } from "../services/api.service"
-import { useHistory } from "react-router"
-import { FrontUrlProvider } from "../utils/front-url-provider"
 import { Typography } from "@material-ui/core"
-import { IGNISIGN_SIGNATURE_REQUEST_TYPE } from "@ignisign/public"
-import { Badge } from "../components-ui/badge"
+import { useHistory } from "react-router"
+import { useSeal } from "../../contexts/seal.context";
+import { Button } from "../../components-ui/button";
+import { FrontUrlProvider } from "../../utils/front-url-provider";
+import Card from "../../components-ui/card";
+import { Badge } from "../../components-ui/badge";
+
 
 export const Seals = () => {
   const history = useHistory();
@@ -22,12 +19,9 @@ export const Seals = () => {
     getSeals,
   } = useSeal()
 
-  const goToCreateSeal = async () => {
-    
+  const goToSign = async (id) => {
+    history.push(FrontUrlProvider.signSealDoc(id))
   }
-
-  console.log(seals);
-  
 
   if (!isSealInit) {
     return <div>
@@ -71,7 +65,7 @@ export const Seals = () => {
             seals.length === 0 ? <div>
               You don't have any seals yet
             </div> : <>
-              {seals.sort(()=>-1).map(e => (
+              {seals.map(e => (
                 <Card key={e._id} className="flex item-center gap-2 mb-2 relative">
                   <Badge>
                     {e.status}
@@ -82,6 +76,14 @@ export const Seals = () => {
                   </Badge>
 
                   {
+                    e.status === 'CREATED' && <>
+                      <Badge>
+                        Refresh to check if webhook is received
+                      </Badge>
+                    </>
+                  }
+
+                  {
                     e.status === "INIT" && <>
 
                       <Badge>
@@ -90,7 +92,7 @@ export const Seals = () => {
 
                       {
                         e.ignisignSignatureToken 
-                        ? <Button>
+                        ? <Button onClick={()=>goToSign(e._id)}>
                           Sign embedded
                         </Button>
                         : <div>

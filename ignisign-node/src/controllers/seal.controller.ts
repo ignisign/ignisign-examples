@@ -68,5 +68,13 @@ export const SealController = (router: Router) => {
       return jsonSuccess(res, seals)
     } catch(e) { next(e) }
   })
+
+  router.get('/v1/seals/:ignisignSignerId/new-auth-secret', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { ignisignSignerId } = req.params;
+      const secret = await IgnisignSdkManagerSealService.getNewSignerAuthSecret(ignisignSignerId);
+      return jsonSuccess(res, secret)
+    } catch(e) { next(e) }
+  })
   
 } 
