@@ -6,8 +6,9 @@ import { Button } from "../components-ui/button"
 import { ApiService } from "../services/api.service"
 import { useHistory } from "react-router"
 import { FrontUrlProvider } from "../utils/front-url-provider"
-import { Badge, Typography } from "@material-ui/core"
+import { Typography } from "@material-ui/core"
 import { IGNISIGN_SIGNATURE_REQUEST_TYPE } from "@ignisign/public"
+import { Badge } from "../components-ui/badge"
 
 export const Seals = () => {
   const history = useHistory();
@@ -70,19 +71,38 @@ export const Seals = () => {
             seals.length === 0 ? <div>
               You don't have any seals yet
             </div> : <>
-              {seals.map(e => (
-                <Card key={e._id} className="flex item-center mb-2 relative">
-                  <div className="absolute right-16">
-                    <Badge color="secondary" badgeContent={e.status} overlap="rectangular"/>
+              {seals.sort(()=>-1).map(e => (
+                <Card key={e._id} className="flex item-center gap-2 mb-2 relative">
+                  <Badge>
+                    {e.status}
+                  </Badge>
+
+                  <Badge>
+                    {e.type}
+                  </Badge>
+
+                  {
+                    e.status === "INIT" && <>
+
+                      <Badge>
+                        Not signed
+                      </Badge>
+
+                      {
+                        e.ignisignSignatureToken 
+                        ? <Button>
+                          Sign embedded
+                        </Button>
+                        : <div>
+                          Sign by email
+                        </div>
+                      }
+                    </>
+                  }
+
+                  <div className="ml-10">
+                    {e.title}
                   </div>
-                  <div className="ml-6">
-                    <Badge color="primary" badgeContent={e.signatureRequestType === IGNISIGN_SIGNATURE_REQUEST_TYPE.SEAL ? 'Manual' : 'M2M'} overlap="rectangular"/>
-                  </div>
-                    <div className="ml-10">
-                      {e.title}
-                    </div>
-                  {/* <Badge color="primary"> */}
-                  {/* </Badge> */}
                 </Card>
               ))}
 

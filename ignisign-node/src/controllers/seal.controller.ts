@@ -49,8 +49,9 @@ export const SealController = (router: Router) => {
     async (req: Request & { file: MulterFile }, res: Response, next: NextFunction) => { 
       try {
         const file = req.file;
-        const signerId = req.params
-        await SealService.createSealSignatureRequest(signerId, file);
+        const { asPrivateFile } = req.body;
+        const { signerId } = req.params
+        await SealService.createSealSignatureRequest(signerId, file, asPrivateFile);
         return jsonSuccess(res, true)
       } catch(e) { next(e) }
     })
