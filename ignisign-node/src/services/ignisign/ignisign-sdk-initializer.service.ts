@@ -11,7 +11,8 @@ const IGNISIGN_APP_ENV    : IGNISIGN_APPLICATION_ENV = IGNISIGN_APPLICATION_ENV[
 const IGNISIGN_APP_TYPE   : IGNISIGN_APPLICATION_TYPE = IGNISIGN_APPLICATION_TYPE[process.env.IGNISIGN_APP_TYPE]
 const IGNISIGN_APP_SECRET = process.env.IGNISIGN_APP_SECRET
 
-
+const DEBUG_LOG_ACTIVATED = false;
+const _logIfDebug = (...message) => { if(DEBUG_LOG_ACTIVATED) console.log(...message) }
 
 
 export const IgnisignInitializerService = {
@@ -19,9 +20,6 @@ export const IgnisignInitializerService = {
   initSdks,
   getSDkManagerSignatureService
 }
-
-
-
 
 async function getAppContext( withAppType: boolean = false) : Promise<Example_IgniSign_AppContext>{
  return {
@@ -45,8 +43,7 @@ async function initSdks(){
   try {
     const appContext = await getAppContext(true)
 
-
-    console.log("appContext", appContext)
+    _logIfDebug("appContext", appContext)
   
     if(!appContext.ignisignAppId || !appContext.ignisignAppEnv || !appContext.appType)
       throw new Error(`IGNISIGN_APP_ID, IGNISIGN_APP_ENV and IGNISIGN_APP_TYPE are mandatory to init Ignisign SDKs`);
@@ -80,23 +77,11 @@ async function initSdks(){
         break;
     }
 
-    // const sdk = await getSDkManagerSignatureService()
-    // const ignisignAppContext  : IgnisignApplication_Context= sdk.getAppContext()
-    
-    // if(appContext.appType !== ignisignAppContext.appType)
-    //   throw new Error(`appType ${appContext.appType} not matching with ${ignisignAppContext.appType}`);
-
-
-
   } catch(e) {
 
     console.error(e)
     process.exit(1)
   }
  
-
- 
-  
-  
 }
 

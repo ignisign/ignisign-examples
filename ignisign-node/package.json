@@ -1,6 +1,6 @@
 {
   "name": "@ignisign/example-backend",
-  "version": "4.0.0-beta.16",
+  "version": "4.0.0-beta.17",
   "license": "MIT",
   "node": ">=18",
   "scripts": {
@@ -12,11 +12,8 @@
     "clean-win": "rd /s /q dist && del /f tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@ignisign/public": "4.0.0-beta.16",
-    "@ignisign/sdk": "4.0.0-beta.16",
-    "@signpdf/placeholder-pdf-lib": "^3.2.4",
-    "@signpdf/signpdf": "^3.2.4",
-    "@signpdf/utils": "^3.2.4",
+    "@ignisign/public": "4.0.0-beta.17",
+    "@ignisign/sdk": "4.0.0-beta.17",
     "asn1.js": "^5.4.1",
     "axios": "^1.6.2",
     "class-transformer": "^0.5.1",
