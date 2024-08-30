@@ -14,8 +14,6 @@ export const SealService = {
   addTokenToSigner,
 }
 
-
-
 async function createM2MSeal(file : MulterFile, asPrivateFile: boolean) {
   console.log(1);
   

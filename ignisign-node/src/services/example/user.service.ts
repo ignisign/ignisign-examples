@@ -32,8 +32,6 @@ async function getSignerProfileIds(appType : IGNISIGN_APPLICATION_TYPE) : Promis
   const sdkInstance     = await IgnisignInitializerService.getSDkManagerSignatureService();
   const signerProfiles  = await sdkInstance.getSignerProfiles();
 
-  // console.log(`getSignerProfileIds ${appType} : `, signerProfiles);
-
   if(signerProfiles.length === 0)
     throw new Error("No Signer Profile found in the Ignisign App");
   
@@ -116,7 +114,7 @@ async function addUser(
 
   const { employeeSignerProfileId, customerSignerProfileId } = await getSignerProfileIds(appType);
 
-  console.log("addUser", { employeeSignerProfileId, customerSignerProfileId });
+  _logIfDebug("addUser", { employeeSignerProfileId, customerSignerProfileId, inputs, type });
 
   const signerProfileId = (type === MY_USER_TYPES.CUSTOMER)
     ? customerSignerProfileId
@@ -140,7 +138,7 @@ async function addUser(
       ...(inputs?.birthDate && { birthDate : inputs.birthDate.toString()}), 
     }
 
-    _logIfDebug("inputToCreate");
+    _logIfDebug("inputToCreate", inputToCreate);
     
     const signer = await IgnisignSdkManagerSignatureService.createNewSigner(signerProfileId, inputToCreate, userId);
 

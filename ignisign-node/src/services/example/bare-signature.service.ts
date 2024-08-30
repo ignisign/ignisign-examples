@@ -77,12 +77,9 @@ async function getProofs(bareSignatureId: string, signPdfLocally = true) {
 
   _logIfDebug('getProofs : ', proof);
 
-  // const contentPKCS7 = await PKCS7_Utils.getPKCS7contentFromBase64(proof?.proofs[0]?.proofB64);
-
-  // console.log('contentPKCS7 : ', contentPKCS7);
-
-
   const signatureProof = proof?.proofs[0];
+
+
   if(!signatureProof){
     throw new Error('No proof found');
   }
@@ -107,9 +104,6 @@ async function getProofs(bareSignatureId: string, signPdfLocally = true) {
 
 
 /********************* REPOSITORY PART  ***************************/
-
-
-
 
 
 async function createBareSignature(title: string, file: MulterFile) : Promise<BareSignature> {
