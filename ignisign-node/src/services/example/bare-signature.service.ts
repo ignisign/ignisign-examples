@@ -10,7 +10,7 @@ import { IgnisignSdkManagerBareSignatureService } from '../ignisign/ignisign-sdk
 import { findOneCallback, insertCallback } from './tinydb.utils';
 import { Ignisign_BareSignature_ProofAccessToken } from '@ignisign/public';
 import _ = require('lodash');
-import { SignPdfService } from '../../utils/sign-utils';
+import { SignPdfService } from '../../utils/pdf-utils/sign-pdf-utils';
 import { PKCS7_Utils } from '../../utils/pkcs7.utils';
 import { sign } from 'crypto';
 import * as uuid from "uuid";
@@ -124,15 +124,7 @@ async function createBareSignature(title: string, file: MulterFile) : Promise<Ba
   
   const fileHash      = await getFileHash(signablePartBuffer);  
   
-  const fileB64       = fileWithPlaceholder.toString('base64'); // pdfWithoutPlaceholder.toString('base64'); // fileBufferSelected.toString('base64');
-
-  console.log('fileHash from buffer Prepared: ', fileHash, fileHash.length);
-
-  const fileHashFromStream = await getFileHash(fs.createReadStream(file.path));
-  console.log('fileHash (original) FromStream : ', fileHashFromStream, fileHashFromStream.length);
-
-  const fileHashBufferOriginal = await getFileHash(fileBuffer);
-  console.log('fileHash (original) From Buffer : ', fileHashBufferOriginal, fileHashBufferOriginal.length);
+  const fileB64       = fileWithPlaceholder.toString('base64');
   
   const uuidValue = uuid.v4();
   const namePrepared = title + "-prepared-" + uuidValue + '.pdf';
