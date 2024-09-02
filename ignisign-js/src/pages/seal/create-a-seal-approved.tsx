@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Dropzone } from "../components-ui/dropzone"
-import { Button } from "../components-ui/button";
-import { ApiService } from "../services/api.service";
 import { useHistory } from "react-router";
-import { FrontUrlProvider } from "../utils/front-url-provider";
-import Card from "../components-ui/card";
 import { Snackbar, Switch } from "@material-ui/core";
-import { useSeal } from "../contexts/seal.context";
+import { useSeal } from "../../contexts/seal.context";
+import { ApiService } from "../../services/api.service";
+import { FrontUrlProvider } from "../../utils/front-url-provider";
+import Card from "../../components-ui/card";
+import { Dropzone } from "../../components-ui/dropzone";
+import { Button } from "../../components-ui/button";
 
 
 export const SealApprovedPage = () => {

@@ -12,16 +12,26 @@ export const SealService = {
   createSealSignatureRequest,
   getSeals,
   addTokenToSigner,
+  sealIsComplete
+}
+
+async function sealIsComplete(signatureRequestId){
+  try {
+    const findQuery = {signatureRequestId};
+    const seal = await db.findOne<Seal>(SealModel, findQuery);
+    const toUpdate: Seal = {
+      ...seal,
+      status: 'DONE',
+    }
+    await db.updateOne(SealModel, findQuery, toUpdate);
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function createM2MSeal(file : MulterFile, asPrivateFile: boolean) {
-  console.log(1);
-  
   const input = fs.createReadStream(file.path);
-  console.log(2);
-
   const fileBuffer = await streamToBuffer(input);
-  console.log(3);
 
   const {
     signatureRequestId,
@@ -37,11 +47,6 @@ async function createM2MSeal(file : MulterFile, asPrivateFile: boolean) {
   await db.insert(SealModel, body);
 
 }
-
-// const findOne 
-// await new Promise(async (resolve, reject) => {
-//   ContractModel.findOne({_id: contractId, ignisignAppId, ignisignAppEnv}, findOneCallback(resolve, reject, true))
-// });
 
 async function createSealSignatureRequest(signerId: string, file, asPrivateFile: boolean) {
   try {
@@ -65,8 +70,9 @@ async function addTokenToSigner(signatureRequestId, signerId: string, token: str
   try {
     const findQuery = {signatureRequestId};
     const seal = await db.findOne<Seal>(SealModel, findQuery);
-    const toUpdate = {
+    const toUpdate: Seal = {
       ...seal,
+      status: 'INIT',
       ignisignSignatureToken: token,
     }
     await db.updateOne(SealModel, findQuery, toUpdate);

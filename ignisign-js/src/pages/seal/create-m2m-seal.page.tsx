@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react"
-import { useSeal } from "../contexts/seal.context"
-import Card from "../components-ui/card"
-import { Dropzone } from "../components-ui/dropzone"
-import { Button } from "../components-ui/button"
-import { ApiService } from "../services/api.service"
 import { UploadRequest } from "./create-a-seal-approved"
+import { useSeal } from "../../contexts/seal.context";
+import { ApiService } from "../../services/api.service";
+import { Button } from "../../components-ui/button";
 
 export const CreateM2mSeal = () => {
 
