@@ -18,7 +18,7 @@ import * as uuid from "uuid";
 
 const DEBUG_ACTIVATED = true;
 const _logIfDebug = (...message) => { if(DEBUG_ACTIVATED) console.log(...message) }
-const SIGN_AS_CADES = false
+const SIGN_AS_CADES = true
 
 const EXAMPLE_FRONTEND_URL  = process.env.MY_FRONTEND_URL || 'http://localhost:3456';
 const redirect_uri          = EXAMPLE_FRONTEND_URL+ '/bare-signature-callback';
