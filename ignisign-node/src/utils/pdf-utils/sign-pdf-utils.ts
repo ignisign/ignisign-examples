@@ -16,13 +16,14 @@ export const SignPdfService = {
 
 async function getSignablePartOfThePDF(
   file: Buffer,
+  isCades: boolean = false
   
 ): Promise<{
   signablePartBuffer: Buffer,
   fileWithPlaceholder : Buffer,
 }> {
 
-  const bufferWithPlaceHolder = await PdfPlaceholderUtisService.addPlaceholder(file);
+  const bufferWithPlaceHolder = await PdfPlaceholderUtisService.addPlaceholder(file, isCades);
 
   const { pdfWithoutPlaceholder, fileWithPlaceholder } = await PdfPlaceholderUtisService.removePlaceHolder(bufferWithPlaceHolder, true);
 

@@ -16,8 +16,9 @@ import { sign } from 'crypto';
 import * as uuid from "uuid";
 
 
-const DEBUG_LOG_ACTIVATED = true;
-const _logIfDebug = (...message) => { if(DEBUG_LOG_ACTIVATED) console.log(...message) }
+const DEBUG_ACTIVATED = true;
+const _logIfDebug = (...message) => { if(DEBUG_ACTIVATED) console.log(...message) }
+const SIGN_AS_CADES = false
 
 const EXAMPLE_FRONTEND_URL  = process.env.MY_FRONTEND_URL || 'http://localhost:3456';
 const redirect_uri          = EXAMPLE_FRONTEND_URL+ '/bare-signature-callback';
@@ -79,12 +80,11 @@ async function getProofs(bareSignatureId: string, signPdfLocally = true) {
 
   const signatureProof = proof?.proofs[0];
 
-
   if(!signatureProof){
     throw new Error('No proof found');
   }
 
-  console.log('signatureProof : ', signatureProof);
+  _logIfDebug('signatureProof : ', signatureProof);
 
 
 
@@ -95,13 +95,11 @@ async function getProofs(bareSignatureId: string, signPdfLocally = true) {
 
     const name = bareSignature.title + "-signed-" + uuidValue + '.pdf';
     const path = await saveBufferAsFile(signed, 'uploads', name);
-    console.log('path : ', path);
+    _logIfDebug('path : ', path);
   }
 
   return proof;
 }
-
-
 
 /********************* REPOSITORY PART  ***************************/
 
@@ -114,17 +112,20 @@ async function createBareSignature(title: string, file: MulterFile) : Promise<Ba
 
   const input             = fs.createReadStream(file.path);
   const fileBuffer        = await streamToBuffer(input);
-  const { signablePartBuffer,  fileWithPlaceholder }  = await SignPdfService.getSignablePartOfThePDF(fileBuffer);
+  const { signablePartBuffer,  fileWithPlaceholder }  = await SignPdfService.getSignablePartOfThePDF(fileBuffer, SIGN_AS_CADES);
   
   const fileHash      = await getFileHash(signablePartBuffer);  
   
   const fileB64       = fileWithPlaceholder.toString('base64');
   
-  const uuidValue = uuid.v4();
-  const namePrepared = title + "-prepared-" + uuidValue + '.pdf';
-  const nameOriginal = title + "-original-" + uuidValue + '.pdf';
-  await saveBufferAsFile(signablePartBuffer,   'uploads', nameOriginal);
-  await saveBufferAsFile(fileWithPlaceholder,  'uploads', namePrepared);
+  if(DEBUG_ACTIVATED){
+    const uuidValue = uuid.v4();
+    const namePrepared = title + "-prepared-" + uuidValue + '.pdf';
+    const nameOriginal = title + "-original-" + uuidValue + '.pdf';
+    await saveBufferAsFile(signablePartBuffer,   'uploads', nameOriginal);
+    await saveBufferAsFile(fileWithPlaceholder,  'uploads', namePrepared);
+  }
+ 
 
   const bareSignatureToCreate : BareSignature = {
     title,
@@ -202,7 +203,6 @@ async function getBareSignatures() : Promise<BareSignature[]> {
     });
   });
 
-  // _logIfDebug('getBareSignatures : ', bareSignatures);
   return bareSignatures;
 }
 
