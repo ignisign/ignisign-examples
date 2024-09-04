@@ -221,8 +221,8 @@ async function removePlaceHolder(bufferWithPlaceHolder: Buffer, doByteRange = tr
   _logIfDebug('placeholderLengthWithBrackets : ', placeholderLengthWithBrackets);
   _logIfDebug('placeholderLength : ', placeholderLength);
 
-  byteRange[1] = placeholderPos -1; //(- 1 added)
-  byteRange[2] = byteRange[1] + placeholderLengthWithBrackets + 1; // (+ 1 added)
+  byteRange[1] = placeholderPos;// -1; //(- 1 added)
+  byteRange[2] = byteRange[1] + placeholderLengthWithBrackets;// + 1; // (+ 1 added)
   byteRange[3] = pdfWithoutPlaceholder.length - byteRange[2];
 
   if(doByteRange) {
@@ -244,8 +244,8 @@ async function removePlaceHolder(bufferWithPlaceHolder: Buffer, doByteRange = tr
 
   // Remove the placeholder signature
   pdfWithoutPlaceholder = Buffer.concat([
-    pdfWithoutPlaceholder.slice(0, byteRange[1] + 1), // (+ 1 added)
-    pdfWithoutPlaceholder.slice(byteRange[2] + 1, byteRange[2] +1 + byteRange[3]), // (+ 1 added) // (+ 1 added)
+    pdfWithoutPlaceholder.slice(0, byteRange[1]), // (+ 1 added)
+    pdfWithoutPlaceholder.slice(byteRange[2], byteRange[2] + byteRange[3]), // (+ 1 added) // (+ 1 added)
   ]);
 
   return { 
