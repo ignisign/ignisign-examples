@@ -8,7 +8,7 @@ import {
 } from './pdf-utils.const';
 
 
-const DEBUG_LOG_ACTIVATED = false;
+const DEBUG_LOG_ACTIVATED = true;
 const _logIfDebug = (...message) => { if(DEBUG_LOG_ACTIVATED) console.log(...message) }
 
 const  PDF_SEAL_CONTACT_INFO  = "info@ignisign.io";
