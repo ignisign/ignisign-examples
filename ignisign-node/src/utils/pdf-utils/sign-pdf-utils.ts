@@ -79,7 +79,7 @@ async function sealPDF(
 
   // Pad the signature with zeroes so the it is the same length as the placeholder
   signature += Buffer
-      .from(String.fromCharCode(0).repeat((placeholderLength / 2) - raw.length))
+      .from(String.fromCharCode(0).repeat((placeholderLength  - signature.length) / 2))
       .toString('hex');
 
   // Place it in the document.
