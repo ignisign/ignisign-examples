@@ -221,8 +221,8 @@ async function removePlaceHolder(bufferWithPlaceHolder: Buffer, doByteRange = tr
   _logIfDebug('placeholderLengthWithBrackets : ', placeholderLengthWithBrackets);
   _logIfDebug('placeholderLength : ', placeholderLength);
 
-  byteRange[1] = placeholderPos;// -1; //(- 1 added)
-  byteRange[2] = byteRange[1] + placeholderLengthWithBrackets;// + 1; // (+ 1 added)
+  byteRange[1] = placeholderPos// -1; //(- 1 added)
+  byteRange[2] = byteRange[1] + placeholderLengthWithBrackets// + 1; // (+ 1 added)
   byteRange[3] = pdfWithoutPlaceholder.length - byteRange[2];
 
   if(doByteRange) {
