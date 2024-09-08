@@ -225,6 +225,13 @@ async function removePlaceHolder(bufferWithPlaceHolder: Buffer, doByteRange = tr
   byteRange[2] = byteRange[1] + placeholderLengthWithBrackets// + 1; // (+ 1 added)
   byteRange[3] = pdfWithoutPlaceholder.length - byteRange[2];
 
+  const sliceRange = [
+    0,
+    byteRange[1],
+    byteRange[2],
+    pdfWithoutPlaceholder.length
+  ];
+
   if(doByteRange) {
 
     let actualByteRange = `/ByteRange [${byteRange.join(' ')}]`;
@@ -238,14 +245,14 @@ async function removePlaceHolder(bufferWithPlaceHolder: Buffer, doByteRange = tr
       Buffer.from(actualByteRange),
       pdfWithoutPlaceholder.slice(byteRangeEnd),
     ]);
-  }
+  } 
 
   const fileWithPlaceholder = Buffer.from(pdfWithoutPlaceholder);
 
   // Remove the placeholder signature
   pdfWithoutPlaceholder = Buffer.concat([
-    pdfWithoutPlaceholder.slice(0, byteRange[1]), // (+ 1 added)
-    pdfWithoutPlaceholder.slice(byteRange[2], byteRange[2] + byteRange[3]), // (+ 1 added) // (+ 1 added)
+    pdfWithoutPlaceholder.slice(sliceRange[0], sliceRange[1]), // (+ 1 added)
+    pdfWithoutPlaceholder.slice(sliceRange[2] , sliceRange[3]), // (+ 1 added) // (+ 1 added)
   ]);
 
   return { 
