@@ -1,4 +1,4 @@
-import { IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_SIGNATURE_METHOD_REF, IGNISIGN_SIGNATURE_REQUEST_TYPE, IGNISIGN_SIGNER_CREATION_INPUT_REF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IgniSign_SignM2MDocumentContentRequestDto, IgniSign_SignM2MDocumentHashRequestDto, IgniSign_SignM2MDocumentXMLRequestDto, IgnisignSignatureRequest_WithDocName, IgnisignSignerProfile, IgnisignWebhook, IgnisignWebhookDto_Signature, IgnisignWebhookDto_SignatureProof_Success, IgnisignWebhookDto_SignatureRequest, IgnisignWebhook_ActionDto, IgnisignWebhook_CallbackParams } from "@ignisign/public";
+import { IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_SIGNATURE_METHOD_REF, IGNISIGN_SIGNATURE_REQUEST_TYPE, IGNISIGN_SIGNER_CREATION_INPUT_REF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IgnisignSealM2M_DocumentContentRequestDto, IgnisignSealM2M_DocumentHashRequestDto, IgnisignSealM2M_DocumentXMLRequestDto, IgnisignSignatureRequest_WithDocName, IgnisignSignerProfile, IgnisignWebhook, IgnisignWebhookDto_Signature, IgnisignWebhookDto_SignatureProof_Success, IgnisignWebhookDto_SignatureRequest, IgnisignWebhook_ActionDto, IgnisignWebhook_CallbackParams } from "@ignisign/public";
 import { IgnisignSdk, IgnisignSdkUtilsService } from "@ignisign/sdk";
 import { IgnisignSdkManagerCommonsService } from "./ignisign-sdk-manager-commons.service";
 import { SealService } from "../example/seal.service";
@@ -111,14 +111,14 @@ async function createM2mSignatureRequest(fileBuffer : Buffer, asPrivateFile : bo
   let document = null;
   asPrivateFile = false;
   if(asPrivateFile ) {
-    const doc: IgniSign_SignM2MDocumentHashRequestDto = {
+    const doc: IgnisignSealM2M_DocumentHashRequestDto = {
       documentHash,
       documentType: IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE,
     }
     document = doc;
   }
   else{
-    const doc: IgniSign_SignM2MDocumentContentRequestDto = {
+    const doc: IgnisignSealM2M_DocumentContentRequestDto = {
       contentB64: documentBase64,
       mimeType,
       // fileName,

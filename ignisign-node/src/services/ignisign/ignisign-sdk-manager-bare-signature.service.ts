@@ -1,5 +1,5 @@
-import { Ignisign_BareSignature_ProofAccessToken, IGNISIGN_APPLICATION_ENV, Ignisign_BareSignature_GetAuthrozationUrlRequest, Ignisign_BareSignature_GetAuthrozationUrlResponse, IgnisignSignerProfile, IGNISIGN_SIGNER_CREATION_INPUT_REF, IgnisignApplication_BareSignatureEnvSettings, Ignisign_BareSignature_Proof } from "@ignisign/public";
-import { IgnisignSdk, Ignisign_BareSignature_SdkProofAccessTokenRequest } from "@ignisign/sdk";
+import { IgnisignBareSignature_ProofAccessToken, IGNISIGN_APPLICATION_ENV, IgnisignBareSignature_GetAuthrozationUrlRequest, IgnisignBareSignature_GetAuthrozationUrlResponse, IgnisignSignerProfile, IGNISIGN_SIGNER_CREATION_INPUT_REF, IgnisignApplication_BareSignatureEnvSettings, IgnisignBareSignature_Proof } from "@ignisign/public";
+import { IgnisignSdk, IgnisignBareSignature_SdkProofAccessTokenRequest } from "@ignisign/sdk";
 
 const DEBUG_LOG_ACTIVATED = true;
 const _logIfDebug = (...message) => {
@@ -51,7 +51,7 @@ async function init(appId: string, appEnv: IGNISIGN_APPLICATION_ENV, appSecret: 
   }
 }
 
-async function getAuthorizationUrl( dto: Ignisign_BareSignature_GetAuthrozationUrlRequest ) : Promise<Ignisign_BareSignature_GetAuthrozationUrlResponse> {
+async function getAuthorizationUrl( dto: IgnisignBareSignature_GetAuthrozationUrlRequest ) : Promise<IgnisignBareSignature_GetAuthrozationUrlResponse> {
   try {
     return await ignisignSdkInstance.getBareSignatureAuthorizationUrl(dto);
   } catch (error) {
@@ -60,7 +60,7 @@ async function getAuthorizationUrl( dto: Ignisign_BareSignature_GetAuthrozationU
   }
 }
 
-async function getBareSignatureProofToken(dto: Ignisign_BareSignature_SdkProofAccessTokenRequest) : Promise<Ignisign_BareSignature_ProofAccessToken> {
+async function getBareSignatureProofToken(dto: IgnisignBareSignature_SdkProofAccessTokenRequest) : Promise<IgnisignBareSignature_ProofAccessToken> {
   try {
     return await ignisignSdkInstance.getBareSignatureProofToken(dto);
   } catch (error) {
@@ -69,7 +69,7 @@ async function getBareSignatureProofToken(dto: Ignisign_BareSignature_SdkProofAc
   }
 }
 
-async function getBareSignatureProofs(headerToken : string) : Promise<Ignisign_BareSignature_Proof> {
+async function getBareSignatureProofs(headerToken : string) : Promise<IgnisignBareSignature_Proof> {
   try {
     return await ignisignSdkInstance.getBareSignatureProofs(headerToken);
   } catch (error) {

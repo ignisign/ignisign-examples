@@ -5,10 +5,10 @@ import * as fs from 'fs';
 import { getFileHash, saveBufferAsFile, streamToBuffer } from '../../utils/files.util';
 import { MulterFile } from '../../controllers/bare-signature.controller';
 import { IgnisignInitializerService } from '../ignisign/ignisign-sdk-initializer.service';
-import { IgnisignSdkUtilsService , Ignisign_BareSignature_SdkProofAccessTokenRequest } from '@ignisign/sdk';
+import { IgnisignSdkUtilsService , IgnisignBareSignature_SdkProofAccessTokenRequest } from '@ignisign/sdk';
 import { IgnisignSdkManagerBareSignatureService } from '../ignisign/ignisign-sdk-manager-bare-signature.service';
 import { findOneCallback, insertCallback } from './tinydb.utils';
-import { Ignisign_BareSignature_ProofAccessToken } from '@ignisign/public';
+import { IgnisignBareSignature_ProofAccessToken } from '@ignisign/public';
 import _ = require('lodash');
 import { SignPdfService } from '../../utils/pdf-utils/sign-pdf-utils';
 import { PKCS7_Utils } from '../../utils/pkcs7.utils';
@@ -57,13 +57,13 @@ async function getProofToken(bareSignature : BareSignature) : Promise<string> {
 
   const { ignisignAppId, ignisignAppEnv} = await IgnisignInitializerService.getAppContext();
 
-  const dto : Ignisign_BareSignature_SdkProofAccessTokenRequest = {
+  const dto : IgnisignBareSignature_SdkProofAccessTokenRequest = {
     code_verifier   : bareSignature.codeVerifier,
     redirect_uri,
     code            : bareSignature.accessToken,
   };
 
-  const response : Ignisign_BareSignature_ProofAccessToken = await IgnisignSdkManagerBareSignatureService.getBareSignatureProofToken(dto);
+  const response : IgnisignBareSignature_ProofAccessToken = await IgnisignSdkManagerBareSignatureService.getBareSignatureProofToken(dto);
 
   return response.access_token;
 
