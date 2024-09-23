@@ -92,8 +92,9 @@ async function createNewContract(customerId: string, employeeId: string, contrac
       documentIds : [documentId],
       signerIds   : [customer.signerId, employee.signerId],
       externalId  : contractId,
-      title       : 'Contract',
-      defaultSignatureMethod: IGNISIGN_SIGNATURE_METHOD_REF.SIMPLE_STD, // inject from the UI
+      title       : 'Contract (Simple Signature)',
+      
+      defaultSignatureMethod: IGNISIGN_SIGNATURE_METHOD_REF.SIMPLE_STD,
     };
 
     console.log(dto);
