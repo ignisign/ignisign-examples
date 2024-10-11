@@ -116,26 +116,38 @@ async function createM2mSignatureRequest(fileBuffer : Buffer, asPrivateFile : bo
       documentType: IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE,
     }
     document = doc;
-  }
-  else{
+  } else {
+    let documentType = IGNISIGN_DOCUMENT_TYPE.FILE;
+    if(mimeType === "application/xml")
+      documentType = IGNISIGN_DOCUMENT_TYPE.DATA_XML;
+    else if(mimeType === "application/pdf")
+      documentType = IGNISIGN_DOCUMENT_TYPE.PDF;
+    else if(mimeType === "application/json")
+      documentType = IGNISIGN_DOCUMENT_TYPE.DATA_JSON;
+
     const doc: IgnisignSealM2M_DocumentContentRequestDto = {
       contentB64: documentBase64,
       mimeType,
       // fileName,
       documentHash,
-      documentType: IGNISIGN_DOCUMENT_TYPE.FILE,
+      documentType,
     }
     document = doc;
   }
 
-  const {signatureRequestId } = await ignisignSdkInstance.signM2M({
+  const dto = {
     m2mId,
     document,
     documentHashSignedByM2MPrivateKey,
-  });
+  }
+
+  console.log("dto createM2mSignatureRequest", dto);
+
+  const {signatureRequestId, proofBase64 } = await ignisignSdkInstance.signM2M(dto);
 
   return {
     signatureRequestId,
+    proofBase64,
     m2mId
   }
 }
