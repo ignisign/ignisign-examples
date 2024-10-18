@@ -61,15 +61,15 @@ async function createSealSignatureRequest(signerId: string, selectedFile, asPriv
   const formData = new FormData();
   formData.append(`file`, selectedFile.file);
   formData.append('asPrivateFile', asPrivateFile.toString());
-  return http.post(`/v1/seal-creation/${signerId}`, formData, { headers: {'Content-Type': 'multipart/form-data'} })
+  return http.post(`/v1/seal-creation/${signerId}`, formData, { headers: {'Content-Type': 'multipart/form-data'}})
 }
 
-async function doM2MSeal(selectedFile, asPrivateFile : boolean): Promise<IgnisignSignatureProfile> {
+async function doM2MSeal(selectedFile, asPrivateFile : boolean): Promise<any> {
   const formData = new FormData();
   formData.append(`file`, selectedFile.file);
   formData.append('asPrivateFile', asPrivateFile.toString());
 
-  return http.post(`/v1/seal-m2m-sign`, formData, { headers: {'Content-Type': 'multipart/form-data'} })
+  return http.post(`/v1/seal-m2m-sign`, formData, { headers: {'Content-Type': 'multipart/form-data'}, responseType: 'blob' })
 }
 
 

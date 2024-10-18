@@ -101,7 +101,7 @@ async function init(appId: string, appEnv: IGNISIGN_APPLICATION_ENV, appSecret: 
   }
 }
 
-async function createM2mSignatureRequest(fileBuffer : Buffer, asPrivateFile : boolean, mimeType : string ): Promise<any> {
+async function createM2mSignatureRequest(fileBuffer : Buffer, asPrivateFile : boolean, mimeType : string ): Promise<{signatureRequestId: string, proofBase64: string, m2mId: string}> {
   const documentHash  = crypto.createHash('sha256').update(fileBuffer).digest('hex');
 
   const documentBase64 = fileBuffer.toString('base64');
@@ -141,7 +141,7 @@ async function createM2mSignatureRequest(fileBuffer : Buffer, asPrivateFile : bo
     documentHashSignedByM2MPrivateKey,
   }
 
-  console.log("dto createM2mSignatureRequest", dto);
+  // console.log("dto createM2mSignatureRequest", dto);
 
   const {signatureRequestId, proofBase64 } = await ignisignSdkInstance.signM2M(dto);
 

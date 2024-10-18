@@ -3,6 +3,7 @@ import { UploadRequest } from "./create-a-seal-approved"
 import { useSeal } from "../../contexts/seal.context";
 import { ApiService } from "../../services/api.service";
 import { Button } from "../../components-ui/button";
+import FileSaver from 'file-saver';
 
 export const CreateM2mSeal = () => {
 
@@ -28,9 +29,22 @@ export const CreateM2mSeal = () => {
   const doSeal = async () => {
     setLoading(true)
     try {
-      await ApiService.doM2MSeal(selectedFiles[0], asPrivateFile)
+      const blob = await ApiService.doM2MSeal(selectedFiles[0], asPrivateFile)
+      console.log("blob", blob)
+
+      const openFileDownloaded = (blob: Blob, filename: string) => {
+        const url = window.URL.createObjectURL(blob);
+        console.log("url", url)
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
+      openFileDownloaded(blob, 'seal-m2m-proof.pdf');
     } catch (error) {
-      
+      console.error(error)
     }
     setLoading(false)
   }

@@ -4,6 +4,8 @@ import { MulterFile } from "../../utils/controller.util";
 import { streamToBuffer } from "../../utils/files.util";
 import { IgnisignSdkManagerSealService } from "../ignisign/ignisign-sdk-manager-seal.service";
 import { db, findCallback } from "./tinydb.utils";
+import { Readable } from 'stream';
+
 
 const fs = require('fs');
 
@@ -29,12 +31,13 @@ async function sealIsComplete(signatureRequestId){
   }
 }
 
-async function createM2MSeal(file : MulterFile, asPrivateFile: boolean) {
+async function createM2MSeal(file : MulterFile, asPrivateFile: boolean) : Promise<Buffer> {
   const input = fs.createReadStream(file.path);
   const fileBuffer = await streamToBuffer(input);
 
   const {
     signatureRequestId,
+    proofBase64,
     m2mId,
   } = await IgnisignSdkManagerSealService.createM2mSignatureRequest(fileBuffer, asPrivateFile, file.mimetype);
 
@@ -45,6 +48,15 @@ async function createM2MSeal(file : MulterFile, asPrivateFile: boolean) {
     type: 'M2M',
   };
   await db.insert(SealModel, body);
+
+  // console.log("proofBase64", proofBase64)
+
+  
+  const proofBuffer = Buffer.from(proofBase64, 'base64');
+  
+
+ 
+  return proofBuffer;
 
 }
 

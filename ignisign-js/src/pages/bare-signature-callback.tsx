@@ -22,7 +22,9 @@ export const BareSignatureCallback = () => {
       }
 
       const token       = queryParams.get("code");
-      const state       = JSON.parse(queryParams.get("state") || '{}');
+      const state       = JSON.parse(decodeURIComponent(queryParams.get("state") || '{}'));
+
+      console.log("state", state)
 
       if(!token || !state?.externalId) {
         throw 'Token or bareSignatureId not found';

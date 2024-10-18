@@ -62,6 +62,7 @@ const Contracts = () => {
 
   const downloadSignatureProof = async (contractId) => {
     const blob = await ApiService.downloadSignatureProof(contractId)
+    
     FileSaver.saveAs(blob, 'signature-proof.pdf');
   }
 
@@ -81,7 +82,7 @@ const Contracts = () => {
         }
       </Card>
       {
-        isEmbedded && <Explanation_Contract_Embedded/>
+        isEmbedded && <Explanation_Contract_Embedded />
       }
       { (selectedUserId) && 
         <>
