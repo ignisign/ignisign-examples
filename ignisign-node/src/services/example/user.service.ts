@@ -47,7 +47,7 @@ async function getSignerProfileIds(appType : IGNISIGN_APPLICATION_TYPE) : Promis
   } else if(appType === IGNISIGN_APPLICATION_TYPE.SIGNATURE){
 
     const maybeSPCustomers = signerProfiles.find(sp => sp.name === "Customers");
-    const maybeSPEmployees = signerProfiles.find(sp => sp.name === "Employee");
+    const maybeSPEmployees = signerProfiles.find(sp => sp.name === "Employees");
     
     const employeeSignerProfileId = maybeSPEmployees ? maybeSPEmployees._id : signerProfiles[0]._id;
     const customerSignerProfileId = maybeSPCustomers ? maybeSPCustomers._id : signerProfiles[0]._id;

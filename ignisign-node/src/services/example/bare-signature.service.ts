@@ -37,6 +37,9 @@ async function getAuthorizationUrl(bareSignatureId: string) : Promise<string> {
   
   const codeChallenge = IgnisignSdkUtilsService.bareSiganture_GenerateCodeChallenge(bareSignature.codeVerifier);
 
+  console.log("codeChallenge : ", codeChallenge);
+  console.log("bareSignature.codeVerifier : ", bareSignature.codeVerifier);
+
   const { authorizationUrl } = await IgnisignSdkManagerBareSignatureService.getAuthorizationUrl({
     redirectUri   : redirect_uri,
     hashes        : [bareSignature.document.documentHash],
@@ -62,6 +65,8 @@ async function getProofToken(bareSignature : BareSignature) : Promise<string> {
     redirect_uri,
     code            : bareSignature.accessToken,
   };
+
+  console.log('code_verifier : ', dto.code_verifier);
 
   const response : IgnisignBareSignature_ProofAccessToken = await IgnisignSdkManagerBareSignatureService.getBareSignatureProofToken(dto);
 
@@ -209,6 +214,9 @@ async function getBareSignatures() : Promise<BareSignature[]> {
 
 
 async function saveAccessToken(bareSignatureId: string, token: string) : Promise<void> {
+
+  console.log('saveAccessToken : ', bareSignatureId, token);
+
   await _updateBareSignature(bareSignatureId, { 
     accessToken: token,
     status: BARE_SIGNATURE_STATUS.SIGNED
