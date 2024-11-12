@@ -30,6 +30,7 @@
     "date-fns": "^2.29.3",
     "dayjs": "^1.10.5",
     "env-cmd": "^10.1.0",
+    "fast-xml-parser": "^4.5.0",
     "file-saver": "^2.0.5",
     "history": "^5.0.0",
     "lodash": "^4.17.21",

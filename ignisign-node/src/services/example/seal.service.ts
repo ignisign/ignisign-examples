@@ -31,7 +31,7 @@ async function sealIsComplete(signatureRequestId){
   }
 }
 
-async function createM2MSeal(file : MulterFile, asPrivateFile: boolean) : Promise<Buffer> {
+async function createM2MSeal(file : MulterFile, inputType: string) : Promise<Buffer> {
   const input = fs.createReadStream(file.path);
   const fileBuffer = await streamToBuffer(input);
 
@@ -39,7 +39,7 @@ async function createM2MSeal(file : MulterFile, asPrivateFile: boolean) : Promis
     signatureRequestId,
     proofBase64,
     m2mId,
-  } = await IgnisignSdkManagerSealService.createM2mSignatureRequest(fileBuffer, asPrivateFile, file.mimetype);
+  } = await IgnisignSdkManagerSealService.createM2mSignatureRequest(fileBuffer, inputType, file.mimetype);
 
   const body: Seal = {
     signatureRequestId,

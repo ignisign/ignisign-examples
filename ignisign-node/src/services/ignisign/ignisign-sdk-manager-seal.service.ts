@@ -1,4 +1,4 @@
-import { IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_SIGNATURE_METHOD_REF, IGNISIGN_SIGNATURE_REQUEST_TYPE, IGNISIGN_SIGNER_CREATION_INPUT_REF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IgnisignSealM2M_DocumentContentRequestDto, IgnisignSealM2M_DocumentHashRequestDto, IgnisignSealM2M_DocumentXMLRequestDto, IgnisignSignatureRequest_WithDocName, IgnisignSignerProfile, IgnisignWebhook, IgnisignWebhookDto_Signature, IgnisignWebhookDto_SignatureProof_Success, IgnisignWebhookDto_SignatureRequest, IgnisignWebhook_ActionDto, IgnisignWebhook_CallbackParams } from "@ignisign/public";
+import { IGNISIGN_APPLICATION_ENV, IGNISIGN_DOCUMENT_TYPE, IGNISIGN_SIGNATURE_METHOD_REF, IGNISIGN_SIGNATURE_PROOF_TYPE, IGNISIGN_SIGNATURE_REQUEST_TYPE, IGNISIGN_SIGNER_CREATION_INPUT_REF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_PROOF, IGNISIGN_WEBHOOK_ACTION_SIGNATURE_REQUEST, IGNISIGN_WEBHOOK_MESSAGE_NATURE, IgnisignSealM2M_DocumentContentRequestDto, IgnisignSealM2M_DocumentHashRequestDto, IgnisignSealM2M_DocumentJSONRequestDto, IgnisignSealM2M_DocumentXMLRequestDto, IgnisignSignatureRequest_WithDocName, IgnisignSignerProfile, IgnisignWebhook, IgnisignWebhookDto_Signature, IgnisignWebhookDto_SignatureProof_Success, IgnisignWebhookDto_SignatureRequest, IgnisignWebhook_ActionDto, IgnisignWebhook_CallbackParams } from "@ignisign/public";
 import { IgnisignSdk, IgnisignSdkUtilsService } from "@ignisign/sdk";
 import { IgnisignSdkManagerCommonsService } from "./ignisign-sdk-manager-commons.service";
 import { SealService } from "../example/seal.service";
@@ -101,29 +101,65 @@ async function init(appId: string, appEnv: IGNISIGN_APPLICATION_ENV, appSecret: 
   }
 }
 
-async function createM2mSignatureRequest(fileBuffer : Buffer, asPrivateFile : boolean, mimeType : string ): Promise<{signatureRequestId: string, proofBase64: string, m2mId: string}> {
+async function createM2mSignatureRequest(
+  fileBuffer : Buffer, 
+  inputType: string, 
+  mimeType : string 
+): Promise<{signatureRequestId: string, proofBase64: string, m2mId: string}> {
+
+
+  enum InputType {
+    FILE = 'FILE',
+    FILE_PRIVATE = 'FILE_PRIVATE',
+    JSON = 'JSON',
+    XML = 'XML'
+  }
+
   const documentHash  = crypto.createHash('sha256').update(fileBuffer).digest('hex');
 
-  const documentBase64 = fileBuffer.toString('base64');
-
+  
   const { signature :documentHashSignedByM2MPrivateKey } = IgnisignSdkUtilsService.sealM2M_doSignPayload(m2mPrivateKey, documentHash)
 
+  let documentType = null;
   let document = null;
-  asPrivateFile = false;
-  if(asPrivateFile ) {
+  // asPrivateFile = false;
+
+  let dto : any = {
+    m2mId,
+    documentHashSignedByM2MPrivateKey,
+  }
+
+  if(inputType === InputType.FILE_PRIVATE) {
+    documentType = IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE;
     const doc: IgnisignSealM2M_DocumentHashRequestDto = {
       documentHash,
       documentType: IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE,
     }
+   
     document = doc;
-  } else {
-    let documentType = IGNISIGN_DOCUMENT_TYPE.FILE;
-    if(mimeType === "application/xml")
+    
+  } else if(inputType === InputType.XML){
+
       documentType = IGNISIGN_DOCUMENT_TYPE.DATA_XML;
-    else if(mimeType === "application/pdf")
+
+      const xmlContent = fileBuffer.toString('utf-8');
+
+      const doc: IgnisignSealM2M_DocumentXMLRequestDto = {
+        documentHash,
+        xmlContent,
+        documentType,
+      }
+      document = doc;
+    
+  } else if(inputType === InputType.FILE){
+
+    if(mimeType === "application/pdf") {
       documentType = IGNISIGN_DOCUMENT_TYPE.PDF;
-    else if(mimeType === "application/json")
-      documentType = IGNISIGN_DOCUMENT_TYPE.DATA_JSON;
+    } else {
+      documentType = IGNISIGN_DOCUMENT_TYPE.FILE;
+    }
+
+    const documentBase64 = fileBuffer.toString('base64');
 
     const doc: IgnisignSealM2M_DocumentContentRequestDto = {
       contentB64: documentBase64,
@@ -133,22 +169,79 @@ async function createM2mSignatureRequest(fileBuffer : Buffer, asPrivateFile : bo
       documentType,
     }
     document = doc;
+    
+  
+    dto = { ...dto, document }
+
+  } else if(inputType === InputType.JSON) {
+      documentType = IGNISIGN_DOCUMENT_TYPE.DATA_JSON;
+      try {
+        const jsonContent: any = JSON.parse(fileBuffer.toString('utf-8'));
+
+        const doc: IgnisignSealM2M_DocumentJSONRequestDto = {
+          documentHash,
+          jsonContent,
+          documentType,
+        }
+        document = doc;
+
+      } catch(e) {
+        throw new Error(`Error when parsing json file ${e.toString()}`);
+      }
+
+  } else {
+    documentType = IGNISIGN_DOCUMENT_TYPE.FILE;
+
+    const documentBase64 = fileBuffer.toString('base64');
+
+    const doc: IgnisignSealM2M_DocumentContentRequestDto = {
+      contentB64: documentBase64,
+      mimeType,
+      // fileName,
+      documentHash,
+      documentType,
+    }
+    document = doc;
+  
+
   }
 
-  const dto = {
-    m2mId,
-    document,
-    documentHashSignedByM2MPrivateKey,
-  }
+  dto = { ...dto, document }
+      
 
-  // console.log("dto createM2mSignatureRequest", dto);
+    
 
-  const {signatureRequestId, proofBase64 } = await ignisignSdkInstance.signM2M(dto);
+  console.log("dto createM2mSignatureRequest", dto);
 
-  return {
-    signatureRequestId,
-    proofBase64,
-    m2mId
+  const signResult = await ignisignSdkInstance.signM2M(dto);
+
+  console.log("signResult", signResult);
+  const {signatureRequestId, proofBase64, proofType } = signResult;
+
+  if(signResult.proofType === IGNISIGN_SIGNATURE_PROOF_TYPE.PDF_WITH_SIGNATURES) {
+    return {
+      signatureRequestId,
+      proofBase64,
+      m2mId
+    }
+  } else if(proofType === IGNISIGN_SIGNATURE_PROOF_TYPE.SIGNED_DATA){
+    const stringProof = Buffer.from(proofBase64, 'base64').toString('utf-8');
+
+    if(documentType === IGNISIGN_DOCUMENT_TYPE.DATA_JSON){
+      const jsonProof = JSON.parse(stringProof);
+
+      console.log("jsonProof", jsonProof);
+    } else {
+      console.log("xmlProof", stringProof);
+    }
+
+    return {
+      signatureRequestId,
+      proofBase64,
+      m2mId
+    }
+  } else {
+    throw new Error(`Proof type ${proofType} not supported`);
   }
 }
 
