@@ -36,11 +36,11 @@ export const SealController = (router: Router) => {
     async (req: Request & { file: MulterFile }, res: Response, next: NextFunction) => { 
       try {
 
-        const { asPrivateFile } = req.body;
+        const { inputType } = req.body;
         const file = req.file;
-        console.log("file", file, asPrivateFile)
+        console.log("file", file, inputType)
         
-      const proofBuffer = await SealService.createM2MSeal(file, Boolean(asPrivateFile));
+      const proofBuffer = await SealService.createM2MSeal(file, inputType);
 
       console.log("proofBuffer", proofBuffer)
       // Create a Readable stream from the proofBuffer

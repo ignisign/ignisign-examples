@@ -64,10 +64,10 @@ async function createSealSignatureRequest(signerId: string, selectedFile, asPriv
   return http.post(`/v1/seal-creation/${signerId}`, formData, { headers: {'Content-Type': 'multipart/form-data'}})
 }
 
-async function doM2MSeal(selectedFile, asPrivateFile : boolean): Promise<any> {
+async function doM2MSeal(selectedFile, inputType: string): Promise<any> {
   const formData = new FormData();
   formData.append(`file`, selectedFile.file);
-  formData.append('asPrivateFile', asPrivateFile.toString());
+  formData.append('inputType', inputType);
 
   return http.post(`/v1/seal-m2m-sign`, formData, { headers: {'Content-Type': 'multipart/form-data'}, responseType: 'blob' })
 }
