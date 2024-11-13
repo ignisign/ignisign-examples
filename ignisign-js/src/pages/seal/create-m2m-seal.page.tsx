@@ -29,6 +29,8 @@ const MESSAGES = {
   SEAL_ERROR: 'Error creating seal',
   UPLOAD_FILE_TO_SEAL: 'Upload file to seal',
   UPLOAD_PRIVATE_FILE_TO_SEAL : 'Upload file to seal',
+  USE_TEST_JSON: 'Use test JSON',
+  USE_TEST_XML: 'Use test XML',
   SETUP_INSTRUCTIONS: [
     'Create a new SEAL application in Ignisign console',
     'Create an API key for this application',
@@ -60,6 +62,28 @@ export const CreateM2mSeal = () => {
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
   };
+
+  const useTestJson = () => {
+    const testJson = JSON.stringify({
+      test: "Hello World",
+      number: 42,
+      nested: { key: "value" }
+    }, null, 2);
+    setTextInput(testJson);
+  };
+
+  const useTestXml = () => {
+    const testXml = `<?xml version="1.0" encoding="UTF-8"?>
+      <root>
+        <test>Hello World</test>
+        <number>42</number>
+        <nested>
+          <key>value</key>
+        </nested>
+      </root>`;
+    setTextInput(testXml);
+  };
+
 
   const validateInput = () => {
     try {
@@ -130,9 +154,9 @@ export const CreateM2mSeal = () => {
         return 'xades.xml';
       }
     } else if (inputType === InputType.JSON) {
-      return 'json';
+      return 'jws';
     } else if (inputType === InputType.XML) {
-      return 'xml';
+      return 'xades.xml';
     } else {
       return 'pdf';
     }
@@ -229,6 +253,11 @@ export const CreateM2mSeal = () => {
           </>
           ) : (
             <div>
+               <div className="flex gap-2 mb-4">
+                  <Button onClick={inputType === InputType.JSON ? useTestJson : useTestXml}>
+                    {inputType === InputType.JSON ? MESSAGES.USE_TEST_JSON : MESSAGES.USE_TEST_XML}
+                  </Button>
+              </div>
               <textarea
                 className="w-full h-40 border border-gray-300 rounded-md p-2"
                 value={textInput}

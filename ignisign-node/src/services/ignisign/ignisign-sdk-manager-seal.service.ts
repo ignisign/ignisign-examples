@@ -135,6 +135,10 @@ async function createM2mSignatureRequest(
       documentHash,
       documentType: IGNISIGN_DOCUMENT_TYPE.PRIVATE_FILE,
     }
+
+    if(mimeType) {
+      doc.mimeType = mimeType;
+    }
    
     document = doc;
     
@@ -228,9 +232,7 @@ async function createM2mSignatureRequest(
     const stringProof = Buffer.from(proofBase64, 'base64').toString('utf-8');
 
     if(documentType === IGNISIGN_DOCUMENT_TYPE.DATA_JSON){
-      const jsonProof = JSON.parse(stringProof);
-
-      console.log("jsonProof", jsonProof);
+      console.log("jsonProof", stringProof);
     } else {
       console.log("xmlProof", stringProof);
     }
