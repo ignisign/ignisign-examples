@@ -12,7 +12,7 @@
     "clean-win": "rd /s /q dist && del /f tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@ignisign/public": "4.1.0",
+    "@ignisign/public": "4.1.6",
     "@ignisign/sdk": "4.1.0",
     "asn1.js": "^5.4.1",
     "axios": "^1.6.2",
