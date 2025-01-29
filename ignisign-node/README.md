@@ -46,11 +46,4 @@ The sample is a straightforward CRM backend, demonstrating main Ignisign functio
   - `src/controllers/customer.controller.ts` and `src/controllers/seller.controller.ts`:
     - `POST /v1/customers` and `POST /v1/seller` for creating signers.
 
-### Additional Information
 
-- Global Documentation: [Ignisign Docs](https://docs.ignisign.io)
-- Ignisign Console: [Access Here](https://console.ignisign.io)
-- Ignisign NodeJS Library: [GitHub Repository](https://github.com/ignisign/ignisign-node)
-- Ignisign JS Library: [GitHub Repository](https://github.com/ignisign/ignisign-js)
-- Integration Mode Details: [Embedded or By-Side Integration](https://ignisign.io/docs/core-concepts/Embeded_or_By-Side_Integration)
-- Webhook Events Details: [Webhook Events](https://ignisign.io/docs/webhooks/webhooks)

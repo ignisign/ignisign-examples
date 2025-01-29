@@ -35,10 +35,3 @@ The application simulates a basic CRM system to demonstrate Ignisign's capabilit
 Key areas of the application include:
 - `src/components/embedded-signature.tsx`: Demonstrates initiating Ignisign JS instances.
 - `src/pages/create-contract.page.tsx`: Provides insights into creating signature requests.
-
-### Additional Resources
-
-- **Global Documentation**: [Ignisign Documentation](https://ignisign.io/docs/core-concepts/Overview)
-- **Ignisign Console**: [Access Here](https://console.ignisign.io)
-- **Ignisign JS Library**: [GitHub Repository](https://github.com/ignisign/ignisign-js)
-- **Integration Mode Details**: [Embedded or By-Side Integration](https://ignisign.io/docs/core-concepts/Embeded_or_By-Side_Integration)
