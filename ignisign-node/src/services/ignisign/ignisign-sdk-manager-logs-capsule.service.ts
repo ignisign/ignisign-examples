@@ -20,11 +20,11 @@ export const IgnisignSdkManagerLogCapsuleService = {
 /******************************************************************************************** INIT **********************************************************************************/
 /******************************************************************************************** ***************************************************************************************/
 
-async function init(appId: string, appEnv: IGNISIGN_APPLICATION_ENV, appSecret: string) {
+async function init(apiKey: string) {
   _logIfDebug("IgnisignSdkManagerSignatureService: init")
   
-  if(!appId || !appEnv || !appSecret)
-    throw new Error(`IGNISIGN_APP_ID, IGNISIGN_APP_ENV and IGNISIGN_APP_SECRET are mandatory to init IgnisignSdkManagerSignatureService`);
+  if(!apiKey)
+    throw new Error(`IGNISIGN_API_KEY is mandatory to init IgnisignSdkManagerLogCapsuleService`);
     
   try {
     if(isIgnisignSdkInstanceInitialized)
@@ -34,9 +34,7 @@ async function init(appId: string, appEnv: IGNISIGN_APPLICATION_ENV, appSecret: 
     
     // initialization of the Ignisign SDK
     ignisignSdkInstance = new IgnisignSdk({
-      appId,
-      appEnv,
-      appSecret,
+      apiKey,
       displayWarning  : true,
     })
 

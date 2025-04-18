@@ -49,11 +49,11 @@ function isEnabled(): boolean {
   return isIgnisignSdkInstanceInitialized;
 }
 
-async function init(appId: string, appEnv: IGNISIGN_APPLICATION_ENV, appSecret: string, m2mIdParam : string, m2mPrivateKeyParam: string) {
+async function init(apiKey: string, m2mIdParam : string, m2mPrivateKeyParam: string) {
   _logIfDebug("IgnisignSdkManagerSEALSignatureService: init")
   
-  if(!appId || !appEnv || !appSecret)
-    throw new Error(`IGNISIGN_APP_ID, IGNISIGN_APP_ENV and IGNISIGN_APP_SECRET are mandatory to init IgnisignSdkManagerSignatureService`);
+  if(!apiKey)
+    throw new Error(`IGNISIGN_API_KEY is mandatory to init IgnisignSdkManagerSealService`);
   
   m2mId         = m2mIdParam;
   m2mPrivateKey = m2mPrivateKeyParam
@@ -65,9 +65,7 @@ async function init(appId: string, appEnv: IGNISIGN_APPLICATION_ENV, appSecret: 
     
     // initialization of the Ignisign SDK
     ignisignSdkInstance = new IgnisignSdk({
-      appId,
-      appEnv,
-      appSecret,
+      apiKey,
       displayWarning  : true,
     })
 

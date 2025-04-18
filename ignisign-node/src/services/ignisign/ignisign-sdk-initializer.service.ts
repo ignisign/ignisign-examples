@@ -6,10 +6,9 @@ import { IgnisignSdkManagerSealService } from "./ignisign-sdk-manager-seal.servi
 import { IgnisignSdkManagerLogCapsuleService } from "./ignisign-sdk-manager-logs-capsule.service"
 import { Example_IgniSign_AppContext } from "../../models/example-app.models"
 
-const IGNISIGN_APP_ID     : string = process.env.IGNISIGN_APP_ID
-const IGNISIGN_APP_ENV    : IGNISIGN_APPLICATION_ENV = IGNISIGN_APPLICATION_ENV[process.env.IGNISIGN_APP_ENV]
+
 const IGNISIGN_APP_TYPE   : IGNISIGN_APPLICATION_TYPE = IGNISIGN_APPLICATION_TYPE[process.env.IGNISIGN_APP_TYPE]
-const IGNISIGN_APP_SECRET = process.env.IGNISIGN_APP_SECRET
+const IGNISIGN_API_KEY = process.env.IGNISIGN_API_KEY
 
 const DEBUG_LOG_ACTIVATED = false;
 const _logIfDebug = (...message) => { if(DEBUG_LOG_ACTIVATED) console.log(...message) }
@@ -22,9 +21,11 @@ export const IgnisignInitializerService = {
 }
 
 async function getAppContext( withAppType: boolean = false) : Promise<Example_IgniSign_AppContext>{
+  const { appId, appEnv } = IgnisignSdkUtilsService.exportAppIdAndEnv(IGNISIGN_API_KEY)
+
  return {
-    ignisignAppId : IGNISIGN_APP_ID,
-    ignisignAppEnv : IGNISIGN_APP_ENV,
+    ignisignAppId : appId,
+    ignisignAppEnv : appEnv,
     appType : withAppType ? IGNISIGN_APP_TYPE : undefined
   }
 }
@@ -51,11 +52,11 @@ async function initSdks(){
     switch (appContext.appType){
   
       case IGNISIGN_APPLICATION_TYPE.SIGNATURE:
-        await IgnisignSdkManagerSignatureService.init(appContext.ignisignAppId, appContext.ignisignAppEnv, IGNISIGN_APP_SECRET)
+        await IgnisignSdkManagerSignatureService.init(IGNISIGN_API_KEY)
         break;
   
       case IGNISIGN_APPLICATION_TYPE.BARE_SIGNATURE:
-        await IgnisignSdkManagerBareSignatureService.init(appContext.ignisignAppId, appContext.ignisignAppEnv, IGNISIGN_APP_SECRET)
+        await IgnisignSdkManagerBareSignatureService.init(IGNISIGN_API_KEY)
         break;
   
       case IGNISIGN_APPLICATION_TYPE.SEAL:
@@ -64,11 +65,11 @@ async function initSdks(){
           throw new Error(`IGNISIGN_M2M_ID and IGNISIGN_M2M_PRIVATE_KEY are mandatory to init IgnisignSdkManagerSealManager`);
   
         const privateKey = IgnisignSdkUtilsService.parsePrivateKeyFromEnv(process.env.IGNISIGN_M2M_PRIVATE_KEY)
-        await IgnisignSdkManagerSealService.init(appContext.ignisignAppId, appContext.ignisignAppEnv, IGNISIGN_APP_SECRET, process.env.IGNISIGN_M2M_ID, privateKey)
+        await IgnisignSdkManagerSealService.init(IGNISIGN_API_KEY, process.env.IGNISIGN_M2M_ID, privateKey)
         break;
   
       case IGNISIGN_APPLICATION_TYPE.LOG_CAPSULE:
-        await IgnisignSdkManagerLogCapsuleService.init(appContext.ignisignAppId, appContext.ignisignAppEnv, IGNISIGN_APP_SECRET)
+        await IgnisignSdkManagerLogCapsuleService.init(IGNISIGN_API_KEY)
         break;
       
   
