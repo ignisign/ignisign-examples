@@ -12,5 +12,9 @@ export const  FrontUrlProvider = {
   createLogCapsule          : () => '/create-log-capsule',
   createSealApproved        : () => '/create-seal-approved',
   signSealDoc               : (contractId = null) => `/seal/${contractId || ':contractId'}/sign`,
+  
+  // OAuth example
+  oauthTestPage                : () => '/oauth-test',
+  oauthCallbackPage            : () => '/oauth-callback',
 }
 

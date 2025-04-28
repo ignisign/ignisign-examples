@@ -46,6 +46,54 @@ export const ApiService = {
   createLogCapsule,
   getSeals,
   getNewSignerAuthSecret,
+  
+  // OAuth-related methods
+  oauthTestConnection,
+  oauthRefreshToken,
+  oauthGetUserInfo,
+  oauthTestIgnisignApi,
+  oauthRunApiTests,
+  oauthGetTestRefreshToken,
+  oauthValidateToken,
+}
+
+/**
+ * OAuth-related methods
+ */
+
+// Test the connection with an access token
+async function oauthTestConnection(accessToken: string): Promise<{ success: boolean, message: string }> {
+  return http.post('/v1/oauth/test-connection', { accessToken });
+}
+
+// Refresh an OAuth token
+async function oauthRefreshToken(refreshToken: string): Promise<any> {
+  return http.post('/v1/oauth/refresh-token', { refreshToken });
+}
+
+// Get user information using an access token
+async function oauthGetUserInfo(accessToken: string): Promise<any> {
+  return http.post('/v1/oauth/user-info', { accessToken });
+}
+
+// Test Ignisign API integration with access token
+async function oauthTestIgnisignApi(accessToken: string): Promise<any> {
+  return http.post('/v1/oauth/test-ignisign-api', { accessToken });
+}
+
+// Run a series of API tests with access token
+async function oauthRunApiTests(accessToken: string): Promise<any> {
+  return http.post('/v1/oauth/run-api-tests', { accessToken });
+}
+
+// Get a test refresh token for development/testing purposes
+async function oauthGetTestRefreshToken(): Promise<any> {
+  return http.get('/v1/oauth/test-refresh-token');
+}
+
+// Validate an access token and return information about it
+async function oauthValidateToken(accessToken: string): Promise<any> {
+  return http.post('/v1/oauth/validate-token', { accessToken });
 }
 
 async function getNewSignerAuthSecret(ignisignSignerId): Promise<string> {

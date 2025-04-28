@@ -23,6 +23,8 @@ import { CreateM2mSeal } from './pages/seal/create-m2m-seal.page';
 import { Seals } from './pages/seal/seals.page';
 import { SealApprovedPage } from './pages/seal/create-a-seal-approved';
 import SignASeal from './pages/seal/sign-a-contract.page';
+import { OAuthTestPage } from './pages/oauth-test.page';
+import { OAuthCallbackPage } from './pages/oauth-callback.page';
 
 const NotFoundPage = () => {
   return (
@@ -69,6 +71,12 @@ function AppRouter() {
         </Route>
         <Route exact path={FrontUrlProvider.createLogCapsule()}>
           <CreateALogCapsulePage/>
+        </Route>
+        <Route exact path={FrontUrlProvider.oauthTestPage()}>
+          <OAuthTestPage/>
+        </Route>
+        <Route exact path={FrontUrlProvider.oauthCallbackPage()}>
+          <OAuthCallbackPage/>
         </Route>
         <Route>
           <NotFoundPage/>

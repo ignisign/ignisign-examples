@@ -25,6 +25,7 @@ import { BareSignatureController } from './controllers/bare-signature.controller
 import { IgnisignSdkManagerSealService } from './services/ignisign/ignisign-sdk-manager-seal.service';
 import { IgnisignInitializerService } from './services/ignisign/ignisign-sdk-initializer.service';
 import { LogCapsuleController } from './controllers/log-capsule.controller';
+import oauthRoutes from './routes/oauth.routes';
 
 validateEnv()
 
@@ -58,6 +59,8 @@ const initExampleApp = async () =>{
     await BareSignatureController(router);
     await LogCapsuleController(router);
     
+    // Register OAuth routes
+    router.use('/v1/oauth', oauthRoutes);
 
     app.use(router);
     app.use(errorMiddleware);

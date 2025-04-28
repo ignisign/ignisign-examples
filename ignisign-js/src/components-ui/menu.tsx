@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -10,6 +9,7 @@ import { useHistory, useLocation } from "react-router";
 import { FrontUrlProvider } from '../utils/front-url-provider';
 import { Button } from './button';
 import { useGlobal } from '../contexts/global.context';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -59,6 +59,7 @@ const MenuContent = () => {
 
     { isAppBareSignature  && <MenuItem link={FrontUrlProvider.bareSignaturePage()} text='Create a bare signature'/>}
     { isAppLogCapsule     && <MenuItem link={FrontUrlProvider.createLogCapsule()} text='Create a log capsule'/>}
+    <MenuItem link={FrontUrlProvider.oauthTestPage()} text='OAuth Provider Test'/>
   </div>
 }
 

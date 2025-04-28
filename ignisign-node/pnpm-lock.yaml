@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@ignisign/public':
-        specifier: 4.1.6
-        version: 4.1.6
+        specifier: 4.2.1
+        version: 4.2.1
       '@ignisign/sdk':
-        specifier: 4.1.3
-        version: 4.1.3
+        specifier: 4.2.0
+        version: 4.2.0
       asn1.js:
         specifier: ^5.4.1
         version: 5.4.1
@@ -145,14 +145,14 @@ packages:
   '@dabh/diagnostics@2.0.3':
     resolution: {integrity: sha512-hrlQOIi7hAfzsMqlGSFyVucrx38O+j6wiGOf//H2ecvIEqYN4ADBSS2iLMh5UFyDunCNniUIPk/q3riFv45xRA==}
 
-  '@ignisign/public@4.1.3':
-    resolution: {integrity: sha512-cfV9kja+oOlU4W/1mkanuqHo2ZCYFpo95yKEyRrVGV7XQAKTy8wJJmIiS5zmmNhKs1TcxyYA5dRSyHH5wxXvrA==}
+  '@ignisign/public@4.2.0':
+    resolution: {integrity: sha512-SxcySfPQEKxleTyIF1A47Hkpb+u6MkOPIkqaM6U4qJQS6qp0hICFjf3OjvwJxS15Q+IZjYCJSGDsxK5ml70miA==}
 
-  '@ignisign/public@4.1.6':
-    resolution: {integrity: sha512-2DUcJZAZ3ApinXtyij9kKJAppC+x5G4mpX4UORSLyTCwRuJBKvFt+N3RBHvEqnzhrMrRZrXiKlMdZWfPXSEtog==}
+  '@ignisign/public@4.2.1':
+    resolution: {integrity: sha512-kItOHPn/gqdlAsISlc6siuXgoZROyX0qUqzS81KA9DbhMw7FQ6Pl1fJlMDnBdHB38VYw9gHi2CyYF+Xrb/utMw==}
 
-  '@ignisign/sdk@4.1.3':
-    resolution: {integrity: sha512-57hhutYC25PO1lZs+7v5d1zPsUKx2r10yPofO6i7vmgNfZ7nHNp6jrLJhkT2RkRSoajFG61gFhdGlq4FmfHy8Q==}
+  '@ignisign/sdk@4.2.0':
+    resolution: {integrity: sha512-B32RKfqOTXnlpozmnRVcAksmjIUxJM/19cZR1RLuEazGlJyjaLmfQbxwqUtli2jxK6da7RR7CmgicPyf5tYnYg==}
 
   '@jest/types@25.5.0':
     resolution: {integrity: sha512-OXD0RgQ86Tu3MazKo8bnrkDRaDXXMGUqd+kTtLtK1Zb7CRzQcaSRPPPV37SvYTdevXEBVxe0HXylEjs8ibkmCw==}
@@ -1498,21 +1498,21 @@ snapshots:
       enabled: 2.0.0
       kuler: 2.0.0
 
-  '@ignisign/public@4.1.3':
+  '@ignisign/public@4.2.0':
     dependencies:
       class-transformer: 0.5.1
       class-validator: 0.14.1
       reflect-metadata: 0.1.14
 
-  '@ignisign/public@4.1.6':
+  '@ignisign/public@4.2.1':
     dependencies:
       class-transformer: 0.5.1
       class-validator: 0.14.1
       reflect-metadata: 0.1.14
 
-  '@ignisign/sdk@4.1.3':
+  '@ignisign/sdk@4.2.0':
     dependencies:
-      '@ignisign/public': 4.1.3
+      '@ignisign/public': 4.2.0
       axios: 0.21.4
       form-data: 4.0.2
       typescript: 4.9.5
