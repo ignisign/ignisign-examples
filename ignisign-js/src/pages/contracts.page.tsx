@@ -12,6 +12,7 @@ import { ApiService } from '../services/api.service'
 import FileSaver from 'file-saver'
 import { IGNISIGN_INTEGRATION_MODE } from '@ignisign/public'
 import { Example_AC_Signature } from '../models/global.front-model'
+import { safeWindowOpen } from '../utils/url-validation'
 
 const Explanation_Contract_Header = () => {
   return ( <div>
@@ -67,7 +68,14 @@ const Contracts = () => {
   }
 
   const openSignatureProofUrl = async (url) => {
-    window.open(url, '_blank')
+    // SECURITY: Validate URL before opening to prevent open redirect attacks
+    // Allow Ignisign domains for signature proofs
+    const allowedDomains = ['ignisign.io', 'localhost'];
+    
+    if (!safeWindowOpen(url, allowedDomains)) {
+      console.error('Blocked attempt to open untrusted URL');
+      alert('Unable to open URL: Security validation failed');
+    }
   }
 
   return (
