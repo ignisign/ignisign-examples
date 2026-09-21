@@ -101,6 +101,20 @@ This document outlines the security considerations and best practices for the Ig
 - Dangerous protocols (javascript:, data:, etc.) are blocked
 - `window.opener` is cleared to prevent reverse tabnabbing
 
+#### 7. Sensitive Token Logging (Fixed)
+**Severity**: MEDIUM  
+**Status**: ✅ FIXED  
+**Location**: `ignisign-node/src/services/oauth.service.ts`, `ignisign-node/src/services/example/bare-signature.service.ts`
+
+**Issue**: Access tokens, refresh tokens, authorization codes, and code verifiers were being logged to console, potentially exposing them in production logs.
+
+**Fix**:
+- Token values now redacted in all log statements
+- Logs show `[REDACTED]` instead of actual token values
+- Prevents information disclosure via log files
+
+**Found**: 2026-09-21 weekly security re-scan
+
 ## Historical Security Issues
 
 ### Previously Committed Secrets (Requires Rotation)
