@@ -76,15 +76,24 @@ This document outlines the security considerations and best practices for the Ig
 #### 5. Vulnerable Dependencies (Fixed)
 **Severity**: HIGH  
 **Status**: ✅ FIXED  
-**Location**: `ignisign-js/package.json`
+**Location**: `ignisign-js/package.json`, `ignisign-node/package.json`
 
-**Issue**: axios@0.21.1 has known CVEs including:
-- CVE-2021-3749: Regular expression denial of service
-- And other security vulnerabilities
+**Issue**: Multiple vulnerable dependencies with known CVEs:
+- axios@0.21.1 has CVE-2021-3749 (Regular expression denial of service)
+- express@4.17.3 has CVE-2022-24999 (Open redirect in res.location/res.redirect)
+- lodash@4.17.20 has prototype pollution vulnerabilities
+- dotenv@8.2.0 is significantly outdated (5+ years old)
 
-**Fix**: Updated axios to ^1.6.8 (current secure version)
+**Fix**: 
+- Updated axios to ^1.20.0 (latest)
+- Updated express from 4.17.3 to ^4.21.2 (fixes CVE-2022-24999 and other vulnerabilities)
+- Updated lodash from 4.17.20 to ^4.18.1 (fixes prototype pollution)
+- Updated dotenv from 8.2.0 to ^16.4.7 (latest stable)
+- Updated helmet from 3.22.0 to ^8.3.0 with v8 API compatibility
+- Updated cors from 2.8.5 to ^2.8.6
+- Updated jsonwebtoken from 9.0.2 to ^9.0.3
 
-**Action Required**: Run `npm install` or `pnpm install` to update dependencies
+**Action Required**: Run `npm install` after merging to install updated dependencies
 
 ### MEDIUM Severity Issues (Fixed)
 
@@ -145,6 +154,35 @@ IGNISIGN_APP_SECRET=sk_development_[REDACTED]
    - The secret remains in git history permanently
    - Rotation is the only mitigation
    - Consider using tools like `git-filter-repo` or `BFG Repo-Cleaner` for internal forks, but the public GitHub history cannot be changed
+
+## Recent Security Audits
+
+### 2026-10-04 Weekly Audit
+
+**New Findings:**
+- **Express 4.17.3 → 4.21.2**: Fixed CVE-2022-24999 (open redirect) and multiple other security issues
+- **Lodash 4.17.20 → 4.18.1**: Fixed prototype pollution vulnerabilities  
+- **Dotenv 8.2.0 → 16.4.7**: Updated from 2019 version to current release (2024)
+
+**Status:** All HIGH severity issues addressed. No CRITICAL issues found.
+
+**Note:** Dependabot is currently disabled on this repository. Enable it in repository settings for automated dependency security alerts.
+
+### 2026-09-28 Weekly Audit
+
+**Findings:**
+- Updated axios from 1.6.x to 1.20.0
+- Updated helmet from 3.22.0 to 8.3.0 with v8 API
+- Updated cors and jsonwebtoken
+- Extended token logging redaction to frontend
+
+**Status:** All security patches applied successfully.
+
+### 2026-09-21 Weekly Audit  
+
+**Findings:**
+- Token logging information disclosure in backend OAuth service
+- Fixed by redacting all token values in logs
 
 ## Security Best Practices
 
