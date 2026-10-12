@@ -252,8 +252,8 @@ git show 2eae49d^:ignisign-node-example/.env
 
 **Exposed Credentials:**
 ```
-IGNISIGN_APP_ID: ac32e211-6341-4e18-bfc9-1ac945f790a7
-IGNISIGN_APP_SECRET: sk_development_f307a1e7-428a-4717-9287-acdef3b4b3d5
+IGNISIGN_APP_ID: [REDACTED]
+IGNISIGN_APP_SECRET: [REDACTED]
 ```
 
 **Action Required:** ⚠️ IMMEDIATE ROTATION REQUIRED

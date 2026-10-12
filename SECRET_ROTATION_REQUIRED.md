@@ -14,8 +14,8 @@
 The following credentials were committed to the repository and remain permanently in git history:
 
 ```
-IGNISIGN_APP_ID: ac32e211-6341-4e18-bfc9-1ac945f790a7
-IGNISIGN_APP_SECRET: sk_development_f307a1e7-428a-4717-9287-acdef3b4b3d5
+IGNISIGN_APP_ID: [REDACTED]
+IGNISIGN_APP_SECRET: [REDACTED]
 ```
 
 ### Timeline
@@ -32,7 +32,7 @@ IGNISIGN_APP_SECRET: sk_development_f307a1e7-428a-4717-9287-acdef3b4b3d5
 
 **Steps:**
 1. Log into the IgniSign Console
-2. Navigate to application ID: `ac32e211-6341-4e18-bfc9-1ac945f790a7`
+2. Navigate to application ID: `[REDACTED]`
 3. Generate new APP_SECRET (invalidates the exposed secret)
 4. Update all production systems with the new secret
 5. Verify the old secret is no longer valid

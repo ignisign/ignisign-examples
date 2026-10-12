@@ -24,8 +24,8 @@
 
 ### Critical Items
 1. ⚠️ **Historical Secret Rotation REQUIRED** (Outstanding since 2023-09-15)
-   - IGNISIGN_APP_ID: `ac32e211-6341-4e18-bfc9-1ac945f790a7`
-   - IGNISIGN_APP_SECRET: `sk_development_f307a1e7-428a-4717-9287-acdef3b4b3d5`
+   - IGNISIGN_APP_ID: `[REDACTED]`
+   - IGNISIGN_APP_SECRET: `[REDACTED]`
    - **Action:** Rotate immediately in IgniSign Console
    - **Documentation:** `SECRET_ROTATION_REQUIRED.md`
 
@@ -125,8 +125,8 @@ find . -type f -path "*/.github/workflows/*.yml"
 
 **Exposed Credentials:**
 ```
-IGNISIGN_APP_ID: ac32e211-6341-4e18-bfc9-1ac945f790a7
-IGNISIGN_APP_SECRET: sk_development_f307a1e7-428a-4717-9287-acdef3b4b3d5
+IGNISIGN_APP_ID: [REDACTED]
+IGNISIGN_APP_SECRET: [REDACTED]
 ```
 
 ### Rotation Documentation ✅
@@ -311,7 +311,7 @@ As per instructions:
 
 1. ⚠️ **ROTATE HISTORICAL SECRET** - 3+ years outstanding
    - Action: Log into IgniSign Console
-   - Navigate to app: `ac32e211-6341-4e18-bfc9-1ac945f790a7`
+   - Navigate to app: `[REDACTED]`
    - Generate new APP_SECRET
    - See: `SECRET_ROTATION_REQUIRED.md`
 
@@ -428,7 +428,7 @@ As per instructions:
 ### Critical Actions Required
 
 **IMMEDIATE:**
-1. ⚠️ Rotate credentials: `ac32e211-6341-4e18-bfc9-1ac945f790a7`
+1. ⚠️ Rotate credentials: `[REDACTED]`
 2. ⚠️ Audit access logs: Sep 2023 - Present
 3. ⚠️ Verify old secret invalidated
 

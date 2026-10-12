@@ -135,7 +135,7 @@ This document outlines the security considerations and best practices for the Ig
 A `.env` file containing real API credentials was committed and later deleted:
 
 ```
-IGNISIGN_APP_ID=ac32e211-6341-4e18-bfc9-1ac945f790a7
+IGNISIGN_APP_ID=[REDACTED]
 IGNISIGN_APP_ENV=DEVELOPMENT
 IGNISIGN_APP_SECRET=sk_development_[REDACTED]
 ```
@@ -144,7 +144,7 @@ IGNISIGN_APP_SECRET=sk_development_[REDACTED]
 
 1. **IMMEDIATELY ROTATE** the exposed API credentials:
    - Log into the IgniSign Console
-   - Navigate to the application: `ac32e211-6341-4e18-bfc9-1ac945f790a7`
+   - Navigate to the application: `[REDACTED]`
    - Generate new API keys
    - Update all systems using the old credentials
 
