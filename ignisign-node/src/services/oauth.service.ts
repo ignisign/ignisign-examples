@@ -67,7 +67,8 @@ export class OAuthService {
    */
   async refreshToken(refreshToken: string): Promise<TokenResponse> {
     try {
-      console.log('Refreshing token with refresh token:', refreshToken);
+      // SECURITY: Redact token from logs to prevent information disclosure
+      console.log('Refreshing token with refresh token:', '[REDACTED]');
       
       // Prepare token request parameters
       const tokenParams = new URLSearchParams({
@@ -83,7 +84,8 @@ export class OAuthService {
         }
       });
       
-      console.log('Token refresh successful:', response.data);
+      // SECURITY: Don't log token response which contains sensitive data
+      console.log('Token refresh successful');
       return response.data;
     } catch (error) {
       console.error('Error refreshing token:', error);
@@ -285,10 +287,11 @@ export class OAuthService {
    */
   async getToken(code: string, redirectUri?: string, codeVerifier?: string): Promise<TokenResponse> {
     try {
+      // SECURITY: Redact sensitive parameters from logs
       console.log('Exchanging code for token:', {
-        code: code,
+        code: '[REDACTED]',
         redirectUri: redirectUri,
-        codeVerifier: codeVerifier ? `${codeVerifier.substring(0, 5)}...` : undefined
+        codeVerifier: codeVerifier ? '[REDACTED]' : undefined
       });
       
       // Prepare token request parameters

@@ -73,16 +73,17 @@ export const OAuthAPI = {
   }): Promise<TokenResponse> => {
     const verbose = params.verbose || false;
     
+    // SECURITY: Redact sensitive OAuth parameters from logs
     if (verbose) {
       console.log('Exchanging code for token with verbose logging enabled');
-      console.log('Code:', params.code);
+      console.log('Code:', '[REDACTED]');
       console.log('Code verifier length:', params.code_verifier.length);
-      console.log('Code verifier prefix:', params.code_verifier.substring(0, 10));
+      console.log('Code verifier prefix:', '[REDACTED]');
       console.log('Redirect URI:', params.redirect_uri);
     } else {
       console.log('Exchanging code for token with params:', {
-        code: params.code,
-        code_verifier: `${params.code_verifier.substring(0, 5)}...${params.code_verifier.substring(params.code_verifier.length - 5)}`,
+        code: '[REDACTED]',
+        code_verifier: '[REDACTED]',
         redirect_uri: params.redirect_uri,
       });
     }
@@ -107,10 +108,11 @@ export const OAuthAPI = {
       body.append(key, value);
     });
     
+    // SECURITY: Don't log request body as it contains sensitive OAuth parameters
     if (verbose) {
-      console.log('Token request body:', body.toString());
+      console.log('Token request body:', '[REDACTED - contains sensitive OAuth parameters]');
     } else {
-      console.log('Token request body (partial):', body.toString().substring(0, 50) + '...');
+      console.log('Token request prepared');
     }
     
     try {
