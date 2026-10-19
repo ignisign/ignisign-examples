@@ -79,5 +79,43 @@
   "devDependencies": {
     "@capacitor/cli": "^3.1.2",
     "@craco/craco": "^6.4.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "axios": "^1.20.0",
+      "lodash": "^4.17.21",
+      "node-forge": "^1.3.1",
+      "ejs": "^3.1.10",
+      "browserslist": "^4.24.4",
+      "postcss": "^8.4.49",
+      "loader-utils": "^2.0.4",
+      "nth-check": "^2.1.1",
+      "minimatch": "^3.1.2",
+      "xml2js": "^0.6.2",
+      "webpack-dev-middleware": "^5.3.4",
+      "immer": "^9.0.21",
+      "braces": "^3.0.3",
+      "micromatch": "^4.0.8",
+      "rollup": "^2.79.2",
+      "http-proxy-middleware": "^2.0.7",
+      "ip": "^2.0.1",
+      "ansi-html": "^0.0.9",
+      "cross-spawn": "^7.0.6",
+      "pbkdf2": "^3.1.3",
+      "on-headers": "^1.0.3",
+      "lodash.template": "^4.5.0",
+      "shell-quote": "^1.8.2",
+      "webpack-dev-server": "^3.11.3",
+      "validator": "^13.12.0",
+      "sha.js": "^2.4.11",
+      "tmp": "^0.2.3",
+      "form-data": "^4.0.1",
+      "elliptic": "^6.6.0",
+      "tar": "^6.2.2",
+      "diff": "^5.2.0",
+      "js-yaml": "^4.1.0",
+      "semver": "^7.6.3",
+      "jsonpath": "^1.1.1"
+    }
   }
 }
