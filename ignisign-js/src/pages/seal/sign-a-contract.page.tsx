@@ -28,7 +28,7 @@ const SignASeal = () => {
     try {
       setIsLoaded(false)
       const authSecret = await ApiService.getNewSignerAuthSecret(seal.ignisignSignerId)
-      console.log({authSecret});
+      console.log('[REDACTED: authSecret]');
       
       setIgnisignUserAuthSecret(authSecret)
     } catch (error) {

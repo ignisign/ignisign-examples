@@ -6,6 +6,7 @@ global['appRoot'] = path.join(__dirname, '..');
 import * as express from 'express';
 import cookieParser = require('cookie-parser');
 import cors = require('cors');
+import helmet = require('helmet');
 
 import validateEnv from './utils/validate-env';
   
@@ -40,10 +41,46 @@ const initExampleApp = async () =>{
     const app     : express.Application = express();
     const router  : express.Router      = express.Router();
 
+    // SECURITY: Add helmet middleware for secure HTTP headers
+    app.use(helmet({
+      contentSecurityPolicy: {
+        directives: {
+          "default-src": ["'self'"],
+          "style-src": ["'self'", "'unsafe-inline'"],
+          "script-src": ["'self'"],
+          "img-src": ["'self'", "data:", "https:"],
+        },
+      },
+      strictTransportSecurity: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true
+      }
+    }));
+
     app.use(express.json({limit: "15mb"}));
     app.use(express.urlencoded({ extended: true , limit: "15mb"}));
     app.use(cookieParser());
-    app.use(cors({ origin: true, credentials: true }));
+    
+    // SECURITY: Configure CORS with explicit allowed origins
+    // In production, replace with your actual frontend URL(s)
+    const allowedOrigins = process.env.ALLOWED_ORIGINS 
+      ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+      : ['http://localhost:3456'];
+    
+    app.use(cors({ 
+      origin: (origin, callback) => {
+        // Allow requests with no origin (e.g., mobile apps, Postman)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error(`Origin ${origin} not allowed by CORS policy`));
+        }
+      },
+      credentials: true 
+    }));
     app.use('/uploads', checkBearerToken, express.static('uploads'));
     
 
