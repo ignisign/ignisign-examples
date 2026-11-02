@@ -3,10 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { jsonError, jsonSuccess } from "../utils/controller.util";
 import { BareSignatureService } from "../services/example/bare-signature.service";
 import { deleteFile } from "../utils/files.util";
-
-const UPLOAD_TMP = 'uploads_tmp/';
-const multer     = require('multer');
-const upload     = multer({ dest: UPLOAD_TMP });
+import { secureUpload } from "../utils/multer-config.util";
 
 // https://github.com/expressjs/multer/issues/343
 export interface MulterFile {
@@ -19,7 +16,7 @@ export interface MulterFile {
 export const BareSignatureController = (router: Router) => {
 
   router.post('/v1/bare-signatures/upload-file', 
-    upload.single('file'), async (req: Request & { file: MulterFile }, res: Response, next: NextFunction) => { 
+    secureUpload.single('file'), async (req: Request & { file: MulterFile }, res: Response, next: NextFunction) => { 
     try {
       console.log('BareSignatureController : ', req.file);
 
