@@ -25,6 +25,8 @@ This is the backend server for the Ignisign example application, demonstrating v
 2. Configure environment variables:
    - Copy `.env.example` to `.env` and fill in the necessary values.
    - Make sure to set the OAuth provider URL if needed.
+   - `JWT_SECRET` is required: the server refuses to start without it. Generate one with `openssl rand -base64 32`.
+   - `ALLOWED_ORIGINS` (comma-separated) lists the front-end origins allowed by CORS; defaults to `http://localhost:3456`.
 
 3. Start the development server:
    ```

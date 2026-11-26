@@ -12,13 +12,17 @@ const ALLOWED_MIME_TYPES = [
   'image/gif',
   'application/msword',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  // M2M seal example sends JSON / XML payloads as the uploaded file
+  'application/json',
+  'application/xml',
+  'text/xml',
 ];
 
 // SECURITY: Maximum file size (15MB)
 const MAX_FILE_SIZE = 15 * 1024 * 1024;
 
 // SECURITY: File filter to validate uploads
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+const fileFilter = (req: any, file: { mimetype: string }, cb: (error: Error | null, acceptFile?: boolean) => void) => {
   // Check MIME type
   if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
     cb(null, true);

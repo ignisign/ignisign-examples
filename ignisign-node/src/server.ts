@@ -6,7 +6,7 @@ global['appRoot'] = path.join(__dirname, '..');
 import * as express from 'express';
 import cookieParser = require('cookie-parser');
 import cors = require('cors');
-import helmet = require('helmet');
+import helmet from 'helmet';
 
 import validateEnv from './utils/validate-env';
   
