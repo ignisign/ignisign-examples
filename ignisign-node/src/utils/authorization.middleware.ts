@@ -1,6 +1,11 @@
 const jwt = require('jsonwebtoken');
 
-const secretKey = 'your_secret_key'
+// SECURITY: JWT secret must be set via environment variable
+const secretKey = process.env.JWT_SECRET;
+
+if (!secretKey) {
+  throw new Error('CRITICAL SECURITY ERROR: JWT_SECRET environment variable is not set. This is required for secure token generation and verification.');
+}
 
 export const checkBearerToken = (req, res, next) => {
   const token = req.headers.authorization;

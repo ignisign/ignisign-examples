@@ -215,7 +215,8 @@ async function getBareSignatures() : Promise<BareSignature[]> {
 
 async function saveAccessToken(bareSignatureId: string, token: string) : Promise<void> {
 
-  console.log('saveAccessToken : ', bareSignatureId, token);
+  // SECURITY: Redact token from logs to prevent information disclosure
+  console.log('saveAccessToken : ', bareSignatureId, '[REDACTED]');
 
   await _updateBareSignature(bareSignatureId, { 
     accessToken: token,

@@ -9,9 +9,10 @@ import { IgnisignSdkManagerSignatureService } from "../services/ignisign/ignisig
 import { IgnisignSdkManagerSealService } from "../services/ignisign/ignisign-sdk-manager-seal.service";
 import { SealService } from "../services/example/seal.service";
 import { Readable } from "stream";
+import { secureUpload } from "../utils/multer-config.util";
+
 const crypto = require('crypto');
 const fs = require('fs');
-const multer    = require('multer');
   
 function getFileHash(filePath, algorithm = 'sha256') {
   return new Promise((resolve, reject) => {
@@ -24,15 +25,11 @@ function getFileHash(filePath, algorithm = 'sha256') {
   });
 }
 
-const UPLOAD_TMP = 'uploads_tmp/'
-
-const upload    = multer({ dest: UPLOAD_TMP });
-
 
 export const SealController = (router: Router) => {
 
   
-  router.post('/v1/seal-m2m-sign', upload.single('file'),
+  router.post('/v1/seal-m2m-sign', secureUpload.single('file'),
     async (req: Request & { file: MulterFile }, res: Response, next: NextFunction) => { 
       try {
 
@@ -65,7 +62,7 @@ export const SealController = (router: Router) => {
       } catch(e) { next(e) }
     })
 
-    router.post('/v1/seal-creation/:signerId', upload.single('file'),
+    router.post('/v1/seal-creation/:signerId', secureUpload.single('file'),
     async (req: Request & { file: MulterFile }, res: Response, next: NextFunction) => { 
       try {
         const file = req.file;

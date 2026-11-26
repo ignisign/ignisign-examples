@@ -5,11 +5,7 @@ import { jsonError, jsonSuccess, MulterFile } from "../utils/controller.util";
 import { deleteFile } from "../utils/files.util";
 import {Readable} from 'stream'
 import { Contract, ContractContext } from "../models/contract.db.model";
-
-const multer    = require('multer');
-
-const UPLOAD_TMP = 'uploads_tmp/'
-const upload    = multer({ dest: UPLOAD_TMP });
+import { secureUpload } from "../utils/multer-config.util";
 
 
 
@@ -51,7 +47,7 @@ export const ContractController = (router: Router) => {
   // This endpoint is used to create a new contract.
   // The file is uploaded in the same time.
   // the `ContractService.createNewContract` used bellow method hightly communicate with Ignisign SDK.
-  router.post('/v1/contracts', upload.single('contractFile'), async (req: Request & { file: MulterFile }, res: Response, next: NextFunction) => { 
+  router.post('/v1/contracts', secureUpload.single('contractFile'), async (req: Request & { file: MulterFile }, res: Response, next: NextFunction) => { 
 
     let pathsToDelete = [];
     
