@@ -69,7 +69,7 @@ This document outlines the security considerations and best practices for the Ig
 
 **Fix**:
 - Created `multer-config.util.ts` with secure upload configuration
-- File type validation (PDF, images, documents only)
+- File type validation (PDF, images, Word documents, plus JSON/XML for the M2M seal example). The MIME type is client-declared, so this is a guard rail, not content inspection; extend `ALLOWED_MIME_TYPES` if your integration seals other file types.
 - Maximum file size: 15MB
 - Applied to all upload endpoints
 
@@ -279,3 +279,10 @@ If you discover a security vulnerability in this repository:
 
 **Last Updated**: 2026-09-15  
 **Version**: 1.0
+
+## Dev-toolchain advisories not fixable via overrides (ignisign-js)
+
+The frontend uses react-scripts 4 (webpack-dev-server 3, svgo 1, postcss 7 plugins). Forcing newer majors of
+`webpack-dev-middleware`, `http-proxy-middleware`, `js-yaml` or `postcss` breaks `start`/`build`, so those
+overrides are scoped to the major each consumer already uses (or omitted where no patched release exists in that
+major). Remaining advisories in these build-time packages require migrating off react-scripts 4.
